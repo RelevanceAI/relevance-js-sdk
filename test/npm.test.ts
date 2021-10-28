@@ -1,4 +1,4 @@
-import {DiscoveryClient} from '@relevanceai/relevance-sdk';
+import {DiscoveryClient} from '@relevanceai/relevance-js-sdk';
 describe("Discovery Tests",() => {
   test("Can search dataset", async () => {
     const discovery = new DiscoveryClient({

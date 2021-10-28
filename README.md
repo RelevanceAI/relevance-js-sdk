@@ -5,7 +5,7 @@ npm i @relevanceai/relevance-sdk
 ```
 ## Getting Started
 ```javascript
-import {DiscoveryClient} from "@relevanceai/relevance-sdk";
+import {DiscoveryClient} from "@relevanceai/relevance-js-sdk";
 
 const discovery = new DiscoveryClient({
   project:'dummy-collections',
@@ -17,3 +17,4 @@ const {body} = await discovery.SimpleSearchPost({
 });
 console.log(body.results);
 ```
+### Example set up: [codesandbox demo](https://codesandbox.io/s/relevance-js-sdk-demo-kg72k?file=/src/index.js)
