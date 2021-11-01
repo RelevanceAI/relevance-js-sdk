@@ -1,0 +1,21 @@
+name: SDKPublish
+on:
+  schedule:
+    - cron:  '0 0 * * *'
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: Publish
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}  
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install modules
+      run: npm install
+    - name: Regenerate SDK
+      run: npm run generate
+    - name: Prepare build
+      run: npm run prepare
+    - name: Publish to github and npm only if there has been a new change
+      run: git diff-index --quiet HEAD || (git add . && npm version minor --force && git push && npm publish --access public)
