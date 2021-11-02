@@ -1,4 +1,4 @@
-# relevance-sdk
+# relevance-js-sdk
 Install with npm using:
 ```
 npm i @relevanceai/relevance-js-sdk

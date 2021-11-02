@@ -22,7 +22,7 @@ async function GenerateSDKFromOpenAPISchema({config}:{config:serviceConfig}) {
   let sdkText = '';
   const pipeline = [
     () => {
-      sdkText += `import {_GenericClient,CommandInput,CommandOutput,_ClientInput} from '../shared/BaseClient';
+      sdkText += `import {CommandInput,_GenericClient,CommandOutput,_ClientInput,_GenericMethodOptions} from '../shared/BaseClient';
 `;
     },
     () => {
@@ -55,12 +55,14 @@ export class ${config.name}Client  extends _GenericClient {
       for (const {path,method,operation} of GetFlattenedSchema(openapiSchema)) {
         sdkText += `
   public async ${operation.summary}(
-    input: CommandInput<${operation.summary}Input>
+    input: CommandInput<${operation.summary}Input>,
+    options?: _GenericMethodOptions
   ):Promise<CommandOutput<${operation.summary}Output>> {
     return this.SendRequest({
       input,
       method:'${method}',
-      path:'${path}'
+      path:'${path}',
+      options
     });
   }`;
       }
