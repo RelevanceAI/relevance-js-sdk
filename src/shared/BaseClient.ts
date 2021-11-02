@@ -20,8 +20,7 @@ export class _GenericClient {
       headers:{authorization:`${this.config.project}:${this.config.api_key}`},
     };
     if (method.toLowerCase() !== 'get') settings.body = JSON.stringify(input);
-    const final_dataset_id = options?.dataset_id ?? this.config.dataset_id;
-    if (!final_dataset_id) throw new Error("dataset_id needs to be set in the client, or method options.");
+    const final_dataset_id = options?.dataset_id ?? this.config.dataset_id ?? "";
     const res = await fetch(
       `${this.config.endpoint ?? this.serviceConfig.endpoint}/latest${path.replace('{dataset_id}',final_dataset_id)}`,
       settings

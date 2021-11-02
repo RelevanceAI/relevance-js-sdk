@@ -1,4 +1,4 @@
-import {DiscoveryClient} from '../src';
+import {DiscoveryClient,VectorClient} from '../src';
 describe("Discovery Tests",() => {
   test("Can search dataset", async () => {
     const discovery = new DiscoveryClient({
@@ -18,5 +18,14 @@ describe("Discovery Tests",() => {
       api_key:'UzdYRktIY0JxNmlvb1NpOFNsenU6VGdTU0s4UjhUR0NsaDdnQTVwUkpKZw',
     });
     await discovery.SimpleSearchPost({},{dataset_id:'1000-movies'});
+  });
+  test("Can list datasets in vector client", async () => {
+    const vector = new VectorClient({
+      project:'dummy-collections',
+      api_key:'UzdYRktIY0JxNmlvb1NpOFNsenU6VGdTU0s4UjhUR0NsaDdnQTVwUkpKZw',
+    });
+    const res = await vector.listdatasetsapidatasetslistget({});
+    expect((res.body as any).datasets?.length).toBeGreaterThan(0);
+    console.log(JSON.stringify(res));
   });
 });
