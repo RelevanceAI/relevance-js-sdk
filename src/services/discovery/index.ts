@@ -11,31 +11,39 @@ export class SearchBuilder {
         this.body.query = query;
         if (fieldsToSearch) this.body.fieldsToSearch = fieldsToSearch;
         if (queryConfig) this.body.queryConfig = queryConfig;
+        return this;
     }
     vector(vectorField:string,options?:components['schemas']['vectorSearchQuery']){
         if (!Array.isArray(this.body.vectorSearchQuery)) return;
         if (!this?.body?.vectorSearchQuery?.length) this.body.vectorSearchQuery = [];
         this.body.vectorSearchQuery.push({field:vectorField,...options});
+        return this;
     }
     sort(field:string,direction:'asc'|'desc'){
         if (!this?.body?.sort?.length) this.body.sort = {};
         this.body.sort[field] = direction;
+        return this;
     }
     textSort(field:string,direction:'asc'|'desc'){
         if (!this?.body?.textSort?.length) this.body.textSort = {};
         this.body.textSort[field] = direction;
+        return this;
     }
     rawOption(key:string,value:any) {
         (this.body as any)[key] = value;
+        return this;
     }
     minimumRelevance(value:bodyType['minimumRelevance']) {
         this.body.minimumRelevance = value;
+        return this;
     }
     page(value:bodyType['page']) {
         this.body.page = value;
+        return this;
     }
     pageSize(value:bodyType['pageSize']) {
         this.body.pageSize = value;
+        return this;
     }
 }
 
@@ -46,24 +54,31 @@ export class FilterBuilder {
     }
     rawFilter(filter:components['schemas']['filterListItem']) {
         this.filters.push(filter);
+        return this;
     }
     match(field:string,value:any) {
         this.filters.push({match:{key:field,value}});
+        return this;
     }
     wildcard(field:string,value:any) {
         this.filters.push({wildcard:{key:field,value}});
+        return this;
     }
     selfreference(fielda:string,fieldb:string,operation:"<=" | ">=" | "<" | ">" | "==" | "!=") {
         this.filters.push({selfreference:{a:fielda,b:fieldb,operation}});
+        return this;
     }
     range(field:string,options:components['schemas']['filterListItem']['range']) {
         this.filters.push({range:{key:field,...options}});
+        return this;
     }
     or(filters:FilterBuilder[]){
         this.filters.push({or:filters.map(f => f.filters)});
+        return this;
     }
     not(filter:FilterBuilder) {
         this.filters.push({not:filter.filters});
+        return this;
     }
 }
 export class AggregateBuilder {
@@ -75,9 +90,11 @@ export class AggregateBuilder {
     }
     aggregate(field:string,options?:{options?:any,aggregates?:AggregateBuilder}){
         this.fieldsToAggregate.push({key:field,...options,fieldsToAggregate:options?.aggregates?.fieldsToAggregate ?? []});
+        return this;
     }
     aggregateStats(field:string,interval?:number){
         this.fieldsToAggregateStats?.push({key:field,interval});
+        return this;
     }
 }
 
