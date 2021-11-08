@@ -1,5 +1,5 @@
-import { DiscoveryClient } from '../../../dist-types';
-import { _ClientInput } from '../../../dist-types/shared/BaseClient';
+import { DiscoveryClient,BulkInsertInput ,BulkInsertOutput} from '../../';
+import { _ClientInput,CommandInput,CommandOutput,_GenericMethodOptions } from '../../shared/BaseClient';
 import {operations,components} from '../../generated/_DiscoverySchemaTypes';
 type bodyType = operations['SimpleSearchPost']['requestBody']['content']['application/json'];
 export class SearchBuilder {
@@ -85,7 +85,7 @@ export class EnhancedDiscovery extends DiscoveryClient {
     constructor(input:_ClientInput){
         super(input);
     }
-    async search({search,boosters,filters,aggregates}:{
+    async searchUsingBuilders({search,boosters,filters,aggregates}:{
         search?:SearchBuilder
         boosters?:FilterBuilder,
         filters?:FilterBuilder,
@@ -101,4 +101,17 @@ export class EnhancedDiscovery extends DiscoveryClient {
         }
         return await this.SimpleSearchPost(payload);
     }
+    async batchedBulkInsert(input: CommandInput<BulkInsertInput>, options?: _GenericMethodOptions & {batch_size?:number}):Promise<CommandOutput<BulkInsertOutput>>{
+        const allDocuments = input.documents ?? [];
+        const batch_size= options?.batch_size ?? 10000;
+        const results: BulkInsertOutput = {inserted:0,failed_documents:[]};
+        for (let i = 0; i < allDocuments?.length; i+=batch_size) {
+            const res = await this.BulkInsert({...input,documents:allDocuments.slice(i,i+batch_size)});
+            results.failed_documents = results.failed_documents.concat(res.body.failed_documents);
+            results.inserted += res.body.inserted
+        }
+        return {body:results};
+    }
+    // TODO - ChunkSearch, insert, insertAndVectorize?, vectorize, 
+    // TODO - add api methods to make sure they all work
 }
