@@ -19,7 +19,7 @@ export class Dataset {
         return this.name;
     };
 
-    async insert(document: any, options?: _GenericMethodOptions) {
+    async insertDocument(document: any, options?: _GenericMethodOptions) {
         const response = await this.client.Insert({
             document,
             ...options
@@ -43,7 +43,7 @@ export class Dataset {
         return response.body;
     }
 
-    async bulkInsert(documents: any, options?: _GenericMethodOptions & { batch_size?: number }) {
+    async insertDocuments(documents: any, options?: _GenericMethodOptions & { batch_size?: number }) {
         const allDocuments = documents ?? [];
         const batch_size = options?.batch_size ?? 10000;
         const results: any = { inserted: 0, failed_documents: [] };
@@ -56,5 +56,35 @@ export class Dataset {
         return results;
     }
     // TODO - ChunkSearch, insert, insertAndVectorize?, vectorize, 
-    // TODO - add api methods to make sure they all work
+
+    getDocument(documentId: string) {
+        // TODO
+    }
+
+    async updateDocument(documentId: string, partialUpdates: any) {
+        const response = await this.client.Update({ id: documentId, updates: partialUpdates });
+
+        return response;
+    }
+
+    async updateDocuments(partialUpdates: [any]) {
+        // TODO add batching
+        const response = await this.client.BulkUpdate({ updates: partialUpdates });
+
+        return response;
+    }
+
+    async updateDocumentsWhere(filters: FilterBuilder, partialUpdates: any) {
+        const response = await this.client.UpdateWhere({ filters: filters.build(), updates: partialUpdates });
+
+        return response;
+    }
+
+    async deleteDocument(documentId: string) {
+        // TODO
+    }
+
+    deleteDocuments(documentIds: [string]) {
+        // TODO
+    }
 }
