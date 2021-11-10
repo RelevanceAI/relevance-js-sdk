@@ -1,6 +1,7 @@
 import { DiscoveryApiClient, BulkInsertInput, BulkInsertOutput } from '../../';
 import { _ClientInput, CommandInput, CommandOutput, _GenericMethodOptions } from '../../shared/BaseClient';
 import { operations, components } from '../../generated/_DiscoveryApiSchemaTypes';
+import { Dataset } from './Dataset';
 type bodyType = operations['SimpleSearchPost']['requestBody']['content']['application/json'];
 export class SearchBuilder {
     body: bodyType;
@@ -138,38 +139,13 @@ export class AggregateBuilder {
 }
 
 export class DiscoveryClient extends DiscoveryApiClient {
-    constructor(projectId: string, apiKey: string, config: _ClientInput) {
+    constructor(projectId: string, apiKey: string, config?: _ClientInput) {
         super({ ...config, project: projectId, api_key: apiKey });
     }
 
-    async searchUsingBuilders({ search, boosters, filters, aggregates }: {
-        search?: SearchBuilder
-        boosters?: FilterBuilder,
-        filters?: FilterBuilder,
-        aggregates?: AggregateBuilder
-    }) {
-        let payload: bodyType = {};
-        if (search) payload = search.body;
-        if (boosters) payload.relevanceBoosters = boosters.filters;
-        if (filters) payload.filters = filters.filters;
-        if (aggregates) {
-            payload.fieldsToAggregate = aggregates.fieldsToAggregate;
-            payload.fieldsToAggregateStats = aggregates.fieldsToAggregateStats;
-        }
-        return await this.SimpleSearchPost(payload);
+    datasets(name: string, options?: any) {
+        let dataset = new Dataset(this, name, options);
+
+        return dataset;
     }
-    
-    async batchedBulkInsert(input: CommandInput<BulkInsertInput>, options?: _GenericMethodOptions & { batch_size?: number }): Promise<CommandOutput<BulkInsertOutput>> {
-        const allDocuments = input.documents ?? [];
-        const batch_size = options?.batch_size ?? 10000;
-        const results: BulkInsertOutput = { inserted: 0, failed_documents: [] };
-        for (let i = 0; i < allDocuments?.length; i += batch_size) {
-            const res = await this.BulkInsert({ ...input, documents: allDocuments.slice(i, i + batch_size) });
-            results.failed_documents = results.failed_documents.concat(res.body.failed_documents);
-            results.inserted += res.body.inserted
-        }
-        return { body: results };
-    }
-    // TODO - ChunkSearch, insert, insertAndVectorize?, vectorize, 
-    // TODO - add api methods to make sure they all work
 }
