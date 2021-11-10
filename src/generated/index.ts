@@ -1,2 +1,2 @@
-export * from "./Discovery";
-export * from "./Vector";
+export * from "./DiscoveryApi";
+export * from "./VectorApi";

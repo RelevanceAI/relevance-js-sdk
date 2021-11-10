@@ -1,5 +1,5 @@
 import {CommandInput,_GenericClient,CommandOutput,_ClientInput,_GenericMethodOptions} from '../shared/BaseClient';
-      import {operations} from './_VectorSchemaTypes';
+      import {operations} from './_VectorApiSchemaTypes';
 
   export type requestreadapikeyapiadminrequestreadapikeypostInput = operations['request_read_api_key_api_admin_request_read_api_key_post']['requestBody']['content']['application/json']
 export type requestreadapikeyapiadminrequestreadapikeypostOutput = operations['request_read_api_key_api_admin_request_read_api_key_post']['responses']['200']['content']['application/json']
@@ -157,9 +157,9 @@ export type deployablegetapideployablesdeployableidgetgetOutput = operations['de
 export type deployabledeleteapideployablesdeletepostOutput = operations['deployable_delete_api_deployables_delete_post']['responses']['200']['content']['application/json']
   export type deployablelistapideployableslistgetInput = {}
 export type deployablelistapideployableslistgetOutput = operations['deployable_list_api_deployables_list_get']['responses']['200']['content']['application/json']
-export class VectorClient  extends _GenericClient {
+export class VectorApiClient  extends _GenericClient {
   constructor(config:_ClientInput){
-    super({...config,service_name:'Vector'});
+    super({...config,service_name:'VectorApi'});
   }
   public async requestreadapikeyapiadminrequestreadapikeypost(
     input: CommandInput<requestreadapikeyapiadminrequestreadapikeypostInput>,

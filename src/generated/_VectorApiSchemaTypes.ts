@@ -796,12 +796,14 @@ export interface paths {
     post: operations["deployable_update_api_deployables__deployable_id__update_post"];
   };
   "/deployables/{deployable_id}/get": {
+    /** Get a deployable. */
     get: operations["deployable_get_api_deployables__deployable_id__get_get"];
   };
   "/deployables/delete": {
     post: operations["deployable_delete_api_deployables_delete_post"];
   };
   "/deployables/list": {
+    /** List all deployables. */
     get: operations["deployable_list_api_deployables_list_get"];
   };
 }
@@ -2043,6 +2045,10 @@ export interface components {
       configuration?: { [key: string]: unknown };
       /** Unique name of dataset, */
       dataset_id?: string;
+      /** Whether to overwrite document if it exists. */
+      overwrite?: boolean;
+      /** This is prioritised over overwrite. If True, adds new fields. */
+      upsert?: boolean;
     };
     /** Base class for each response model */
     UpdateDeployableResponse: {
@@ -4817,6 +4823,7 @@ export interface operations {
       };
     };
   };
+  /** Get a deployable. */
   deployable_get_api_deployables__deployable_id__get_get: {
     parameters: {
       path: {
@@ -4869,6 +4876,7 @@ export interface operations {
       };
     };
   };
+  /** List all deployables. */
   deployable_list_api_deployables_list_get: {
     parameters: {
       query: {

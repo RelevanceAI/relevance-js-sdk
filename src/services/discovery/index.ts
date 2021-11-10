@@ -75,6 +75,17 @@ export class FilterBuilder {
         this.filters.push(filter);
         return this;
     }
+    
+    filter(type: string, key: string, value: string, ...args: any) {
+        this.filters.push({
+            [type]: {
+                key,
+                value,
+                ...args
+            }
+        });
+        return this;
+    }
 
     match(field: string, value: any) {
         this.filters.push({ match: { key: field, value } });

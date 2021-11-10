@@ -1,5 +1,5 @@
 import {CommandInput,_GenericClient,CommandOutput,_ClientInput,_GenericMethodOptions} from '../shared/BaseClient';
-      import {operations} from './_DiscoverySchemaTypes';
+      import {operations} from './_DiscoveryApiSchemaTypes';
 
   export type InsertInput = operations['Insert']['requestBody']['content']['application/json']
 export type InsertOutput = operations['Insert']['responses']['200']['content']['application/json']
@@ -19,9 +19,9 @@ export type UpdateWhereOutput = operations['UpdateWhere']['responses']['200']['c
 export type SimpleSearchPostOutput = operations['SimpleSearchPost']['responses']['200']['content']['application/json']
   export type SimpleSearchGetInput = {}
 export type SimpleSearchGetOutput = operations['SimpleSearchGet']['responses']['200']['content']['application/json']
-export class DiscoveryClient  extends _GenericClient {
+export class DiscoveryApiClient  extends _GenericClient {
   constructor(config:_ClientInput){
-    super({...config,service_name:'Discovery'});
+    super({...config,service_name:'DiscoveryApi'});
   }
   public async Insert(
     input: CommandInput<InsertInput>,

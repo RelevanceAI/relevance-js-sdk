@@ -5,14 +5,14 @@ export interface serviceConfig {
   name:string,
 }
 export const serviceConfigs:{[id:string]:serviceConfig} = {
-  Discovery:{
+  DiscoveryApi:{
     schema_url:'https://gateway-api-aueast.relevance.ai/latest/openapi_schema.json',
     endpoint:'https://gateway-api-aueast.relevance.ai',
-    name:'Discovery',
+    name:'DiscoveryApi',
   },
-  Vector:{
+  VectorApi:{
     schema_url:'https://gateway-api-aueast.relevance.ai/latest/openapi.json',
     endpoint:'https://gateway-api-aueast.relevance.ai',
-    name:'Vector',
+    name:'VectorApi',
   }
 }
