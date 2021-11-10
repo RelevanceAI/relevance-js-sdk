@@ -1,6 +1,6 @@
-import { DiscoveryClient, BulkInsertInput, BulkInsertOutput } from '../../';
+import { DiscoveryApiClient, BulkInsertInput, BulkInsertOutput } from '../../';
 import { _ClientInput, CommandInput, CommandOutput, _GenericMethodOptions } from '../../shared/BaseClient';
-import { operations, components } from '../../generated/_DiscoverySchemaTypes';
+import { operations, components } from '../../generated/_DiscoveryApiSchemaTypes';
 type bodyType = operations['SimpleSearchPost']['requestBody']['content']['application/json'];
 export class SearchBuilder {
     body: bodyType;
@@ -20,10 +20,10 @@ export class SearchBuilder {
         return this;
     }
 
-    vector(vectorField: string, options?: components['schemas']['vectorSearchQuery']) {
-        if (!Array.isArray(this.body.vectorSearchQuery)) return;
+    vector(field: string, model?: string, weight?: number, query?: string, options?: components['schemas']['vectorSearchQuery']) {
+        if (!Array.isArray(this.body.vectorSearchQuery)) this.body.vectorSearchQuery = [];
         if (!this?.body?.vectorSearchQuery?.length) this.body.vectorSearchQuery = [];
-        this.body.vectorSearchQuery.push({ field: vectorField, ...options });
+        this.body.vectorSearchQuery.push({ field, model, weight, query, ...options });
         return this;
     }
     
@@ -76,12 +76,12 @@ export class FilterBuilder {
         return this;
     }
     
-    filter(type: string, key: string, value: string, ...args: any) {
+    filter(type: string, key: string, value: string, ...options: any) {
         this.filters.push({
             [type]: {
                 key,
                 value,
-                ...args
+                ...options
             }
         });
         return this;
@@ -108,7 +108,7 @@ export class FilterBuilder {
     }
 
     or(filters: FilterBuilder[]) {
-        this.filters.push({ or: filters.map(f => f.filters) });
+        this.filters.push({ or: filters.map(f => f.build()) });
         return this;
     }
 
@@ -137,9 +137,9 @@ export class AggregateBuilder {
     }
 }
 
-export class EnhancedDiscovery extends DiscoveryClient {
-    constructor(input: _ClientInput) {
-        super(input);
+export class DiscoveryClient extends DiscoveryApiClient {
+    constructor(projectId: string, apiKey: string, config: _ClientInput) {
+        super({ ...config, project: projectId, api_key: apiKey });
     }
 
     async searchUsingBuilders({ search, boosters, filters, aggregates }: {
