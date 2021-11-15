@@ -4,7 +4,7 @@ export type CommandInput<A> = A
 export interface CommandOutput<output> {
   body: output
 }
-export interface _ClientInput { endpoint?: string, api_key: string, project: string, dataset_id?: string }
+export interface _ClientInput { endpoint?: string, api_key?: string, project?: string, dataset_id?: string }
 export type _GenericClientInput = _ClientInput & { service_name: string }
 export interface _GenericMethodOptions { dataset_id?: string }
 export class _GenericClient {

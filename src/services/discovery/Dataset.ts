@@ -1,5 +1,5 @@
 import { AggregateBuilder, DiscoveryClient, FilterBuilder, SearchBuilder } from ".";
-import { InsertInput } from "../..";
+import { SimpleSearchPostOutput } from "../..";
 import { CommandInput, _GenericMethodOptions } from "../../shared/BaseClient";
 
 export class Dataset {
@@ -27,19 +27,25 @@ export class Dataset {
 
         return response.body;
     }
-
-    async search(query: SearchBuilder, filters?: FilterBuilder, facets?: AggregateBuilder, options?: any) {
+    async search(query?: SearchBuilder): Promise<SimpleSearchPostOutput>;
+    async search(filters?: FilterBuilder): Promise<SimpleSearchPostOutput>;
+    async search(facets?: AggregateBuilder): Promise<SimpleSearchPostOutput>;
+    async search(query?: SearchBuilder, filters?: FilterBuilder): Promise<SimpleSearchPostOutput>;
+    async search(query?: SearchBuilder, facets?: AggregateBuilder): Promise<SimpleSearchPostOutput>;
+    async search(filters?: FilterBuilder, facets?: AggregateBuilder): Promise<SimpleSearchPostOutput>;
+    async search(query?: SearchBuilder, filters?: FilterBuilder, facets?: AggregateBuilder): Promise<SimpleSearchPostOutput>;
+    async search(...args:any[]) {
         let payload: any = {};
-        
-        if (query) payload = query.build();
-        if (filters) payload.filters = filters.filters;
-        if (facets) {
-            payload.fieldsToAggregate = facets.fieldsToAggregate;
-            payload.fieldsToAggregateStats = facets.fieldsToAggregateStats;
+        for (const arg of args) {
+            if (arg instanceof SearchBuilder) payload = {...payload,...arg.build()};
+            else if (arg instanceof FilterBuilder) payload.filters = arg.filters;
+            else if (arg instanceof AggregateBuilder) {
+                payload.fieldsToAggregate = arg.fieldsToAggregate;
+                payload.fieldsToAggregateStats = arg.fieldsToAggregateStats;
+                
+            }
         }
-
         const response = await this.client.SimpleSearchPost(payload, { dataset_id: this.name });
-
         return response.body;
     }
 
@@ -58,6 +64,7 @@ export class Dataset {
     // TODO - ChunkSearch, insert, insertAndVectorize?, vectorize, 
 
     getDocument(documentId: string) {
+        await this.client.
         // TODO
     }
 

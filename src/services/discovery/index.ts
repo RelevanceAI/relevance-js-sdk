@@ -14,17 +14,30 @@ export class SearchBuilder {
         return this.body;
     }
 
-    traditional(query: string, fieldsToSearch?: bodyType['fieldsToSearch'], queryConfig?: bodyType['queryConfig']) {
+    traditional(query: string, queryConfig?: bodyType['queryConfig']): SearchBuilder;
+    traditional(query: string, fieldsToSearch?: bodyType['fieldsToSearch']):SearchBuilder;
+    traditional(query: string, fieldsToSearch?: bodyType['fieldsToSearch'], queryConfig?: bodyType['queryConfig']):SearchBuilder;
+    traditional(query:string,...args:any[]) {
         this.body.query = query;
-        if (fieldsToSearch) this.body.fieldsToSearch = fieldsToSearch;
-        if (queryConfig) this.body.queryConfig = queryConfig;
+        for (const arg of args) {
+            if (Array.isArray(args)) this.body.fieldsToSearch = arg;
+            else this.body.queryConfig = arg;
+        }
         return this;
     }
 
-    vector(field: string, model?: string, weight?: number, query?: string, options?: components['schemas']['vectorSearchQuery']) {
+    vector(field: string, model: string, weight?: number): SearchBuilder;
+    vector(field: string, model: string, options?: components['schemas']['vectorSearchQuery']): SearchBuilder;
+    vector(field: string, model: string, weight?: number, options?: components['schemas']['vectorSearchQuery']): SearchBuilder;
+    vector(field: string, model: string, ...args:any[]) {
         if (!Array.isArray(this.body.vectorSearchQuery)) this.body.vectorSearchQuery = [];
         if (!this?.body?.vectorSearchQuery?.length) this.body.vectorSearchQuery = [];
-        this.body.vectorSearchQuery.push({ field, model, weight, query, ...options });
+        let payload:components['schemas']['vectorSearchQuery'] = {field,model};
+        for (const arg of args) {
+            if (typeof arg ==='number') payload.weight = arg;
+            else payload = {...payload,...arg};
+        }
+        this.body.vectorSearchQuery.push(payload);
         return this;
     }
     
@@ -68,9 +81,6 @@ export class FilterBuilder {
         this.filters = [];
     }
 
-    build() {
-        return this.filters;
-    }
 
     rawFilter(filter: components['schemas']['filterListItem']) {
         this.filters.push(filter);
@@ -139,13 +149,11 @@ export class AggregateBuilder {
 }
 
 export class DiscoveryClient extends DiscoveryApiClient {
-    constructor(projectId: string, apiKey: string, config?: _ClientInput) {
-        super({ ...config, project: projectId, api_key: apiKey });
+    constructor(config?: _ClientInput) {
+        super(config ?? {});
     }
-
-    datasets(name: string, options?: any) {
+    dataset(name: string, options?: any) {
         let dataset = new Dataset(this, name, options);
-
         return dataset;
     }
 }
