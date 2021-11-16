@@ -127,6 +127,9 @@ export class FilterBuilder {
         this.filters.push({ not: filter.filters });
         return this;
     }
+    build(){
+        return this.filters;
+    }
 }
 export class AggregateBuilder {
     fieldsToAggregate: components['schemas']['fieldsToAggregate'];

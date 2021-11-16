@@ -2,10 +2,23 @@ import { AggregateBuilder, DiscoveryClient, FilterBuilder, SearchBuilder } from 
 import { SimpleSearchPostOutput } from "../..";
 import { CommandInput, _GenericMethodOptions } from "../../shared/BaseClient";
 
+interface searchOptions {
+ debounce?:number;   
+}
+
+function debounce(func:() => any, timeout = 300){
+    let timer:NodeJS.Timeout;
+    return (...args:any[]) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { func.apply(this, args); }, timeout);
+    };
+  }
+
 export class Dataset {
     client: DiscoveryClient;
     name: string;
     config: any;
+    debounceTimer?:NodeJS.Timeout;
 
     constructor(client: DiscoveryClient, name: string, options: any) {
         // TODO validate name
@@ -27,6 +40,8 @@ export class Dataset {
 
         return response.body;
     }
+    // without options
+    async search(): Promise<SimpleSearchPostOutput>;
     async search(query?: SearchBuilder): Promise<SimpleSearchPostOutput>;
     async search(filters?: FilterBuilder): Promise<SimpleSearchPostOutput>;
     async search(facets?: AggregateBuilder): Promise<SimpleSearchPostOutput>;
@@ -34,8 +49,18 @@ export class Dataset {
     async search(query?: SearchBuilder, facets?: AggregateBuilder): Promise<SimpleSearchPostOutput>;
     async search(filters?: FilterBuilder, facets?: AggregateBuilder): Promise<SimpleSearchPostOutput>;
     async search(query?: SearchBuilder, filters?: FilterBuilder, facets?: AggregateBuilder): Promise<SimpleSearchPostOutput>;
+    // with options
+    async search(options?:searchOptions): Promise<SimpleSearchPostOutput>;
+    async search(query?: SearchBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
+    async search(filters?: FilterBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
+    async search(facets?: AggregateBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
+    async search(query?: SearchBuilder, filters?: FilterBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
+    async search(query?: SearchBuilder, facets?: AggregateBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
+    async search(filters?: FilterBuilder, facets?: AggregateBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
+    async search(query?: SearchBuilder, filters?: FilterBuilder, facets?: AggregateBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
     async search(...args:any[]) {
         let payload: any = {};
+        let options:searchOptions = {};
         for (const arg of args) {
             if (arg instanceof SearchBuilder) payload = {...payload,...arg.build()};
             else if (arg instanceof FilterBuilder) payload.filters = arg.filters;
@@ -44,9 +69,18 @@ export class Dataset {
                 payload.fieldsToAggregateStats = arg.fieldsToAggregateStats;
                 
             }
+            else options = arg;
         }
-        const response = await this.client.SimpleSearchPost(payload, { dataset_id: this.name });
-        return response.body;
+        const reqCallback = async () => await this.client.SimpleSearchPost(payload, { dataset_id: this.name });
+        if (options.debounce && this.debounceTimer) {
+            clearTimeout(this.debounceTimer);
+            return new Promise((resolve) => {
+                this.debounceTimer = setTimeout(async () => {const res = await reqCallback();resolve(res)},options.debounce);
+            });
+        } else {
+            const response = await reqCallback();
+            return response.body;
+        }
     }
 
     async insertDocuments(documents: any, options?: _GenericMethodOptions & { batch_size?: number }) {
@@ -63,35 +97,38 @@ export class Dataset {
     }
     // TODO - ChunkSearch, insert, insertAndVectorize?, vectorize, 
 
-    getDocument(documentId: string) {
-        await this.client.
+    async getDocument(documentId: string) {
+        return (await this.client.GetDocument({document_id:documentId})).body;
         // TODO
     }
 
     async updateDocument(documentId: string, partialUpdates: any) {
         const response = await this.client.Update({ id: documentId, updates: partialUpdates });
 
-        return response;
+        return response.body;
     }
 
     async updateDocuments(partialUpdates: [any]) {
         // TODO add batching
         const response = await this.client.BulkUpdate({ updates: partialUpdates });
-
-        return response;
+        return response.body;
     }
 
-    async updateDocumentsWhere(filters: FilterBuilder, partialUpdates: any) {
-        const response = await this.client.UpdateWhere({ filters: filters.build(), updates: partialUpdates });
-
-        return response;
+    async updateDocumentsWhere(filters: FilterBuilder, partialUpdates: {[id:string]:any}) {
+        return (await this.client.UpdateWhere({ filters: filters.build(), updates: partialUpdates })).body;
     }
 
     async deleteDocument(documentId: string) {
+        return (await this.client.DeleteDocument({document_id:documentId})).body;
         // TODO
     }
 
-    deleteDocuments(documentIds: [string]) {
+    async deleteDocuments(documentIds: [string]) {
+        const filters = (new FilterBuilder()).match('_id',documentIds);
+        return (await this.client.DeleteWhere({ filters: filters.build() })).body;
         // TODO
+    }
+    async deleteDocumentsWhere(filters: FilterBuilder) {
+        return await (this.client.DeleteWhere({ filters: filters.build()})).body;
     }
 }
