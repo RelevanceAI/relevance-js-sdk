@@ -3,6 +3,10 @@ import { _ClientInput, CommandInput, CommandOutput, _GenericMethodOptions } from
 import { operations, components } from '../../generated/_DiscoveryApiSchemaTypes';
 import { Dataset } from './Dataset';
 type bodyType = operations['SimpleSearchPost']['requestBody']['content']['application/json'];
+function queryBuilder(){
+
+}
+
 export class SearchBuilder {
     body: bodyType;
 
@@ -113,7 +117,7 @@ export class FilterBuilder {
         return this;
     }
 
-    range(field: string, options: components['schemas']['filterListItem']['range']) {
+    range(field: string, options: Omit<components['schemas']['filterListItem']['range'],'key'>) {
         this.filters.push({ range: { key: field, ...options } });
         return this;
     }
@@ -151,9 +155,11 @@ export class AggregateBuilder {
     }
 }
 
-export class DiscoveryClient extends DiscoveryApiClient {
+export class DiscoveryClient {
+    apiClient:DiscoveryApiClient;
+
     constructor(config?: _ClientInput) {
-        super(config ?? {});
+        this.apiClient = new DiscoveryApiClient(config ?? {});
     }
     dataset(name: string, options?: any) {
         let dataset = new Dataset(this, name, options);

@@ -1,4 +1,5 @@
 import {SearchBuilder,FilterBuilder,AggregateBuilder,VectorApiClient,DiscoveryClient} from '../src';
+const timeout = 100000;
 describe("Discovery Tests",() => {
   const discovery = new DiscoveryClient({
     project:'dummy-collections',
@@ -34,6 +35,38 @@ describe("Discovery Tests",() => {
     // case 2 - filter and aggregate
     // case 3 - options
   });
+  test("Main tutorial test",async () => {
+    async function insert(){
+      // Here we create some demo data. Replace this with your real data
+      const tshirtsData = [];
+      for (let i = 0; i < 100000; i++) {
+        tshirtsData.push({_id:`tshirt-${i}1`,color:'red',price:i/1000});
+        tshirtsData.push({_id:`tshirt-${i}2`,color:'blue',price:i/1000});
+        tshirtsData.push({_id:`tshirt-${i}3`,color:'orange',price:i/1000});
+      }
+      const res = await dataset.insertDocuments(tshirtsData,{batch_size:50000});
+      expect(res.inserted).toEqual(300000);
+
+    }
+    async function filter(){
+      const filters = new FilterBuilder();
+      filters.match('color',['blue','red']).range('price',{lessThan:50});
+      const filteredItems = await dataset.search(filters);
+      expect(filteredItems.resultsSize).toBeGreaterThan(0);
+      expect(filteredItems.resultsSize).toBeLessThan(300000);
+    }
+    async function aggregate(){
+      const aggregates = new AggregateBuilder();
+      aggregates.aggregate('color').aggregateStats('price',10);
+      const aggregatesResult = await dataset.search(aggregates);
+      expect(aggregatesResult.aggregates['color'].results['blue']).toEqual(100000);
+    }
+    const discovery = new DiscoveryClient({ });
+    const dataset = discovery.dataset('tshirts-prod');
+    // await insert();
+    // await filter();
+    await aggregate();
+  },timeout);
   
 });
 

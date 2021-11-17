@@ -1,18 +1,13 @@
 import { AggregateBuilder, DiscoveryClient, FilterBuilder, SearchBuilder } from ".";
 import { SimpleSearchPostOutput } from "../..";
+import { BulkInsertOutput } from "../../";
 import { CommandInput, _GenericMethodOptions } from "../../shared/BaseClient";
 
 interface searchOptions {
  debounce?:number;   
 }
 
-function debounce(func:() => any, timeout = 300){
-    let timer:NodeJS.Timeout;
-    return (...args:any[]) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => { func.apply(this, args); }, timeout);
-    };
-  }
+
 
 export class Dataset {
     client: DiscoveryClient;
@@ -83,24 +78,21 @@ export class Dataset {
         }
     }
 
-    async insertDocuments(documents: any, options?: _GenericMethodOptions & { batch_size?: number }) {
+    async insertDocuments(documents: any, options?: _GenericMethodOptions & { batchSize?: number, progressCallback: (progress:BulkInsertOutput) => any }) {
         const allDocuments = documents ?? [];
-        const batch_size = options?.batch_size ?? 10000;
-        const results: any = { inserted: 0, failed_documents: [] };
-        for (let i = 0; i < allDocuments?.length; i += batch_size) {
-            const res = await this.client.BulkInsert({ documents: allDocuments.slice(i, i + batch_size) }, { dataset_id: this.name });
+        const batchSize = options?.batchSize ?? 10000;
+        const results:BulkInsertOutput = { inserted: 0, failed_documents: [] };
+        for (let i = 0; i < allDocuments?.length; i += batchSize) {
+            const res = await this.client.apiClient.BulkInsert({ documents: allDocuments.slice(i, i + batchSize) }, { dataset_id: this.name });
             results.failed_documents = results.failed_documents.concat(res.body.failed_documents);
             results.inserted += res.body.inserted
+            options?.progressCallback(results);
         }
 
         return results;
     }
     // TODO - ChunkSearch, insert, insertAndVectorize?, vectorize, 
 
-    async getDocument(documentId: string) {
-        return (await this.client.GetDocument({document_id:documentId})).body;
-        // TODO
-    }
 
     async updateDocument(documentId: string, partialUpdates: any) {
         const response = await this.client.Update({ id: documentId, updates: partialUpdates });
@@ -118,17 +110,23 @@ export class Dataset {
         return (await this.client.UpdateWhere({ filters: filters.build(), updates: partialUpdates })).body;
     }
 
-    async deleteDocument(documentId: string) {
-        return (await this.client.DeleteDocument({document_id:documentId})).body;
-        // TODO
-    }
+    // All of this code will be ready once api is ready
+    // async getDocument(documentId: string) {
+    //     return (await this.client.GetDocument({document_id:documentId})).body;
+    //     // TODO
+    // }
 
-    async deleteDocuments(documentIds: [string]) {
-        const filters = (new FilterBuilder()).match('_id',documentIds);
-        return (await this.client.DeleteWhere({ filters: filters.build() })).body;
-        // TODO
-    }
-    async deleteDocumentsWhere(filters: FilterBuilder) {
-        return await (this.client.DeleteWhere({ filters: filters.build()})).body;
-    }
+    // async deleteDocument(documentId: string) {
+    //     return (await this.client.DeleteDocument({document_id:documentId})).body;
+    //     // TODO
+    // }
+
+    // async deleteDocuments(documentIds: [string]) {
+    //     const filters = (new FilterBuilder()).match('_id',documentIds);
+    //     return (await this.client.DeleteWhere({ filters: filters.build() })).body;
+    //     // TODO
+    // } 
+    // async deleteDocumentsWhere(filters: FilterBuilder) {
+    //     return await (this.client.DeleteWhere({ filters: filters.build()})).body;
+    // }
 }

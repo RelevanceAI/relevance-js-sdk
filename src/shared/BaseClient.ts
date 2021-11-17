@@ -7,6 +7,10 @@ export interface CommandOutput<output> {
 export interface _ClientInput { endpoint?: string, api_key?: string, project?: string, dataset_id?: string }
 export type _GenericClientInput = _ClientInput & { service_name: string }
 export interface _GenericMethodOptions { dataset_id?: string }
+const envVars = {
+  project: process?.env?.RELEVANCE_PROJECT,
+  api_key: process?.env?.RELEVANCE_API_KEY,
+}
 export class _GenericClient {
   config: _GenericClientInput;
   serviceConfig: serviceConfig;
@@ -17,7 +21,7 @@ export class _GenericClient {
   async SendRequest({ input, path, method, options }: { input: any, path: string, method: string, options?: _GenericMethodOptions }): Promise<CommandOutput<any>> {
     const settings: RequestInit = {
       method,
-      headers: { authorization: `${this.config.project}:${this.config.api_key}` },
+      headers: { authorization: `${this.config.project??envVars.project}:${this.config.api_key??envVars.api_key}` },
     };
     if (method.toLowerCase() !== 'get') settings.body = JSON.stringify(input);
     const final_dataset_id = options?.dataset_id ?? this.config.dataset_id ?? "";
