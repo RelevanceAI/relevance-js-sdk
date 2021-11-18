@@ -29,6 +29,7 @@ export class _GenericClient {
       `${this.config.endpoint ?? this.serviceConfig.endpoint}/latest${path.replace('{dataset_id}', final_dataset_id)}`,
       settings
     )
+    if (!res.ok) throw new Error(`${path} ${method} failed with status ${res.status}: ${(await res.text())}`)
     const body = await res.json();
     return { body };
   }

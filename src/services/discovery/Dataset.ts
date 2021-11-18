@@ -1,12 +1,12 @@
 import { QueryBuilder, DiscoveryClient, _QueryBuilder } from ".";
 import { SimpleSearchPostOutput } from "../..";
 import { BulkInsertOutput } from "../../";
+import { BulkUpdateOutput } from "../../../dist-types";
 import { CommandInput, _GenericMethodOptions } from "../../shared/BaseClient";
 
 interface searchOptions {
  debounce?:number;   
 }
-
 
 
 export class Dataset {
@@ -62,36 +62,65 @@ export class Dataset {
         }
     }
 
-    async insertDocuments(documents: any, options?: _GenericMethodOptions & { batchSize?: number, progressCallback?: (progress:BulkInsertOutput) => any }) {
-        const allDocuments = documents ?? [];
-        const batchSize = options?.batchSize ?? 10000;
-        const results:BulkInsertOutput = { inserted: 0, failed_documents: [] };
-        for (let i = 0; i < allDocuments?.length; i += batchSize) {
-            const res = await this.client.apiClient.BulkInsert({ documents: allDocuments.slice(i, i + batchSize) }, { dataset_id: this.name });
-            results.failed_documents = results.failed_documents.concat(res.body.failed_documents);
-            results.inserted += res.body.inserted
-            if (options?.progressCallback) options.progressCallback(results);
-        }
+    async insertDocuments(documents: any, options?: _GenericMethodOptions & { batchSize?: number,retryCount?:number, progressCallback?: (progress:BulkInsertOutput[]) => any }):Promise<BulkInsertOutput> {
+        const results = await this._GenericBulkOperation<any,BulkInsertOutput>({
+            data:documents??[],
+            ...options,
+            fn:async (documentsSlice) => (await this.client.apiClient.BulkInsert({ documents:documentsSlice }, { dataset_id: this.name })).body
+        });
+        const finalResults = results.reduce((prev,cur) => {
+            prev.failed_documents = prev.failed_documents.concat(cur.failed_documents);
+            prev.inserted += cur.inserted
+            return prev;
+        },{inserted:0,failed_documents:[]});
 
-        return results;
+        return finalResults;
     }
     // TODO - ChunkSearch, insert, insertAndVectorize?, vectorize, 
-
+    async _GenericBulkOperation<InputItem,OutputItem>({data,batchSize,fn,retryCount}:{
+        data:InputItem[],
+        fn:(data:InputItem[]) => Promise<OutputItem>,
+        batchSize?:number,
+        retryCount?:number,
+        progressCallback?:(progress:OutputItem[]) => any
+    }):Promise<OutputItem[]> {
+        batchSize = batchSize ?? 10000;
+        retryCount = retryCount ?? 1;
+        const results:OutputItem[] = [];
+        for (let i = 0; i < data?.length; i += batchSize) {
+            for (let retrysSoFar = 0; retrysSoFar < retryCount; retrysSoFar++) {
+                try {
+                    const res = await fn(data.slice(i, i + batchSize));
+                    results.push(res);
+                    break;
+                } catch (e) { }
+            }
+        }
+        return results;
+    }
 
     async updateDocument(documentId: string, partialUpdates: any) {
         const response = await this.client.apiClient.Update({ id: documentId, updates: partialUpdates });
 
         return response.body;
     }
+    async updateDocuments(updates: any, options?: _GenericMethodOptions & { batchSize?: number,retryCount?:number, progressCallback?: (progress:BulkUpdateOutput[]) => any }):Promise<BulkUpdateOutput> {
+        const results = await this._GenericBulkOperation<any,BulkUpdateOutput>({
+            data:updates??[],
+            ...options,
+            fn:async (updatesSlice) => (await this.client.apiClient.BulkUpdate({ updates:updatesSlice }, { dataset_id: this.name })).body
+        });
+        const finalResults = results.reduce((prev,cur) => {
+            prev.failed_documents = prev.failed_documents.concat(cur.failed_documents);
+            prev.inserted += cur.inserted
+            return prev;
+        },{inserted:0,failed_documents:[]});
 
-    async updateDocuments(partialUpdates: [any]) {
-        // TODO add batching
-        const response = await this.client.apiClient.BulkUpdate({ updates: partialUpdates });
-        return response.body;
+        return finalResults;
     }
 
     async updateDocumentsWhere(filters: _QueryBuilder, partialUpdates: {[id:string]:any}) {
-        return (await this.client.apiClient.UpdateWhere({ filters: filters.build().filters, updates: partialUpdates })).body;
+        return (await this.client.apiClient.UpdateWhere({ filters: filters.body.filters, updates: partialUpdates })).body;
     }
 
     // All of this code will be ready once api is ready
