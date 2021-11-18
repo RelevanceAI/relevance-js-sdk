@@ -1,4 +1,4 @@
-import { AggregateBuilder, DiscoveryClient, FilterBuilder, SearchBuilder } from ".";
+import { QueryBuilder, DiscoveryClient, _QueryBuilder } from ".";
 import { SimpleSearchPostOutput } from "../..";
 import { BulkInsertOutput } from "../../";
 import { CommandInput, _GenericMethodOptions } from "../../shared/BaseClient";
@@ -28,7 +28,7 @@ export class Dataset {
     };
 
     async insertDocument(document: any, options?: _GenericMethodOptions) {
-        const response = await this.client.Insert({
+        const response = await this.client.apiClient.Insert({
             document,
             ...options
         }, { dataset_id: this.name });
@@ -37,36 +37,20 @@ export class Dataset {
     }
     // without options
     async search(): Promise<SimpleSearchPostOutput>;
-    async search(query?: SearchBuilder): Promise<SimpleSearchPostOutput>;
-    async search(filters?: FilterBuilder): Promise<SimpleSearchPostOutput>;
-    async search(facets?: AggregateBuilder): Promise<SimpleSearchPostOutput>;
-    async search(query?: SearchBuilder, filters?: FilterBuilder): Promise<SimpleSearchPostOutput>;
-    async search(query?: SearchBuilder, facets?: AggregateBuilder): Promise<SimpleSearchPostOutput>;
-    async search(filters?: FilterBuilder, facets?: AggregateBuilder): Promise<SimpleSearchPostOutput>;
-    async search(query?: SearchBuilder, filters?: FilterBuilder, facets?: AggregateBuilder): Promise<SimpleSearchPostOutput>;
-    // with options
+    async search(query?: _QueryBuilder): Promise<SimpleSearchPostOutput>;
     async search(options?:searchOptions): Promise<SimpleSearchPostOutput>;
-    async search(query?: SearchBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
-    async search(filters?: FilterBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
-    async search(facets?: AggregateBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
-    async search(query?: SearchBuilder, filters?: FilterBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
-    async search(query?: SearchBuilder, facets?: AggregateBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
-    async search(filters?: FilterBuilder, facets?: AggregateBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
-    async search(query?: SearchBuilder, filters?: FilterBuilder, facets?: AggregateBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
+    async search(query?: _QueryBuilder,options?:searchOptions): Promise<SimpleSearchPostOutput>;
     async search(...args:any[]) {
         let payload: any = {};
         let options:searchOptions = {};
         for (const arg of args) {
-            if (arg instanceof SearchBuilder) payload = {...payload,...arg.build()};
-            else if (arg instanceof FilterBuilder) payload.filters = arg.filters;
-            else if (arg instanceof AggregateBuilder) {
-                payload.fieldsToAggregate = arg.fieldsToAggregate;
-                payload.fieldsToAggregateStats = arg.fieldsToAggregateStats;
+            if (arg instanceof _QueryBuilder) {
+                payload = {...payload,...arg.build()};
                 
             }
             else options = arg;
         }
-        const reqCallback = async () => await this.client.SimpleSearchPost(payload, { dataset_id: this.name });
+        const reqCallback = async () => await this.client.apiClient.SimpleSearchPost(payload, { dataset_id: this.name });
         if (options.debounce && this.debounceTimer) {
             clearTimeout(this.debounceTimer);
             return new Promise((resolve) => {
@@ -78,7 +62,7 @@ export class Dataset {
         }
     }
 
-    async insertDocuments(documents: any, options?: _GenericMethodOptions & { batchSize?: number, progressCallback: (progress:BulkInsertOutput) => any }) {
+    async insertDocuments(documents: any, options?: _GenericMethodOptions & { batchSize?: number, progressCallback?: (progress:BulkInsertOutput) => any }) {
         const allDocuments = documents ?? [];
         const batchSize = options?.batchSize ?? 10000;
         const results:BulkInsertOutput = { inserted: 0, failed_documents: [] };
@@ -86,7 +70,7 @@ export class Dataset {
             const res = await this.client.apiClient.BulkInsert({ documents: allDocuments.slice(i, i + batchSize) }, { dataset_id: this.name });
             results.failed_documents = results.failed_documents.concat(res.body.failed_documents);
             results.inserted += res.body.inserted
-            options?.progressCallback(results);
+            if (options?.progressCallback) options.progressCallback(results);
         }
 
         return results;
@@ -95,19 +79,19 @@ export class Dataset {
 
 
     async updateDocument(documentId: string, partialUpdates: any) {
-        const response = await this.client.Update({ id: documentId, updates: partialUpdates });
+        const response = await this.client.apiClient.Update({ id: documentId, updates: partialUpdates });
 
         return response.body;
     }
 
     async updateDocuments(partialUpdates: [any]) {
         // TODO add batching
-        const response = await this.client.BulkUpdate({ updates: partialUpdates });
+        const response = await this.client.apiClient.BulkUpdate({ updates: partialUpdates });
         return response.body;
     }
 
-    async updateDocumentsWhere(filters: FilterBuilder, partialUpdates: {[id:string]:any}) {
-        return (await this.client.UpdateWhere({ filters: filters.build(), updates: partialUpdates })).body;
+    async updateDocumentsWhere(filters: _QueryBuilder, partialUpdates: {[id:string]:any}) {
+        return (await this.client.apiClient.UpdateWhere({ filters: filters.build().filters, updates: partialUpdates })).body;
     }
 
     // All of this code will be ready once api is ready

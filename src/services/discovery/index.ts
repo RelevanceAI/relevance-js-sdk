@@ -3,25 +3,25 @@ import { _ClientInput, CommandInput, CommandOutput, _GenericMethodOptions } from
 import { operations, components } from '../../generated/_DiscoveryApiSchemaTypes';
 import { Dataset } from './Dataset';
 type bodyType = operations['SimpleSearchPost']['requestBody']['content']['application/json'];
-function queryBuilder(){
-
+export function QueryBuilder():_QueryBuilder{
+    return new _QueryBuilder();
 }
 
-export class SearchBuilder {
+export class _QueryBuilder {
     body: bodyType;
 
     constructor() {
-        this.body = {};
+        this.body = {filters:[],fieldsToAggregate:[],fieldsToAggregateStats:[]};
     }
 
     build() {
         return this.body;
     }
 
-    traditional(query: string, queryConfig?: bodyType['queryConfig']): SearchBuilder;
-    traditional(query: string, fieldsToSearch?: bodyType['fieldsToSearch']):SearchBuilder;
-    traditional(query: string, fieldsToSearch?: bodyType['fieldsToSearch'], queryConfig?: bodyType['queryConfig']):SearchBuilder;
-    traditional(query:string,...args:any[]) {
+    text(query: string, queryConfig?: bodyType['queryConfig']): _QueryBuilder;
+    text(query: string, fieldsToSearch?: bodyType['fieldsToSearch']):_QueryBuilder;
+    text(query: string, fieldsToSearch?: bodyType['fieldsToSearch'], queryConfig?: bodyType['queryConfig']):_QueryBuilder;
+    text(query:string,...args:any[]) {
         this.body.query = query;
         for (const arg of args) {
             if (Array.isArray(args)) this.body.fieldsToSearch = arg;
@@ -30,9 +30,9 @@ export class SearchBuilder {
         return this;
     }
 
-    vector(field: string, model: string, weight?: number): SearchBuilder;
-    vector(field: string, model: string, options?: components['schemas']['vectorSearchQuery']): SearchBuilder;
-    vector(field: string, model: string, weight?: number, options?: components['schemas']['vectorSearchQuery']): SearchBuilder;
+    vector(field: string, model: string, weight?: number): _QueryBuilder;
+    vector(field: string, model: string, options?: components['schemas']['vectorSearchQuery']): _QueryBuilder;
+    vector(field: string, model: string, weight?: number, options?: components['schemas']['vectorSearchQuery']): _QueryBuilder;
     vector(field: string, model: string, ...args:any[]) {
         if (!Array.isArray(this.body.vectorSearchQuery)) this.body.vectorSearchQuery = [];
         if (!this?.body?.vectorSearchQuery?.length) this.body.vectorSearchQuery = [];
@@ -76,23 +76,13 @@ export class SearchBuilder {
         this.body.pageSize = value;
         return this;
     }
-}
-
-export class FilterBuilder {
-    filters: components['schemas']['filterListItem'][]
-
-    constructor() {
-        this.filters = [];
-    }
-
-
     rawFilter(filter: components['schemas']['filterListItem']) {
-        this.filters.push(filter);
+        this.body.filters?.push(filter);
         return this;
     }
     
     filter(type: string, key: string, value: string, ...options: any) {
-        this.filters.push({
+        this.body.filters?.push({
             [type]: {
                 key,
                 value,
@@ -103,57 +93,46 @@ export class FilterBuilder {
     }
 
     match(field: string, value: any) {
-        this.filters.push({ match: { key: field, value } });
+        this.body.filters?.push({ match: { key: field, value } });
         return this;
     }
 
     wildcard(field: string, value: any) {
-        this.filters.push({ wildcard: { key: field, value } });
+        this.body.filters?.push({ wildcard: { key: field, value } });
         return this;
     }
 
     selfreference(fielda: string, fieldb: string, operation: "<=" | ">=" | "<" | ">" | "==" | "!=") {
-        this.filters.push({ selfreference: { a: fielda, b: fieldb, operation } });
+        this.body.filters?.push({ selfreference: { a: fielda, b: fieldb, operation } });
         return this;
     }
 
     range(field: string, options: Omit<components['schemas']['filterListItem']['range'],'key'>) {
-        this.filters.push({ range: { key: field, ...options } });
+        this.body.filters?.push({ range: { key: field, ...options } });
         return this;
     }
 
-    or(filters: FilterBuilder[]) {
-        this.filters.push({ or: filters.map(f => f.build()) });
+    or(filters: _QueryBuilder[]) {
+        this.body.filters?.push({ or: filters.map(f => f.body.filters ?? []) });
         return this;
     }
 
-    not(filter: FilterBuilder) {
-        this.filters.push({ not: filter.filters });
+    not(filter: _QueryBuilder) {
+        this.body.filters?.push({ not: filter.body?.filters ?? [] });
         return this;
     }
-    build(){
-        return this.filters;
-    }
-}
-export class AggregateBuilder {
-    fieldsToAggregate: components['schemas']['fieldsToAggregate'];
-    fieldsToAggregateStats: bodyType['fieldsToAggregateStats'];
-
-    constructor() {
-        this.fieldsToAggregate = [];
-        this.fieldsToAggregateStats = [];
-    }
-
-    aggregate(field: string, options?: { options?: any, aggregates?: AggregateBuilder }) {
-        this.fieldsToAggregate.push({ key: field, ...options, fieldsToAggregate: options?.aggregates?.fieldsToAggregate ?? [] });
+    aggregate(field: string, options?: { options?: any, aggregates?: _QueryBuilder }) {
+        this.body.fieldsToAggregate?.push({ key: field, ...options, fieldsToAggregate: options?.aggregates?.body.fieldsToAggregate ?? [] });
         return this;
     }
 
     aggregateStats(field: string, interval?: number) {
-        this.fieldsToAggregateStats?.push({ key: field, interval });
+        this.body.fieldsToAggregateStats?.push({ key: field, interval });
         return this;
     }
+
 }
+
 
 export class DiscoveryClient {
     apiClient:DiscoveryApiClient;

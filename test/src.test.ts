@@ -1,4 +1,4 @@
-import {SearchBuilder,FilterBuilder,AggregateBuilder,VectorApiClient,DiscoveryClient} from '../src';
+import {QueryBuilder,VectorApiClient,DiscoveryClient} from '../src';
 const timeout = 100000;
 describe("Discovery Tests",() => {
   const discovery = new DiscoveryClient({
@@ -8,14 +8,11 @@ describe("Discovery Tests",() => {
   });
   const dataset = discovery.dataset('1000-movies')
   test("Can search dataset", async () => {
-    const {body} = await discovery.SimpleSearchPost({});
+    const body = await dataset.search();
     expect(body.results.length).toEqual(10);
-    const res2 = await discovery.SimpleSearchPost({pageSize:0});
-    expect(res2.body.results.length).toEqual(0);
+    const res2 = await dataset.search(QueryBuilder().pageSize(0));
+    expect(res2.results.length).toEqual(0);
 
-  });
-  test("Can set dataset_id in options", async () => {
-    await discovery.SimpleSearchPost({},{dataset_id:'1000-movies'});
   });
   test("Can list datasets in vector client", async () => {
     const vector = new VectorApiClient({
@@ -28,12 +25,9 @@ describe("Discovery Tests",() => {
   });
   test("builder search", async () => {
     await dataset.search(
-      (new SearchBuilder()).traditional('abc',{weight:5}).vector('vectorfield_vector_','text',0.3,{field:'_vectorfield_vector_',query:'abcd'}),
+      QueryBuilder().text('abc',{weight:5}).vector('vectorfield_vector_','text',0.3,{field:'_vectorfield_vector_',query:'abcd'}),
       
     )
-    // case 1 - text query with vector search
-    // case 2 - filter and aggregate
-    // case 3 - options
   });
   test("Main tutorial test",async () => {
     async function insert(){
@@ -44,19 +38,19 @@ describe("Discovery Tests",() => {
         tshirtsData.push({_id:`tshirt-${i}2`,color:'blue',price:i/1000});
         tshirtsData.push({_id:`tshirt-${i}3`,color:'orange',price:i/1000});
       }
-      const res = await dataset.insertDocuments(tshirtsData,{batch_size:50000});
+      const res = await dataset.insertDocuments(tshirtsData,{batchSize:50000});
       expect(res.inserted).toEqual(300000);
 
     }
     async function filter(){
-      const filters = new FilterBuilder();
+      const filters = QueryBuilder();
       filters.match('color',['blue','red']).range('price',{lessThan:50});
       const filteredItems = await dataset.search(filters);
       expect(filteredItems.resultsSize).toBeGreaterThan(0);
       expect(filteredItems.resultsSize).toBeLessThan(300000);
     }
     async function aggregate(){
-      const aggregates = new AggregateBuilder();
+      const aggregates = QueryBuilder();
       aggregates.aggregate('color').aggregateStats('price',10);
       const aggregatesResult = await dataset.search(aggregates);
       expect(aggregatesResult.aggregates['color'].results['blue']).toEqual(100000);
