@@ -1,6 +1,6 @@
 {
-  "name": "@relevanceai/relevance-js-sdk",
-  "version": "0.6.0",
+  "name": "@relevanceai/sdk",
+  "version": "1.0.0",
   "description": "Javascript client for RelevanceAI APIs. Browser, Node.js and typescript support.",
   "main": "./dist-cjs/index.js",
   "types": "./dist-types/index.d.ts",
@@ -16,17 +16,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RelevanceAI/relevance-sdk.git"
+    "url": "git+https://github.com/RelevanceAI/relevance-js-sdk.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/RelevanceAI/relevance-sdk/issues"
+    "url": "https://github.com/RelevanceAI/relevance-js-sdk/issues"
   },
-  "homepage": "https://github.com/RelevanceAI/relevance-sdk#readme",
+  "homepage": "https://github.com/RelevanceAI/relevance-js-sdk#readme",
   "devDependencies": {
-    "@relevanceai/relevance-js-sdk": "^0.0.0",
-    "@relevanceai/relevance-sdk": "^0.0.1",
     "@types/jest": "^27.0.2",
     "openapi-typescript": "^4.4.0",
     "ts-jest": "^27.0.7",
