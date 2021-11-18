@@ -24,7 +24,7 @@ export class _QueryBuilder {
     text(query:string,...args:any[]) {
         this.body.query = query;
         for (const arg of args) {
-            if (Array.isArray(args)) this.body.fieldsToSearch = arg;
+            if (Array.isArray(arg)) this.body.fieldsToSearch = arg;
             else this.body.queryConfig = arg;
         }
         return this;

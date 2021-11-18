@@ -1,8 +1,6 @@
 import { QueryBuilder, DiscoveryClient, _QueryBuilder } from ".";
-import { SimpleSearchPostOutput } from "../..";
-import { BulkInsertOutput } from "../../";
-import { BulkUpdateOutput } from "../../../dist-types";
-import { CommandInput, _GenericMethodOptions } from "../../shared/BaseClient";
+import { DeleteDocumentOutput, DeleteWhereOutput, GetDocumentOutput, SimpleSearchPostOutput, BulkInsertOutput,UpdateWhereOutput,BulkUpdateOutput } from "../..";
+import { _GenericMethodOptions } from "../../shared/BaseClient";
 
 interface searchOptions {
  debounce?:number;   
@@ -119,27 +117,23 @@ export class Dataset {
         return finalResults;
     }
 
-    async updateDocumentsWhere(filters: _QueryBuilder, partialUpdates: {[id:string]:any}) {
+    async updateDocumentsWhere(filters: _QueryBuilder, partialUpdates: {[id:string]:any}):Promise<UpdateWhereOutput> {
         return (await this.client.apiClient.UpdateWhere({ filters: filters.body.filters, updates: partialUpdates })).body;
     }
 
-    // All of this code will be ready once api is ready
-    // async getDocument(documentId: string) {
-    //     return (await this.client.GetDocument({document_id:documentId})).body;
-    //     // TODO
-    // }
+    async getDocument(documentId: string):Promise<GetDocumentOutput> {
+        return (await this.client.apiClient.GetDocument({document_id:documentId})).body;
+    }
 
-    // async deleteDocument(documentId: string) {
-    //     return (await this.client.DeleteDocument({document_id:documentId})).body;
-    //     // TODO
-    // }
+    async deleteDocument(documentId: string):Promise<DeleteDocumentOutput> {
+        return (await this.client.apiClient.DeleteDocument({document_id:documentId})).body;
+    }
 
-    // async deleteDocuments(documentIds: [string]) {
-    //     const filters = (new FilterBuilder()).match('_id',documentIds);
-    //     return (await this.client.DeleteWhere({ filters: filters.build() })).body;
-    //     // TODO
-    // } 
-    // async deleteDocumentsWhere(filters: FilterBuilder) {
-    //     return await (this.client.DeleteWhere({ filters: filters.build()})).body;
-    // }
+    async deleteDocuments(documentIds: [string]):Promise<DeleteWhereOutput> {
+        const filters = QueryBuilder().match('_id',documentIds);
+        return (await this.client.apiClient.DeleteWhere({ filters: filters.body.filters??[] })).body;
+    } 
+    async deleteDocumentsWhere(filters: _QueryBuilder):Promise<DeleteWhereOutput> {
+        return (await this.client.apiClient.DeleteWhere({ filters: filters.body.filters??[]})).body;
+    }
 }

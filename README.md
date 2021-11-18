@@ -51,7 +51,7 @@ const discovery = new DiscoveryClient({
 # Examples
 ### You can import builders and type definitions like this
 ```javascript
-import {SearchBuilder,FilterBuilder,AggregateBuilder,DiscoveryClient} from "@relevanceai/sdk";
+import {QueryBuilder,DiscoveryClient,BulkInsertOutput} from "@relevanceai/sdk";
 ```
 ## Insert millions of items with one function call
 ```javascript
@@ -60,9 +60,9 @@ const dataset = discovery.dataset('tshirts-prod');
 // Here we create some demo data. Replace this with your real data
 const tshirtsData = [];
 for (let i = 0; i < 100000; i++) {
-  tshirtsData.push({_id:`tshirt-${i}1`,color:'red',price:i/1000});
-  tshirtsData.push({_id:`tshirt-${i}2`,color:'blue',price:i/1000});
-  tshirtsData.push({_id:`tshirt-${i}3`,color:'orange',price:i/1000});
+    tshirtsData.push({_id:`tshirt-${i}1`,color:'red',price:i/1000});
+    tshirtsData.push({_id:`tshirt-${i}2`,color:'blue',price:i/1000});
+    tshirtsData.push({_id:`tshirt-${i}3`,color:'orange',price:i/1000});
 }
 const res = await dataset.insertDocuments(tshirtsData,{batchSize:50000});
 ```
@@ -72,7 +72,7 @@ const res = await dataset.insertDocuments(tshirtsData,{batchSize:50000});
 ```
 ## Filter and retrieve items
 ```javascript
-const filters = new FilterBuilder();
+const filters = QueryBuilder();
 filters.match('color',['blue','red']).range('price',{lessThan:50});
 const filteredItems = await dataset.search(filters);
 ```
@@ -97,7 +97,7 @@ const filteredItems = await dataset.search(filters);
 ```
 ## Summarise your data using aggregations
 ```javascript
-const aggregates = new AggregateBuilder();
+const aggregates = QueryBuilder();
 aggregates.aggregate('color').aggregateStats('price',10);
 const aggregatesResult = await dataset.search(aggregates);
 ```
@@ -127,5 +127,9 @@ const aggregatesResult = await dataset.search(aggregates);
   }
 }
 ```
-
-# todo vector stuff, downloading millions of items
+## Call raw api methods directly
+```javascript
+const rawClient = new DiscoveryApiClient({dataset_id:'tshirts-prod'});
+const {body} = await rawClient.FastSearch({filters:[{match:{key:'_id',value:`tshirt-01`}}]});
+expect((body.results[0] as any).color).toBe('red')
+```

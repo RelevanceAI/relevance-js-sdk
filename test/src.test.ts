@@ -1,4 +1,4 @@
-import {QueryBuilder,VectorApiClient,DiscoveryClient} from '../src';
+import {QueryBuilder,VectorApiClient,DiscoveryClient, DiscoveryApiClient} from '../src';
 const timeout = 100000;
 describe("Discovery Tests",() => {
   const discovery = new DiscoveryClient({
@@ -21,13 +21,6 @@ describe("Discovery Tests",() => {
     });
     const res = await vector.listdatasetsapidatasetslistget({});
     expect((res.body as any).datasets?.length).toBeGreaterThan(0);
-    console.log(JSON.stringify(res));
-  });
-  test("builder search", async () => {
-    await dataset.search(
-      QueryBuilder().text('abc',{weight:5}).vector('vectorfield_vector_','text',0.3,{field:'_vectorfield_vector_',query:'abcd'}),
-      
-    )
   });
   test("Main tutorial test",async () => {
     async function insert(){
@@ -55,17 +48,18 @@ describe("Discovery Tests",() => {
       const aggregatesResult = await dataset.search(aggregates);
       expect(aggregatesResult.aggregates['color'].results['blue']).toEqual(100000);
     }
+    // Endpoint is currently broken
+    async function getdoc(){
+      const rawClient = new DiscoveryApiClient({dataset_id:'tshirts-prod'});
+      const {body} = await rawClient.FastSearch({filters:[{match:{key:'_id',value:`tshirt-01`}}]});
+      expect((body.results[0] as any).color).toBe('red')
+    }
     const discovery = new DiscoveryClient({ });
     const dataset = discovery.dataset('tshirts-prod');
-    // await insert();
-    // await filter();
+    await insert();
+    await filter();
     await aggregate();
+    await getdoc();
   },timeout);
   
 });
-
-// make model param mandatory
-// use filter.build in not
-// make projectid and apikey optional
-
-//

@@ -9,16 +9,22 @@ export type BulkInsertOutput = operations['BulkInsert']['responses']['200']['con
 export type BlobAccessURLsOutput = operations['BlobAccessURLs']['responses']['200']['content']['application/json']
   export type ParseBlobInput = operations['ParseBlob']['requestBody']['content']['application/json']
 export type ParseBlobOutput = operations['ParseBlob']['responses']['200']['content']['application/json']
+  export type GetDocumentInput = operations['GetDocument']['requestBody']['content']['application/json']
+export type GetDocumentOutput = operations['GetDocument']['responses']['200']['content']['application/json']
+  export type DeleteDocumentInput = operations['DeleteDocument']['requestBody']['content']['application/json']
+export type DeleteDocumentOutput = operations['DeleteDocument']['responses']['200']['content']['application/json']
   export type UpdateInput = operations['Update']['requestBody']['content']['application/json']
 export type UpdateOutput = operations['Update']['responses']['200']['content']['application/json']
   export type BulkUpdateInput = operations['BulkUpdate']['requestBody']['content']['application/json']
 export type BulkUpdateOutput = operations['BulkUpdate']['responses']['200']['content']['application/json']
   export type UpdateWhereInput = operations['UpdateWhere']['requestBody']['content']['application/json']
 export type UpdateWhereOutput = operations['UpdateWhere']['responses']['200']['content']['application/json']
+  export type DeleteWhereInput = operations['DeleteWhere']['requestBody']['content']['application/json']
+export type DeleteWhereOutput = operations['DeleteWhere']['responses']['200']['content']['application/json']
   export type SimpleSearchPostInput = operations['SimpleSearchPost']['requestBody']['content']['application/json']
 export type SimpleSearchPostOutput = operations['SimpleSearchPost']['responses']['200']['content']['application/json']
-  export type SimpleSearchGetInput = {}
-export type SimpleSearchGetOutput = operations['SimpleSearchGet']['responses']['200']['content']['application/json']
+  export type FastSearchInput = operations['FastSearch']['requestBody']['content']['application/json']
+export type FastSearchOutput = operations['FastSearch']['responses']['200']['content']['application/json']
 export class DiscoveryApiClient  extends _GenericClient {
   constructor(config:_ClientInput){
     super({...config,service_name:'DiscoveryApi'});
@@ -67,6 +73,28 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
+  public async GetDocument(
+    input: CommandInput<GetDocumentInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetDocumentOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/get',
+      options
+    });
+  }
+  public async DeleteDocument(
+    input: CommandInput<DeleteDocumentInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteDocumentOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/delete',
+      options
+    });
+  }
   public async Update(
     input: CommandInput<UpdateInput>,
     options?: _GenericMethodOptions
@@ -100,6 +128,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
+  public async DeleteWhere(
+    input: CommandInput<DeleteWhereInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteWhereOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/delete_where',
+      options
+    });
+  }
   public async SimpleSearchPost(
     input: CommandInput<SimpleSearchPostInput>,
     options?: _GenericMethodOptions
@@ -111,14 +150,14 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
-  public async SimpleSearchGet(
-    input: CommandInput<SimpleSearchGetInput>,
+  public async FastSearch(
+    input: CommandInput<FastSearchInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<SimpleSearchGetOutput>> {
+  ):Promise<CommandOutput<FastSearchOutput>> {
     return this.SendRequest({
       input,
-      method:'get',
-      path:'/datasets/{dataset_id}/simple_search',
+      method:'post',
+      path:'/datasets/{dataset_id}/fast_search',
       options
     });
   }}
