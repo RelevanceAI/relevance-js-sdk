@@ -11,15 +11,14 @@ npm i @relevanceai/sdk
 # Getting started
 Get started in seconds with a demo dataset of popular movies.
 ```javascript
-import {DiscoveryClient} from "@relevanceai/sdk";
+import {DiscoveryClient,QueryBuilder} from "@relevanceai/sdk";
 
 const discovery = new DiscoveryClient({
   project:'dummy-collections',
   api_key:'UzdYRktIY0JxNmlvb1NpOFNsenU6VGdTU0s4UjhUR0NsaDdnQTVwUkpKZw',
-  dataset_id:'1000-movies'
 });
-const {body} = await discovery.SimpleSearchPost( {query:'Las Vegas'} });
-console.log(body.results);
+const dataset = discovery.dataset('1000-movies');
+const {results} = await dataset.search(QueryBuilder().text('Las Vegas'));
 ```
 ## Set up your credentials
 ### Option 1 - Use environment variables

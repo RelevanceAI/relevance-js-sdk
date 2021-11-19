@@ -248,6 +248,29 @@ export interface paths {
     /** Get status of a collection level job. Whether its starting, running, failed or finished. */
     get: operations["tasks_status_api_datasets__dataset_id__tasks__task_id__status_get"];
   };
+  "/datasets/{dataset_id}/vectorize": {
+    /** Queue the encoding of a dataset using the method given by model_id. */
+    post: operations["encode_by_model_api_datasets__dataset_id__vectorize_post"];
+  };
+  "/datasets/{dataset_id}/task_status": {
+    /**
+     * Check the status of an existing encoding task on the given dataset.
+     *
+     * The required task_id was returned in the original encoding request
+     * such as /vectorize.
+     */
+    get: operations["task_status_by_model_api_datasets__dataset_id__task_status_get"];
+  };
+  "/datasets/{dataset_id}/tasks": {
+    /**
+     * List the tasks being encoded for the dataset_id that
+     * you are authorized to read.
+     *
+     * If dataset_id is the wildcard "*" then all tasks for the
+     * user project are listed.
+     */
+    get: operations["list_tasks_api_datasets__dataset_id__tasks_get"];
+  };
   "/services/search/vector": {
     /**
      * Allows you to leverage vector similarity search to create a semantic search engine.
@@ -976,7 +999,7 @@ export interface components {
       dataset_id: string;
       /** Query for advance search that allows for multiple vector and field querying. */
       multivector_query: components["schemas"]["VectorQuery"][];
-      /** Field that the array of chunked documents are. */
+      /** Field where the array of chunked documents are. */
       chunk_field?: string;
       /** Scoring method for determining for ranking between document chunks. */
       chunk_scoring?: string;
@@ -1303,7 +1326,7 @@ export interface components {
       dataset_id: string;
       /** Query for advance search that allows for multiple vector and field querying. */
       multivector_query: components["schemas"]["VectorQuery"][];
-      /** Field that the array of chunked documents are. */
+      /** Field where the array of chunked documents are. */
       chunk_field?: string;
       /** Scoring method for determining for ranking between document chunks. */
       chunk_scoring?: string;
@@ -2086,6 +2109,23 @@ export interface components {
     VectorResponse: {
       /** Vector, a list/array of floats that represents a piece of data. */
       vector: number[];
+    };
+    /** Base class for all abstractmodels */
+    VectorizeEncodeDataset: {
+      /** Fields to remove ['random_field', 'another_random_field']. Defaults to no removes */
+      fields?: string[];
+      /** Filters to run against */
+      filters?: unknown[];
+      /** If True, re-runs encoding on whole dataset. */
+      refresh?: boolean;
+      /** Alias used to name a vector field. Belongs in field_{alias}_vector_ */
+      alias?: string;
+      /** batch for each encoding. Change at your own risk. */
+      chunksize?: number;
+      /** The chunk field. If the chunk field is specified, the field to be encoded should not include the chunk field. */
+      chunk_field?: string;
+      /** Model ID to use for vectorizing (encoding.) */
+      model_id: string;
     };
     /** Base class for all abstractmodels */
     WordCloudModel: {
@@ -3324,6 +3364,104 @@ export interface operations {
         content: {
           "application/json": Partial<components["schemas"]["TaskResponse"]> &
             Partial<{ [key: string]: unknown }>;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /** Queue the encoding of a dataset using the method given by model_id. */
+  encode_by_model_api_datasets__dataset_id__vectorize_post: {
+    parameters: {
+      path: {
+        dataset_id: string;
+      };
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["VectorizeEncodeDataset"];
+      };
+    };
+  };
+  /**
+   * Check the status of an existing encoding task on the given dataset.
+   *
+   * The required task_id was returned in the original encoding request
+   * such as /vectorize.
+   */
+  task_status_by_model_api_datasets__dataset_id__task_status_get: {
+    parameters: {
+      path: {
+        dataset_id: string;
+      };
+      query: {
+        /** The task ID of the earlier queued vectorize task */
+        task_id: string;
+      };
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * List the tasks being encoded for the dataset_id that
+   * you are authorized to read.
+   *
+   * If dataset_id is the wildcard "*" then all tasks for the
+   * user project are listed.
+   */
+  list_tasks_api_datasets__dataset_id__tasks_get: {
+    parameters: {
+      path: {
+        dataset_id: string;
+      };
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
         };
       };
       /** Validation Error */

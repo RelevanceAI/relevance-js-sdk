@@ -75,6 +75,12 @@ export type tasksapidatasetsdatasetidtaskscreatepostOutput = operations['tasks_a
 export type listcollectionjobsapidatasetsdatasetidtaskslistgetOutput = operations['list_collection_jobs_api_datasets__dataset_id__tasks_list_get']['responses']['200']['content']['application/json']
   export type tasksstatusapidatasetsdatasetidtaskstaskidstatusgetInput = {}
 export type tasksstatusapidatasetsdatasetidtaskstaskidstatusgetOutput = operations['tasks_status_api_datasets__dataset_id__tasks__task_id__status_get']['responses']['200']['content']['application/json']
+  export type encodebymodelapidatasetsdatasetidvectorizepostInput = operations['encode_by_model_api_datasets__dataset_id__vectorize_post']['requestBody']['content']['application/json']
+export type encodebymodelapidatasetsdatasetidvectorizepostOutput = operations['encode_by_model_api_datasets__dataset_id__vectorize_post']['responses']['200']['content']['application/json']
+  export type taskstatusbymodelapidatasetsdatasetidtaskstatusgetInput = {}
+export type taskstatusbymodelapidatasetsdatasetidtaskstatusgetOutput = operations['task_status_by_model_api_datasets__dataset_id__task_status_get']['responses']['200']['content']['application/json']
+  export type listtasksapidatasetsdatasetidtasksgetInput = {}
+export type listtasksapidatasetsdatasetidtasksgetOutput = operations['list_tasks_api_datasets__dataset_id__tasks_get']['responses']['200']['content']['application/json']
   export type vectorsearchapiservicessearchvectorpostInput = operations['vector_search_api_services_search_vector_post']['requestBody']['content']['application/json']
 export type vectorsearchapiservicessearchvectorpostOutput = operations['vector_search_api_services_search_vector_post']['responses']['200']['content']['application/json']
   export type traditionalsearchapiservicessearchtraditionalpostInput = operations['traditional_search_api_services_search_traditional_post']['requestBody']['content']['application/json']
@@ -565,6 +571,39 @@ export class VectorApiClient  extends _GenericClient {
       input,
       method:'get',
       path:'/datasets/{dataset_id}/tasks/{task_id}/status',
+      options
+    });
+  }
+  public async encodebymodelapidatasetsdatasetidvectorizepost(
+    input: CommandInput<encodebymodelapidatasetsdatasetidvectorizepostInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<encodebymodelapidatasetsdatasetidvectorizepostOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/vectorize',
+      options
+    });
+  }
+  public async taskstatusbymodelapidatasetsdatasetidtaskstatusget(
+    input: CommandInput<taskstatusbymodelapidatasetsdatasetidtaskstatusgetInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<taskstatusbymodelapidatasetsdatasetidtaskstatusgetOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/task_status',
+      options
+    });
+  }
+  public async listtasksapidatasetsdatasetidtasksget(
+    input: CommandInput<listtasksapidatasetsdatasetidtasksgetInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<listtasksapidatasetsdatasetidtasksgetOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/tasks',
       options
     });
   }
