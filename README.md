@@ -56,18 +56,27 @@ import {QueryBuilder,DiscoveryClient,BulkInsertOutput} from "@relevanceai/sdk";
 ```javascript
 const discovery = new DiscoveryClient({ });
 const dataset = discovery.dataset('tshirts-prod');
-// Here we create some demo data. Replace this with your real data
+ // Here we create some demo data. Replace this with your real data
+const fakeVector = [];
+for (let i = 0; i < 768; i++) fakeVector.push(1);
 const tshirtsData = [];
-for (let i = 0; i < 100000; i++) {
-    tshirtsData.push({_id:`tshirt-${i}1`,color:'red',price:i/1000});
-    tshirtsData.push({_id:`tshirt-${i}2`,color:'blue',price:i/1000});
-    tshirtsData.push({_id:`tshirt-${i}3`,color:'orange',price:i/1000});
+for (let i = 0; i < 10000; i++) {
+  tshirtsData.push({_id:`tshirt-${i}1`,color:'red',price:i/1000,'title_text@1-0_vector_':fakeVector});
+  tshirtsData.push({_id:`tshirt-${i}2`,color:'blue',price:i/1000});
+  tshirtsData.push({_id:`tshirt-${i}3`,color:'orange',price:i/1000});
 }
-const res = await dataset.insertDocuments(tshirtsData,{batchSize:50000});
+const res = await dataset.insertDocuments(tshirtsData,{batchSize:10000});
 ```
 ### insertDocuments will output:
 ```javascript
-{"inserted":300000,"failed_documents":[]}
+{"inserted":30000,"failed_documents":[]}
+```
+## Text Search and Vector Search
+```javascript
+const builder = QueryBuilder();
+builder.query('red').text().vector('title_text@1-0_vector_',0.5).minimumRelevance(0.1);
+// .text() searches all fields. alternatively, use .text(field1).text(field2)... to search specific fields
+const searchResults = await dataset.search(builder);
 ```
 ## Filter and retrieve items
 ```javascript
@@ -88,7 +97,7 @@ const filteredItems = await dataset.search(filters);
     }
     ...
   ],
-  resultsSize: 102000,
+  resultsSize: 10200,
   aggregations: {},
   aggregates: {},
   aggregateStats: {}
@@ -105,21 +114,21 @@ const aggregatesResult = await dataset.search(aggregates);
 {
   aggregates:{
     color: {
-      results: { blue: 100000, orange: 100000, red: 100000 },
+      results: { blue: 10000, orange: 10000, red: 10000 },
       aggregates: {}
     },
     price: {
       results: {
-        '0': 30000,
-        '10': 30000,
-        '20': 30000,
-        '30': 30000,
-        '40': 30000,
-        '50': 30000,
-        '60': 30000,
-        '70': 30000,
-        '80': 30000,
-        '90': 30000
+        '0': 0000,
+        '10': 3000,
+        '20': 3000,
+        '30': 3000,
+        '40': 3000,
+        '50': 3000,
+        '60': 3000,
+        '70': 3000,
+        '80': 3000,
+        '90': 3000
       },
       aggregates: {}
     }

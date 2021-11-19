@@ -118,7 +118,7 @@ export class Dataset {
     }
 
     async updateDocumentsWhere(filters: _QueryBuilder, partialUpdates: {[id:string]:any}):Promise<UpdateWhereOutput> {
-        return (await this.client.apiClient.UpdateWhere({ filters: filters.body.filters, updates: partialUpdates })).body;
+        return (await this.client.apiClient.UpdateWhere({ filters: filters.build().filters, updates: partialUpdates })).body;
     }
 
     async getDocument(documentId: string):Promise<GetDocumentOutput> {
@@ -131,9 +131,9 @@ export class Dataset {
 
     async deleteDocuments(documentIds: [string]):Promise<DeleteWhereOutput> {
         const filters = QueryBuilder().match('_id',documentIds);
-        return (await this.client.apiClient.DeleteWhere({ filters: filters.body.filters??[] })).body;
+        return (await this.client.apiClient.DeleteWhere({ filters: filters.build().filters??[] })).body;
     } 
     async deleteDocumentsWhere(filters: _QueryBuilder):Promise<DeleteWhereOutput> {
-        return (await this.client.apiClient.DeleteWhere({ filters: filters.body.filters??[]})).body;
+        return (await this.client.apiClient.DeleteWhere({ filters: filters.build().filters??[]})).body;
     }
 }

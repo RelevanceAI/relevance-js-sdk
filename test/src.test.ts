@@ -24,29 +24,41 @@ describe("Discovery Tests",() => {
   });
   test("Main tutorial test",async () => {
     async function insert(){
+
       // Here we create some demo data. Replace this with your real data
+      const fakeVector = [];
+      for (let i = 0; i < 768; i++) fakeVector.push(1);
       const tshirtsData = [];
-      for (let i = 0; i < 100000; i++) {
-        tshirtsData.push({_id:`tshirt-${i}1`,color:'red',price:i/1000});
+      for (let i = 0; i < 10000; i++) {
+        tshirtsData.push({_id:`tshirt-${i}1`,color:'red',price:i/1000,'title_text@1-0_vector_':fakeVector});
         tshirtsData.push({_id:`tshirt-${i}2`,color:'blue',price:i/1000});
         tshirtsData.push({_id:`tshirt-${i}3`,color:'orange',price:i/1000});
       }
-      const res = await dataset.insertDocuments(tshirtsData,{batchSize:50000});
-      expect(res.inserted).toEqual(300000);
+      const res = await dataset.insertDocuments(tshirtsData,{batchSize:10000});
+      expect(res.inserted).toEqual(30000);
 
+    }
+    async function cleanup(){
+      await (new VectorApiClient({})).deletedatasetapidatasetsdeletepost({dataset_id:'tshirts-prod'});
+    }
+    async function search(){
+      const builder = QueryBuilder();
+      builder.query('red').text().vector('title_text@1-0_vector_',0.5).minimumRelevance(0.1);
+      const searchResults = await dataset.search(builder);
+      expect(searchResults.resultsSize).toBeGreaterThan(0);
     }
     async function filter(){
       const filters = QueryBuilder();
       filters.match('color',['blue','red']).range('price',{lessThan:50});
       const filteredItems = await dataset.search(filters);
       expect(filteredItems.resultsSize).toBeGreaterThan(0);
-      expect(filteredItems.resultsSize).toBeLessThan(300000);
+      expect(filteredItems.resultsSize).toBeLessThan(30000);
     }
     async function aggregate(){
       const aggregates = QueryBuilder();
       aggregates.aggregate('color').aggregateStats('price',10);
       const aggregatesResult = await dataset.search(aggregates);
-      expect(aggregatesResult.aggregates['color'].results['blue']).toEqual(100000);
+      expect(aggregatesResult.aggregates['color'].results['blue']).toEqual(10000);
     }
     // Endpoint is currently broken
     async function getdoc(){
@@ -56,7 +68,9 @@ describe("Discovery Tests",() => {
     }
     const discovery = new DiscoveryClient({ });
     const dataset = discovery.dataset('tshirts-prod');
+    await cleanup();
     await insert();
+    await search();
     await filter();
     await aggregate();
     await getdoc();

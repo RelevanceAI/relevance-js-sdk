@@ -9,37 +9,49 @@ export function QueryBuilder():_QueryBuilder{
 
 export class _QueryBuilder {
     body: bodyType;
-
+    defaultQueryValue?: string;
+    shouldPerformTextQuery:boolean;
     constructor() {
         this.body = {filters:[],fieldsToAggregate:[],fieldsToAggregateStats:[]};
+        this.shouldPerformTextQuery = false;
     }
 
     build() {
+        if (!this.shouldPerformTextQuery) return this.body;
+        if (!this.defaultQueryValue) throw new Error("Please set the search query by calling .query('my search query') before performing a text search.");
+        this.body.query = this.defaultQueryValue;
         return this.body;
     }
-
-    text(query: string, queryConfig?: bodyType['queryConfig']): _QueryBuilder;
-    text(query: string, fieldsToSearch?: bodyType['fieldsToSearch']):_QueryBuilder;
-    text(query: string, fieldsToSearch?: bodyType['fieldsToSearch'], queryConfig?: bodyType['queryConfig']):_QueryBuilder;
-    text(query:string,...args:any[]) {
-        this.body.query = query;
-        for (const arg of args) {
-            if (Array.isArray(arg)) this.body.fieldsToSearch = arg;
-            else this.body.queryConfig = arg;
-        }
+    query(query:string,fieldsToSearch?: bodyType['fieldsToSearch']) {
+        this.defaultQueryValue = query;
+        if (fieldsToSearch) this.body.fieldsToSearch = fieldsToSearch;
+        return this;
+    }
+    queryConfig(weight:number,options?:bodyType['queryConfig']) {
+        this.body.queryConfig = {weight,...(options??{})};
+        return this;
+    }
+    text(field?:string): _QueryBuilder;
+    text(field?:string,weight?:number):_QueryBuilder{
+        this.shouldPerformTextQuery = true;
+        if (!field) return this; // support searching all fields
+        if (!this.body.fieldsToSearch) this.body.fieldsToSearch = [];
+        if (!weight) this.body.fieldsToSearch.push(field);
+        else this.body.fieldsToSearch.push({key:field,weight});
         return this;
     }
 
-    vector(field: string, model: string, weight?: number): _QueryBuilder;
-    vector(field: string, model: string, options?: components['schemas']['vectorSearchQuery']): _QueryBuilder;
-    vector(field: string, model: string, weight?: number, options?: components['schemas']['vectorSearchQuery']): _QueryBuilder;
-    vector(field: string, model: string, ...args:any[]) {
+    vector(field: string, weight?: number): _QueryBuilder;
+    vector(field: string, options?: components['schemas']['vectorSearchQuery']): _QueryBuilder;
+    vector(field: string, weight?: number, options?: components['schemas']['vectorSearchQuery']): _QueryBuilder;
+    vector(field: string, ...args:any[]) {
         if (!Array.isArray(this.body.vectorSearchQuery)) this.body.vectorSearchQuery = [];
-        if (!this?.body?.vectorSearchQuery?.length) this.body.vectorSearchQuery = [];
-        let payload:components['schemas']['vectorSearchQuery'] = {field,model};
+        let payload:components['schemas']['vectorSearchQuery'] = {field};
+        const inferredModelMatch = field.match(/_(.*)_.*vector_/) // title_text@1-0_vector_ -> text@1-0
+        if (inferredModelMatch && inferredModelMatch[1]) payload.model = inferredModelMatch[1]; // this can be overridden
         for (const arg of args) {
-            if (typeof arg ==='number') payload.weight = arg;
-            else payload = {...payload,...arg};
+            if (typeof arg ==='number') payload.weight = arg; // weight
+            else payload = {...payload,...arg}; // options
         }
         this.body.vectorSearchQuery.push(payload);
         return this;
