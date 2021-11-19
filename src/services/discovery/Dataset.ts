@@ -91,7 +91,7 @@ export class Dataset {
                     const res = await fn(data.slice(i, i + batchSize));
                     results.push(res);
                     break;
-                } catch (e) { }
+                } catch (e) { console.error(`Bulk operation failed with error, retrying - ${e}`) }
             }
         }
         return results;

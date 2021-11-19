@@ -80,6 +80,15 @@ export class _QueryBuilder {
         this.body.filters?.push(filter);
         return this;
     }
+    includeFields(fields:bodyType['includeFields']) {
+        this.body.includeFields = fields;
+    }
+    excludeFields(fields:bodyType['excludeFields']) {
+        this.body.excludeFields = fields;
+    }
+    includeVectors(whetherToInclude:bodyType['includeVectors']){
+        this.body.includeVectors = whetherToInclude;
+    }
     
     filter(type: string, key: string, value: string, ...options: any) {
         this.body.filters?.push({
