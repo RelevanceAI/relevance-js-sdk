@@ -165,6 +165,10 @@ export interface paths {
      *         {'field' : 'price', 'filter_type' : 'numeric', "condition":">=", "condition_value":90}
      * 7. **"ids"**: for filtering by document ids.
      *         {'field' : 'ids', 'filter_type' : 'ids', "condition":"==", "condition_value":["1", "10"]}
+     * 8. **"or"**: for filtering with multiple conditions
+     *         {'filter_type' : 'or',
+     * "condition_value": [{'field' : 'price', 'filter_type' : 'numeric', "condition":"<=", "condition_value":90},
+     * {'field' : 'price', 'filter_type' : 'numeric', "condition":">=", "condition_value":150}]}
      *
      * These are the available conditions:
      *
@@ -651,7 +655,7 @@ export interface paths {
     post: operations["aggregate_v2_api_services_aggregate_aggregate_post"];
   };
   "/services/cluster/centroids/list": {
-    /** Retrieve the cluster centroid */
+    /** Retrieves a list of cluster centroids */
     get: operations["cluster_centroids_api_services_cluster_centroids_list_get"];
   };
   "/services/cluster/centroids/get": {
@@ -665,6 +669,20 @@ export interface paths {
   "/services/cluster/centroids/documents": {
     /** Retrieve the cluster centroids by IDs */
     post: operations["cluster_centroids_get_api_services_cluster_centroids_documents_post"];
+  };
+  "/services/cluster/centroids/metadata": {
+    /** Retrieves metadata about a dataset. notably description, data source, etc */
+    get: operations["centroids_metadata_get_api_services_cluster_centroids_metadata_get"];
+    /** You can store the metadata about your cluster here. */
+    post: operations["centroids_metadata_post_api_services_cluster_centroids_metadata_post"];
+  };
+  "/services/cluster/centroids/list_closest_to_center": {
+    /** List of documents closest from the centre. */
+    post: operations["centroids_list_closest_to_center_services_cluster_centroids_list_closest_to_center_post"];
+  };
+  "/services/cluster/centroids/list_furthest_from_center": {
+    /** List of documents from from the centre. */
+    post: operations["centroids_list_furthest_from_center_services_cluster_centroids_list_furthest_from_center_post"];
   };
   "/services/cluster/aggregate": {
     /**
@@ -1311,14 +1329,97 @@ export interface components {
     };
     /** Base class for all abstractmodels */
     CentroidInsertBody: {
-      /** The dataset ID. */
+      /** Unique name of dataset */
       dataset_id: string;
       /** Cluster centers with the key being the index number */
-      cluster_centers: { [key: string]: unknown };
-      /** Clustered vector field */
-      vector_field: boolean;
-      /** Alias is used to name a cluster */
+      cluster_centers: { [key: string]: unknown }[];
+      /** It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']). */
+      vector_field: string;
+      /** Include the inserted IDs in the response */
+      include_inserted_ids?: boolean;
+      /** Alias used to name a vector field. Belongs in field_{alias}_vector_ */
       alias?: string;
+    };
+    /** Base class for all abstractmodels */
+    CentroidMetadata: {
+      /** Unique name of dataset */
+      dataset_id: string;
+      /** Metadata for a dataset, e.g. {'description': 'dataset for searching products'} */
+      metadata: { [key: string]: unknown };
+      /** It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']). */
+      vector_field: string;
+      /** Alias used to name a vector field. Belongs in field_{alias}_vector_ */
+      alias?: string;
+    };
+    /** Base class for all abstractmodels */
+    CentroidsClosestToCenter: {
+      /** Unique name of dataset */
+      dataset_id: string;
+      /** It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']). */
+      vector_field: string;
+      /** Alias used to name a vector field. Belongs in field_{alias}_vector_ */
+      alias?: string;
+      /** List of cluster IDs */
+      cluster_ids?: string[];
+      /** Fields to include in the search results, empty array/list means all fields. */
+      select_fields?: string[];
+      /** Used for approximate search to speed up search. The higher the number, faster the search but potentially less accurate. */
+      approx?: number;
+      /** Whether to sum the multiple vectors similarity search score as 1 or seperate */
+      sum_fields?: boolean;
+      /** Size of each page of results */
+      page_size?: number;
+      /** Page of the results */
+      page?: number;
+      /** Similarity Metric, choose from ['cosine', 'l1', 'l2', 'dp'] */
+      similarity_metric?: string;
+      /** Query for filtering the search results */
+      filters?: unknown[];
+      /** Fields to include in the facets, if [] then all */
+      facets?: unknown[];
+      /** Minimum score for similarity metric */
+      min_score?: number;
+      /** Include vectors in the search results */
+      include_vector?: boolean;
+      /** Include the total count of results in the search results */
+      include_count?: boolean;
+      /** Include facets in the search results */
+      include_facets?: boolean;
+    };
+    /** Base class for all abstractmodels */
+    CentroidsFurthestFromCenter: {
+      /** Unique name of dataset */
+      dataset_id: string;
+      /** It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']). */
+      vector_field: string;
+      /** Alias used to name a vector field. Belongs in field_{alias}_vector_ */
+      alias?: string;
+      /** List of cluster IDs */
+      cluster_ids?: string[];
+      /** Fields to include in the search results, empty array/list means all fields. */
+      select_fields?: string[];
+      /** Used for approximate search to speed up search. The higher the number, faster the search but potentially less accurate. */
+      approx?: number;
+      /** Whether to sum the multiple vectors similarity search score as 1 or seperate */
+      sum_fields?: boolean;
+      /** Size of each page of results */
+      page_size?: number;
+      /** Page of the results */
+      page?: number;
+      /** Similarity Metric, choose from ['cosine', 'l1', 'l2', 'dp'] */
+      similarity_metric?: string;
+      /** Query for filtering the search results */
+      filters?: unknown[];
+      /** Fields to include in the facets, if [] then all */
+      facets?: unknown[];
+      /** Minimum score for similarity metric */
+      min_score?: number;
+      /** Include vectors in the search results */
+      include_vector?: boolean;
+      /** Include the total count of results in the search results */
+      include_count?: boolean;
+      /** Include facets in the search results */
+      include_facets?: boolean;
     };
     /** Base class for all abstractmodels */
     ChunkSearchQuery: {
@@ -2807,6 +2908,10 @@ export interface operations {
    *         {'field' : 'price', 'filter_type' : 'numeric', "condition":">=", "condition_value":90}
    * 7. **"ids"**: for filtering by document ids.
    *         {'field' : 'ids', 'filter_type' : 'ids', "condition":"==", "condition_value":["1", "10"]}
+   * 8. **"or"**: for filtering with multiple conditions
+   *         {'filter_type' : 'or',
+   * "condition_value": [{'field' : 'price', 'filter_type' : 'numeric', "condition":"<=", "condition_value":90},
+   * {'field' : 'price', 'filter_type' : 'numeric', "condition":">=", "condition_value":150}]}
    *
    * These are the available conditions:
    *
@@ -4139,7 +4244,7 @@ export interface operations {
       };
     };
   };
-  /** Retrieve the cluster centroid */
+  /** Retrieves a list of cluster centroids */
   cluster_centroids_api_services_cluster_centroids_list_get: {
     parameters: {
       query: {
@@ -4266,6 +4371,121 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["CentroidDocuments"];
+      };
+    };
+  };
+  /** Retrieves metadata about a dataset. notably description, data source, etc */
+  centroids_metadata_get_api_services_cluster_centroids_metadata_get: {
+    parameters: {
+      query: {
+        /** Unique name of dataset */
+        dataset_id: string;
+        /** It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']). */
+        vector_field: string;
+        /** Alias used to name a vector field. Belongs in field_{alias}_vector_ */
+        alias?: string;
+      };
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /** You can store the metadata about your cluster here. */
+  centroids_metadata_post_api_services_cluster_centroids_metadata_post: {
+    parameters: {
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CentroidMetadata"];
+      };
+    };
+  };
+  /** List of documents closest from the centre. */
+  centroids_list_closest_to_center_services_cluster_centroids_list_closest_to_center_post: {
+    parameters: {
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CentroidsClosestToCenter"];
+      };
+    };
+  };
+  /** List of documents from from the centre. */
+  centroids_list_furthest_from_center_services_cluster_centroids_list_furthest_from_center_post: {
+    parameters: {
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CentroidsFurthestFromCenter"];
       };
     };
   };

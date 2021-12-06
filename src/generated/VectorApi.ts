@@ -113,6 +113,14 @@ export type clustercentroidsgetapiservicesclustercentroidsgetgetOutput = operati
 export type insertclustercentroidsapiservicesclustercentroidsinsertpostOutput = operations['insert_cluster_centroids_api_services_cluster_centroids_insert_post']['responses']['200']['content']['application/json']
   export type clustercentroidsgetapiservicesclustercentroidsdocumentspostInput = operations['cluster_centroids_get_api_services_cluster_centroids_documents_post']['requestBody']['content']['application/json']
 export type clustercentroidsgetapiservicesclustercentroidsdocumentspostOutput = operations['cluster_centroids_get_api_services_cluster_centroids_documents_post']['responses']['200']['content']['application/json']
+  export type centroidsmetadatagetapiservicesclustercentroidsmetadatagetInput = {}
+export type centroidsmetadatagetapiservicesclustercentroidsmetadatagetOutput = operations['centroids_metadata_get_api_services_cluster_centroids_metadata_get']['responses']['200']['content']['application/json']
+  export type centroidsmetadatapostapiservicesclustercentroidsmetadatapostInput = operations['centroids_metadata_post_api_services_cluster_centroids_metadata_post']['requestBody']['content']['application/json']
+export type centroidsmetadatapostapiservicesclustercentroidsmetadatapostOutput = operations['centroids_metadata_post_api_services_cluster_centroids_metadata_post']['responses']['200']['content']['application/json']
+  export type centroidslistclosesttocenterservicesclustercentroidslistclosesttocenterpostInput = operations['centroids_list_closest_to_center_services_cluster_centroids_list_closest_to_center_post']['requestBody']['content']['application/json']
+export type centroidslistclosesttocenterservicesclustercentroidslistclosesttocenterpostOutput = operations['centroids_list_closest_to_center_services_cluster_centroids_list_closest_to_center_post']['responses']['200']['content']['application/json']
+  export type centroidslistfurthestfromcenterservicesclustercentroidslistfurthestfromcenterpostInput = operations['centroids_list_furthest_from_center_services_cluster_centroids_list_furthest_from_center_post']['requestBody']['content']['application/json']
+export type centroidslistfurthestfromcenterservicesclustercentroidslistfurthestfromcenterpostOutput = operations['centroids_list_furthest_from_center_services_cluster_centroids_list_furthest_from_center_post']['responses']['200']['content']['application/json']
   export type clusteraggregateapiservicesclusteraggregatepostInput = operations['cluster_aggregate_api_services_cluster_aggregate_post']['requestBody']['content']['application/json']
 export type clusteraggregateapiservicesclusteraggregatepostOutput = operations['cluster_aggregate_api_services_cluster_aggregate_post']['responses']['200']['content']['application/json']
   export type clusterfacetsapiservicesclusterfacetsgetInput = {}
@@ -780,6 +788,50 @@ export class VectorApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/services/cluster/centroids/documents',
+      options
+    });
+  }
+  public async centroidsmetadatagetapiservicesclustercentroidsmetadataget(
+    input: CommandInput<centroidsmetadatagetapiservicesclustercentroidsmetadatagetInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<centroidsmetadatagetapiservicesclustercentroidsmetadatagetOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/services/cluster/centroids/metadata',
+      options
+    });
+  }
+  public async centroidsmetadatapostapiservicesclustercentroidsmetadatapost(
+    input: CommandInput<centroidsmetadatapostapiservicesclustercentroidsmetadatapostInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<centroidsmetadatapostapiservicesclustercentroidsmetadatapostOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/cluster/centroids/metadata',
+      options
+    });
+  }
+  public async centroidslistclosesttocenterservicesclustercentroidslistclosesttocenterpost(
+    input: CommandInput<centroidslistclosesttocenterservicesclustercentroidslistclosesttocenterpostInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<centroidslistclosesttocenterservicesclustercentroidslistclosesttocenterpostOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/cluster/centroids/list_closest_to_center',
+      options
+    });
+  }
+  public async centroidslistfurthestfromcenterservicesclustercentroidslistfurthestfromcenterpost(
+    input: CommandInput<centroidslistfurthestfromcenterservicesclustercentroidslistfurthestfromcenterpostInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<centroidslistfurthestfromcenterservicesclustercentroidslistfurthestfromcenterpostOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/cluster/centroids/list_furthest_from_center',
       options
     });
   }

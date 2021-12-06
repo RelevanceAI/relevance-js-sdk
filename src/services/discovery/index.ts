@@ -6,13 +6,68 @@ type bodyType = operations['SimpleSearchPost']['requestBody']['content']['applic
 export function QueryBuilder():_QueryBuilder{
     return new _QueryBuilder();
 }
+export function FilterBuilder():_FilterBuilder{
+    return new _FilterBuilder();
+}
 
-export class _QueryBuilder {
+export class _FilterBuilder {
     body: bodyType;
+    constructor() {
+        this.body = {filters:[],fieldsToAggregate:[],fieldsToAggregateStats:[]};
+    }
+    buildFilters() {
+        return this.body.filters;
+    }
+    rawFilter(filter: components['schemas']['filterListItem']) {
+        this.body.filters?.push(filter);
+        return this;
+    }
+    filter(type: string, key: string, value: string, ...options: any) {
+        this.body.filters?.push({
+            [type]: {
+                key,
+                value,
+                ...options
+            }
+        });
+        return this;
+    }
+
+    match(field: string, value: any) {
+        this.body.filters?.push({ match: { key: field, value } });
+        return this;
+    }
+
+    wildcard(field: string, value: any) {
+        this.body.filters?.push({ wildcard: { key: field, value } });
+        return this;
+    }
+
+    selfreference(fielda: string, fieldb: string, operation: "<=" | ">=" | "<" | ">" | "==" | "!=") {
+        this.body.filters?.push({ selfreference: { a: fielda, b: fieldb, operation } });
+        return this;
+    }
+
+    range(field: string, options: Omit<components['schemas']['filterListItem']['range'],'key'>) {
+        this.body.filters?.push({ range: { key: field, ...options } });
+        return this;
+    }
+
+    or(filters: _FilterBuilder[]) {
+        this.body.filters?.push({ or: filters.map(f => f.body.filters ?? []) });
+        return this;
+    }
+
+    not(filter: _FilterBuilder) {
+        this.body.filters?.push({ not: filter.body?.filters ?? [] });
+        return this;
+    }
+} 
+export class _QueryBuilder extends _FilterBuilder {
     defaultQueryValue?: string;
     shouldPerformTextQuery:boolean;
     constructor() {
-        this.body = {filters:[],fieldsToAggregate:[],fieldsToAggregateStats:[]};
+        super();
         this.shouldPerformTextQuery = false;
     }
 
@@ -88,10 +143,6 @@ export class _QueryBuilder {
         this.body.pageSize = value;
         return this;
     }
-    rawFilter(filter: components['schemas']['filterListItem']) {
-        this.body.filters?.push(filter);
-        return this;
-    }
     includeFields(fields:bodyType['includeFields']) {
         this.body.includeFields = fields;
     }
@@ -102,46 +153,6 @@ export class _QueryBuilder {
         this.body.includeVectors = whetherToInclude;
     }
     
-    filter(type: string, key: string, value: string, ...options: any) {
-        this.body.filters?.push({
-            [type]: {
-                key,
-                value,
-                ...options
-            }
-        });
-        return this;
-    }
-
-    match(field: string, value: any) {
-        this.body.filters?.push({ match: { key: field, value } });
-        return this;
-    }
-
-    wildcard(field: string, value: any) {
-        this.body.filters?.push({ wildcard: { key: field, value } });
-        return this;
-    }
-
-    selfreference(fielda: string, fieldb: string, operation: "<=" | ">=" | "<" | ">" | "==" | "!=") {
-        this.body.filters?.push({ selfreference: { a: fielda, b: fieldb, operation } });
-        return this;
-    }
-
-    range(field: string, options: Omit<components['schemas']['filterListItem']['range'],'key'>) {
-        this.body.filters?.push({ range: { key: field, ...options } });
-        return this;
-    }
-
-    or(filters: _QueryBuilder[]) {
-        this.body.filters?.push({ or: filters.map(f => f.body.filters ?? []) });
-        return this;
-    }
-
-    not(filter: _QueryBuilder) {
-        this.body.filters?.push({ not: filter.body?.filters ?? [] });
-        return this;
-    }
     aggregate(field: string, options?: { options?: any, aggregates?: _QueryBuilder }) {
         this.body.fieldsToAggregate?.push({ key: field, ...options, fieldsToAggregate: options?.aggregates?.body.fieldsToAggregate ?? [] });
         return this;
@@ -153,6 +164,7 @@ export class _QueryBuilder {
     }
 
 }
+
 
 
 export class DiscoveryClient {

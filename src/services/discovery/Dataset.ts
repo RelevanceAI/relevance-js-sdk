@@ -4,6 +4,7 @@ import { _GenericMethodOptions } from "../../shared/BaseClient";
 
 interface searchOptions {
  debounce?:number;   
+ rawPayload?:any;
 }
 
 
@@ -46,7 +47,10 @@ export class Dataset {
                 payload = {...payload,...arg.build()};
                 
             }
-            else options = arg;
+            else {
+                options = arg;
+                if (options.rawPayload) payload = {...payload,...options.rawPayload};
+            }
         }
         const reqCallback = async () => await this.client.apiClient.SimpleSearchPost(payload, { dataset_id: this.name });
         if (options.debounce && this.debounceTimer) {

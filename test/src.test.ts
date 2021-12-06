@@ -1,4 +1,4 @@
-import {QueryBuilder,VectorApiClient,DiscoveryClient, DiscoveryApiClient} from '../src';
+import {QueryBuilder,VectorApiClient,DiscoveryClient, DiscoveryApiClient, FilterBuilder} from '../src';
 const timeout = 100000;
 describe("Discovery Tests",() => {
   const discovery = new DiscoveryClient({
@@ -54,6 +54,14 @@ describe("Discovery Tests",() => {
       expect(filteredItems.resultsSize).toBeGreaterThan(0);
       expect(filteredItems.resultsSize).toBeLessThan(30000);
     }
+    async function filterBuilder(){
+      const query = QueryBuilder();
+      const filter = FilterBuilder();
+      query.not(filter.match('color','red'));
+      const filteredItems = await dataset.search(query);
+      expect(filteredItems.resultsSize).toBeGreaterThan(0);
+      expect(filteredItems.resultsSize).toBeLessThan(30000);
+    }
     async function aggregate(){
       const aggregates = QueryBuilder();
       aggregates.aggregate('color').aggregateStats('price',10);
@@ -72,6 +80,7 @@ describe("Discovery Tests",() => {
     await insert();
     await search();
     await filter();
+    await filterBuilder();
     await aggregate();
     await getdoc();
   },timeout);
