@@ -13,7 +13,7 @@ describe("Discovery Tests",() => {
     const res2 = await dataset.search(QueryBuilder().pageSize(0));
     expect(res2.results.length).toEqual(0);
 
-  });
+  },timeout);
   test("Can list datasets in vector client", async () => {
     const vector = new VectorApiClient({
       project:'dummy-collections',
@@ -21,7 +21,7 @@ describe("Discovery Tests",() => {
     });
     const res = await vector.listdatasetsapidatasetslistget({});
     expect((res.body as any).datasets?.length).toBeGreaterThan(0);
-  });
+  },timeout);
   test("Main tutorial test",async () => {
     async function insert(){
 
