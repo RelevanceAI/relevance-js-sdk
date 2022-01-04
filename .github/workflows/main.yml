@@ -7,7 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: Publish
     env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}  
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      RELEVANCE_API_KEY: ${{ secrets.RELEVANCE_API_KEY }}
+      RELEVANCE_PROJECT: ${{ secrets.RELEVANCE_PROJECT }}
     if: github.ref == 'refs/heads/main'
     steps:
     - uses: actions/checkout@v2
