@@ -107,24 +107,40 @@ export type vectordiversityrecommendapiservicesrecommenddiversitypostOutput = op
 export type aggregatev2apiservicesaggregateaggregatepostOutput = operations['aggregate_v2_api_services_aggregate_aggregate_post']['responses']['200']['content']['application/json']
   export type clustercentroidsapiservicesclustercentroidslistgetInput = {}
 export type clustercentroidsapiservicesclustercentroidslistgetOutput = operations['cluster_centroids_api_services_cluster_centroids_list_get']['responses']['200']['content']['application/json']
+  export type clustercentroidsapiv2servicesclustercentroidslistpostInput = operations['cluster_centroids_api_v2_services_cluster_centroids_list_post']['requestBody']['content']['application/json']
+export type clustercentroidsapiv2servicesclustercentroidslistpostOutput = operations['cluster_centroids_api_v2_services_cluster_centroids_list_post']['responses']['200']['content']['application/json']
   export type clustercentroidsgetapiservicesclustercentroidsgetgetInput = {}
 export type clustercentroidsgetapiservicesclustercentroidsgetgetOutput = operations['cluster_centroids_get_api_services_cluster_centroids_get_get']['responses']['200']['content']['application/json']
-  export type insertclustercentroidsapiservicesclustercentroidsinsertpostInput = operations['insert_cluster_centroids_api_services_cluster_centroids_insert_post']['requestBody']['content']['application/json']
-export type insertclustercentroidsapiservicesclustercentroidsinsertpostOutput = operations['insert_cluster_centroids_api_services_cluster_centroids_insert_post']['responses']['200']['content']['application/json']
+  export type clustercentroidsgetapiservicesclustercentroidsgetpostInput = operations['cluster_centroids_get_api_services_cluster_centroids_get_post']['requestBody']['content']['application/json']
+export type clustercentroidsgetapiservicesclustercentroidsgetpostOutput = operations['cluster_centroids_get_api_services_cluster_centroids_get_post']['responses']['200']['content']['application/json']
+  export type insertclustercentroids2apiservicesclustercentroidsinsertpostInput = operations['insert_cluster_centroids_2_api_services_cluster_centroids_insert_post']['requestBody']['content']['application/json']
+export type insertclustercentroids2apiservicesclustercentroidsinsertpostOutput = operations['insert_cluster_centroids_2_api_services_cluster_centroids_insert_post']['responses']['200']['content']['application/json']
+  export type updatecentroidsapiv2servicesclustercentroidsupdatepostInput = operations['update_centroids_api_v2_services_cluster_centroids_update_post']['requestBody']['content']['application/json']
+export type updatecentroidsapiv2servicesclustercentroidsupdatepostOutput = operations['update_centroids_api_v2_services_cluster_centroids_update_post']['responses']['200']['content']['application/json']
+  export type deletecentroidsapiservicesclustercentroidscentroididdeletegetInput = {}
+export type deletecentroidsapiservicesclustercentroidscentroididdeletegetOutput = operations['delete_centroids_api_services_cluster_centroids__centroid_id__delete_get']['responses']['200']['content']['application/json']
+  export type deletecentroidsapiservicesclustercentroidscentroididdeletepostInput = {}
+export type deletecentroidsapiservicesclustercentroidscentroididdeletepostOutput = operations['delete_centroids_api_services_cluster_centroids__centroid_id__delete_post']['responses']['200']['content']['application/json']
+  export type clustercentroidsdeleteapiservicesclustercentroidsdeletepostInput = {}
+export type clustercentroidsdeleteapiservicesclustercentroidsdeletepostOutput = operations['cluster_centroids_delete_api_services_cluster_centroids_delete_post']['responses']['200']['content']['application/json']
   export type clustercentroidsgetapiservicesclustercentroidsdocumentspostInput = operations['cluster_centroids_get_api_services_cluster_centroids_documents_post']['requestBody']['content']['application/json']
 export type clustercentroidsgetapiservicesclustercentroidsdocumentspostOutput = operations['cluster_centroids_get_api_services_cluster_centroids_documents_post']['responses']['200']['content']['application/json']
   export type centroidsmetadatagetapiservicesclustercentroidsmetadatagetInput = {}
 export type centroidsmetadatagetapiservicesclustercentroidsmetadatagetOutput = operations['centroids_metadata_get_api_services_cluster_centroids_metadata_get']['responses']['200']['content']['application/json']
-  export type centroidsmetadatapostapiservicesclustercentroidsmetadatapostInput = operations['centroids_metadata_post_api_services_cluster_centroids_metadata_post']['requestBody']['content']['application/json']
-export type centroidsmetadatapostapiservicesclustercentroidsmetadatapostOutput = operations['centroids_metadata_post_api_services_cluster_centroids_metadata_post']['responses']['200']['content']['application/json']
-  export type centroidslistclosesttocenterservicesclustercentroidslistclosesttocenterpostInput = operations['centroids_list_closest_to_center_services_cluster_centroids_list_closest_to_center_post']['requestBody']['content']['application/json']
-export type centroidslistclosesttocenterservicesclustercentroidslistclosesttocenterpostOutput = operations['centroids_list_closest_to_center_services_cluster_centroids_list_closest_to_center_post']['responses']['200']['content']['application/json']
-  export type centroidslistfurthestfromcenterservicesclustercentroidslistfurthestfromcenterpostInput = operations['centroids_list_furthest_from_center_services_cluster_centroids_list_furthest_from_center_post']['requestBody']['content']['application/json']
-export type centroidslistfurthestfromcenterservicesclustercentroidslistfurthestfromcenterpostOutput = operations['centroids_list_furthest_from_center_services_cluster_centroids_list_furthest_from_center_post']['responses']['200']['content']['application/json']
-  export type clusteraggregateapiservicesclusteraggregatepostInput = operations['cluster_aggregate_api_services_cluster_aggregate_post']['requestBody']['content']['application/json']
-export type clusteraggregateapiservicesclusteraggregatepostOutput = operations['cluster_aggregate_api_services_cluster_aggregate_post']['responses']['200']['content']['application/json']
-  export type clusterfacetsapiservicesclusterfacetsgetInput = {}
-export type clusterfacetsapiservicesclusterfacetsgetOutput = operations['cluster_facets_api_services_cluster_facets_get']['responses']['200']['content']['application/json']
+  export type centroidsmetadatapostapiv2servicesclustercentroidsmetadatapostInput = operations['centroids_metadata_post_api_v2_services_cluster_centroids_metadata_post']['requestBody']['content']['application/json']
+export type centroidsmetadatapostapiv2servicesclustercentroidsmetadatapostOutput = operations['centroids_metadata_post_api_v2_services_cluster_centroids_metadata_post']['responses']['200']['content']['application/json']
+  export type centroidslistclosesttocenterv2servicesclustercentroidslistclosesttocenterpostInput = operations['centroids_list_closest_to_center_v2_services_cluster_centroids_list_closest_to_center_post']['requestBody']['content']['application/json']
+export type centroidslistclosesttocenterv2servicesclustercentroidslistclosesttocenterpostOutput = operations['centroids_list_closest_to_center_v2_services_cluster_centroids_list_closest_to_center_post']['responses']['200']['content']['application/json']
+  export type centroidslistfurthestfromcenterv2servicesclustercentroidslistfurthestfromcenterpostInput = operations['centroids_list_furthest_from_center_v2_services_cluster_centroids_list_furthest_from_center_post']['requestBody']['content']['application/json']
+export type centroidslistfurthestfromcenterv2servicesclustercentroidslistfurthestfromcenterpostOutput = operations['centroids_list_furthest_from_center_v2_services_cluster_centroids_list_furthest_from_center_post']['responses']['200']['content']['application/json']
+  export type clusteraggregateapiv2servicesclusteraggregatepostInput = operations['cluster_aggregate_api_v2_services_cluster_aggregate_post']['requestBody']['content']['application/json']
+export type clusteraggregateapiv2servicesclusteraggregatepostOutput = operations['cluster_aggregate_api_v2_services_cluster_aggregate_post']['responses']['200']['content']['application/json']
+  export type advancedclusterfacetsapiservicesclusterfacetsgetInput = {}
+export type advancedclusterfacetsapiservicesclusterfacetsgetOutput = operations['advanced_cluster_facets_api_services_cluster_facets_get']['responses']['200']['content']['application/json']
+  export type clusterlistservicesclusterlistgetInput = {}
+export type clusterlistservicesclusterlistgetOutput = operations['cluster_list_services_cluster_list_get']['responses']['200']['content']['application/json']
+  export type clusterlistmultiservicesclusterlistpostInput = {}
+export type clusterlistmultiservicesclusterlistpostOutput = operations['cluster_list_multi_services_cluster_list_post']['responses']['200']['content']['application/json']
   export type tagapiservicestaggertagpostInput = operations['tag_api_services_tagger_tag_post']['requestBody']['content']['application/json']
 export type tagapiservicestaggertagpostOutput = operations['tag_api_services_tagger_tag_post']['responses']['200']['content']['application/json']
   export type clusterandtagapiservicestaggerdiversitypostInput = operations['cluster_and_tag_api_services_tagger_diversity_post']['requestBody']['content']['application/json']
@@ -758,6 +774,17 @@ export class VectorApiClient  extends _GenericClient {
       options
     });
   }
+  public async clustercentroidsapiv2servicesclustercentroidslistpost(
+    input: CommandInput<clustercentroidsapiv2servicesclustercentroidslistpostInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<clustercentroidsapiv2servicesclustercentroidslistpostOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/cluster/centroids/list',
+      options
+    });
+  }
   public async clustercentroidsgetapiservicesclustercentroidsgetget(
     input: CommandInput<clustercentroidsgetapiservicesclustercentroidsgetgetInput>,
     options?: _GenericMethodOptions
@@ -769,14 +796,69 @@ export class VectorApiClient  extends _GenericClient {
       options
     });
   }
-  public async insertclustercentroidsapiservicesclustercentroidsinsertpost(
-    input: CommandInput<insertclustercentroidsapiservicesclustercentroidsinsertpostInput>,
+  public async clustercentroidsgetapiservicesclustercentroidsgetpost(
+    input: CommandInput<clustercentroidsgetapiservicesclustercentroidsgetpostInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<insertclustercentroidsapiservicesclustercentroidsinsertpostOutput>> {
+  ):Promise<CommandOutput<clustercentroidsgetapiservicesclustercentroidsgetpostOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/cluster/centroids/get',
+      options
+    });
+  }
+  public async insertclustercentroids2apiservicesclustercentroidsinsertpost(
+    input: CommandInput<insertclustercentroids2apiservicesclustercentroidsinsertpostInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<insertclustercentroids2apiservicesclustercentroidsinsertpostOutput>> {
     return this.SendRequest({
       input,
       method:'post',
       path:'/services/cluster/centroids/insert',
+      options
+    });
+  }
+  public async updatecentroidsapiv2servicesclustercentroidsupdatepost(
+    input: CommandInput<updatecentroidsapiv2servicesclustercentroidsupdatepostInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<updatecentroidsapiv2servicesclustercentroidsupdatepostOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/cluster/centroids/update',
+      options
+    });
+  }
+  public async deletecentroidsapiservicesclustercentroidscentroididdeleteget(
+    input: CommandInput<deletecentroidsapiservicesclustercentroidscentroididdeletegetInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<deletecentroidsapiservicesclustercentroidscentroididdeletegetOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/services/cluster/centroids/{centroid_id}/delete',
+      options
+    });
+  }
+  public async deletecentroidsapiservicesclustercentroidscentroididdeletepost(
+    input: CommandInput<deletecentroidsapiservicesclustercentroidscentroididdeletepostInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<deletecentroidsapiservicesclustercentroidscentroididdeletepostOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/cluster/centroids/{centroid_id}/delete',
+      options
+    });
+  }
+  public async clustercentroidsdeleteapiservicesclustercentroidsdeletepost(
+    input: CommandInput<clustercentroidsdeleteapiservicesclustercentroidsdeletepostInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<clustercentroidsdeleteapiservicesclustercentroidsdeletepostOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/cluster/centroids/delete',
       options
     });
   }
@@ -802,10 +884,10 @@ export class VectorApiClient  extends _GenericClient {
       options
     });
   }
-  public async centroidsmetadatapostapiservicesclustercentroidsmetadatapost(
-    input: CommandInput<centroidsmetadatapostapiservicesclustercentroidsmetadatapostInput>,
+  public async centroidsmetadatapostapiv2servicesclustercentroidsmetadatapost(
+    input: CommandInput<centroidsmetadatapostapiv2servicesclustercentroidsmetadatapostInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<centroidsmetadatapostapiservicesclustercentroidsmetadatapostOutput>> {
+  ):Promise<CommandOutput<centroidsmetadatapostapiv2servicesclustercentroidsmetadatapostOutput>> {
     return this.SendRequest({
       input,
       method:'post',
@@ -813,10 +895,10 @@ export class VectorApiClient  extends _GenericClient {
       options
     });
   }
-  public async centroidslistclosesttocenterservicesclustercentroidslistclosesttocenterpost(
-    input: CommandInput<centroidslistclosesttocenterservicesclustercentroidslistclosesttocenterpostInput>,
+  public async centroidslistclosesttocenterv2servicesclustercentroidslistclosesttocenterpost(
+    input: CommandInput<centroidslistclosesttocenterv2servicesclustercentroidslistclosesttocenterpostInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<centroidslistclosesttocenterservicesclustercentroidslistclosesttocenterpostOutput>> {
+  ):Promise<CommandOutput<centroidslistclosesttocenterv2servicesclustercentroidslistclosesttocenterpostOutput>> {
     return this.SendRequest({
       input,
       method:'post',
@@ -824,10 +906,10 @@ export class VectorApiClient  extends _GenericClient {
       options
     });
   }
-  public async centroidslistfurthestfromcenterservicesclustercentroidslistfurthestfromcenterpost(
-    input: CommandInput<centroidslistfurthestfromcenterservicesclustercentroidslistfurthestfromcenterpostInput>,
+  public async centroidslistfurthestfromcenterv2servicesclustercentroidslistfurthestfromcenterpost(
+    input: CommandInput<centroidslistfurthestfromcenterv2servicesclustercentroidslistfurthestfromcenterpostInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<centroidslistfurthestfromcenterservicesclustercentroidslistfurthestfromcenterpostOutput>> {
+  ):Promise<CommandOutput<centroidslistfurthestfromcenterv2servicesclustercentroidslistfurthestfromcenterpostOutput>> {
     return this.SendRequest({
       input,
       method:'post',
@@ -835,10 +917,10 @@ export class VectorApiClient  extends _GenericClient {
       options
     });
   }
-  public async clusteraggregateapiservicesclusteraggregatepost(
-    input: CommandInput<clusteraggregateapiservicesclusteraggregatepostInput>,
+  public async clusteraggregateapiv2servicesclusteraggregatepost(
+    input: CommandInput<clusteraggregateapiv2servicesclusteraggregatepostInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<clusteraggregateapiservicesclusteraggregatepostOutput>> {
+  ):Promise<CommandOutput<clusteraggregateapiv2servicesclusteraggregatepostOutput>> {
     return this.SendRequest({
       input,
       method:'post',
@@ -846,14 +928,36 @@ export class VectorApiClient  extends _GenericClient {
       options
     });
   }
-  public async clusterfacetsapiservicesclusterfacetsget(
-    input: CommandInput<clusterfacetsapiservicesclusterfacetsgetInput>,
+  public async advancedclusterfacetsapiservicesclusterfacetsget(
+    input: CommandInput<advancedclusterfacetsapiservicesclusterfacetsgetInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<clusterfacetsapiservicesclusterfacetsgetOutput>> {
+  ):Promise<CommandOutput<advancedclusterfacetsapiservicesclusterfacetsgetOutput>> {
     return this.SendRequest({
       input,
       method:'get',
       path:'/services/cluster/facets',
+      options
+    });
+  }
+  public async clusterlistservicesclusterlistget(
+    input: CommandInput<clusterlistservicesclusterlistgetInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<clusterlistservicesclusterlistgetOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/services/cluster/list',
+      options
+    });
+  }
+  public async clusterlistmultiservicesclusterlistpost(
+    input: CommandInput<clusterlistmultiservicesclusterlistpostInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<clusterlistmultiservicesclusterlistpostOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/cluster/list',
       options
     });
   }

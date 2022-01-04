@@ -632,6 +632,17 @@ export interface paths {
      * - "groupby" is the fields you want to split the data into. These are the available groupby types:
      *     - category" : groupby a field that is a category
      *     - numeric: groupby a field that is a numeric
+     *     - wordcloud: groupby the words. You can also additionally include stop words in your aggregation
+     *     if you add `remove_words` as a field.
+     *
+     *     {
+     *         "name": "wordcloud_research",
+     *         "field": "title",
+     *         "agg": "wordcloud",
+     *         "remove_words": ["learning"]
+     *     }
+     *
+     *
      * - "metrics" is the fields you want to metrics you want to calculate in each of those, every aggregation includes a frequency metric. These are the available metric types:
      *     - "avg", "max", "min", "sum", "cardinality"
      *
@@ -657,14 +668,32 @@ export interface paths {
   "/services/cluster/centroids/list": {
     /** Retrieves a list of cluster centroids */
     get: operations["cluster_centroids_api_services_cluster_centroids_list_get"];
+    /** Retrieves a list of cluster centroids */
+    post: operations["cluster_centroids_api_v2_services_cluster_centroids_list_post"];
   };
   "/services/cluster/centroids/get": {
     /** Retrieve the cluster centroids by IDs */
     get: operations["cluster_centroids_get_api_services_cluster_centroids_get_get"];
+    /** Retrieve the cluster centroids by IDs */
+    post: operations["cluster_centroids_get_api_services_cluster_centroids_get_post"];
   };
   "/services/cluster/centroids/insert": {
     /** Insert your own cluster centroids for it to be used in approximate search settings and cluster aggregations. */
-    post: operations["insert_cluster_centroids_api_services_cluster_centroids_insert_post"];
+    post: operations["insert_cluster_centroids_2_api_services_cluster_centroids_insert_post"];
+  };
+  "/services/cluster/centroids/update": {
+    /** Update a centroid by ID */
+    post: operations["update_centroids_api_v2_services_cluster_centroids_update_post"];
+  };
+  "/services/cluster/centroids/{centroid_id}/delete": {
+    /** Delete a centroid by ID */
+    get: operations["delete_centroids_api_services_cluster_centroids__centroid_id__delete_get"];
+    /** Delete a centroid by ID */
+    post: operations["delete_centroids_api_services_cluster_centroids__centroid_id__delete_post"];
+  };
+  "/services/cluster/centroids/delete": {
+    /** Delete centroids by dataset ID, vector field and alias */
+    post: operations["cluster_centroids_delete_api_services_cluster_centroids_delete_post"];
   };
   "/services/cluster/centroids/documents": {
     /** Retrieve the cluster centroids by IDs */
@@ -674,15 +703,15 @@ export interface paths {
     /** Retrieves metadata about a dataset. notably description, data source, etc */
     get: operations["centroids_metadata_get_api_services_cluster_centroids_metadata_get"];
     /** You can store the metadata about your cluster here. */
-    post: operations["centroids_metadata_post_api_services_cluster_centroids_metadata_post"];
+    post: operations["centroids_metadata_post_api_v2_services_cluster_centroids_metadata_post"];
   };
   "/services/cluster/centroids/list_closest_to_center": {
     /** List of documents closest from the centre. */
-    post: operations["centroids_list_closest_to_center_services_cluster_centroids_list_closest_to_center_post"];
+    post: operations["centroids_list_closest_to_center_v2_services_cluster_centroids_list_closest_to_center_post"];
   };
   "/services/cluster/centroids/list_furthest_from_center": {
-    /** List of documents from from the centre. */
-    post: operations["centroids_list_furthest_from_center_services_cluster_centroids_list_furthest_from_center_post"];
+    /** List of documents from from the centre */
+    post: operations["centroids_list_furthest_from_center_v2_services_cluster_centroids_list_furthest_from_center_post"];
   };
   "/services/cluster/aggregate": {
     /**
@@ -690,7 +719,7 @@ export interface paths {
      *
      * Only can be used after a vector field has been clustered with /cluster.
      */
-    post: operations["cluster_aggregate_api_services_cluster_aggregate_post"];
+    post: operations["cluster_aggregate_api_v2_services_cluster_aggregate_post"];
   };
   "/services/cluster/facets": {
     /**
@@ -698,7 +727,13 @@ export interface paths {
      *
      * Only can be used after a vector field has been clustered with /cluster.
      */
-    get: operations["cluster_facets_api_services_cluster_facets_get"];
+    get: operations["advanced_cluster_facets_api_services_cluster_facets_get"];
+  };
+  "/services/cluster/list": {
+    /** Get a list of cluster IDs based on the relevant information */
+    get: operations["cluster_list_services_cluster_list_get"];
+    /** Get a list of cluster IDs */
+    post: operations["cluster_list_multi_services_cluster_list_post"];
   };
   "/services/tagger/tag": {
     /** Tag documents or vectors. */
@@ -1327,40 +1362,55 @@ export interface components {
       /** Similarity Metric, choose from ['cosine', 'l1', 'l2', 'dp'] */
       similarity_metric?: string;
     };
-    /** Base class for all abstractmodels */
-    CentroidInsertBody: {
+    /** Adds support for multi vector field clustering */
+    CentroidInsertBodyV2: {
       /** Unique name of dataset */
       dataset_id: string;
       /** Cluster centers with the key being the index number */
       cluster_centers: { [key: string]: unknown }[];
-      /** It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']). */
-      vector_field: string;
+      /** The vector field to search in. It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']) or it is a dictionary mapping field to float where the weighting is explicitly specified (e.g. {'check_vector_': 0.2, 'yellow_vector_': 0.5}) */
+      vector_fields: unknown[];
       /** Include the inserted IDs in the response */
       include_inserted_ids?: boolean;
       /** Alias used to name a vector field. Belongs in field_{alias}_vector_ */
       alias?: string;
     };
     /** Base class for all abstractmodels */
-    CentroidMetadata: {
+    CentroidMetadataV2: {
       /** Unique name of dataset */
       dataset_id: string;
-      /** Metadata for a dataset, e.g. {'description': 'dataset for searching products'} */
-      metadata: { [key: string]: unknown };
-      /** It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']). */
-      vector_field: string;
+      /** Description for a metadata */
+      metadata?: { [key: string]: unknown };
+      /** The vector field to search in. It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']) or it is a dictionary mapping field to float where the weighting is explicitly specified (e.g. {'check_vector_': 0.2, 'yellow_vector_': 0.5}) */
+      vector_fields: unknown[];
       /** Alias used to name a vector field. Belongs in field_{alias}_vector_ */
       alias?: string;
     };
     /** Base class for all abstractmodels */
-    CentroidsClosestToCenter: {
+    CentroidUpdateBodyV2: {
       /** Unique name of dataset */
       dataset_id: string;
-      /** It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']). */
-      vector_field: string;
+      /** The vector field to search in. It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']) or it is a dictionary mapping field to float where the weighting is explicitly specified (e.g. {'check_vector_': 0.2, 'yellow_vector_': 0.5}) */
+      vector_fields: unknown[];
+      /** Alias used to name a vector field. Belongs in field_{alias}_vector_ */
+      alias?: string;
+      /** ID of a centroid in a dataset. */
+      id: string;
+      /** A dictionary to edit and add fields to a document. */
+      update: { [key: string]: unknown };
+    };
+    /** Base class for all abstractmodels */
+    CentroidsClosestToCenterV2: {
+      /** Unique name of dataset */
+      dataset_id: string;
+      /** The vector field to search in. It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']) or it is a dictionary mapping field to float where the weighting is explicitly specified (e.g. {'check_vector_': 0.2, 'yellow_vector_': 0.5}) */
+      vector_fields: unknown[];
       /** Alias used to name a vector field. Belongs in field_{alias}_vector_ */
       alias?: string;
       /** List of cluster IDs */
       cluster_ids?: string[];
+      /** Centroid vector field */
+      centroid_vector_field?: string[];
       /** Fields to include in the search results, empty array/list means all fields. */
       select_fields?: string[];
       /** Used for approximate search to speed up search. The higher the number, faster the search but potentially less accurate. */
@@ -1387,15 +1437,17 @@ export interface components {
       include_facets?: boolean;
     };
     /** Base class for all abstractmodels */
-    CentroidsFurthestFromCenter: {
+    CentroidsFurthestFromCenterV2: {
       /** Unique name of dataset */
       dataset_id: string;
-      /** It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']). */
-      vector_field: string;
+      /** The vector field to search in. It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']) or it is a dictionary mapping field to float where the weighting is explicitly specified (e.g. {'check_vector_': 0.2, 'yellow_vector_': 0.5}) */
+      vector_fields: unknown[];
       /** Alias used to name a vector field. Belongs in field_{alias}_vector_ */
       alias?: string;
       /** List of cluster IDs */
       cluster_ids?: string[];
+      /** Centroid vector field */
+      centroid_vector_field?: string[];
       /** Fields to include in the search results, empty array/list means all fields. */
       select_fields?: string[];
       /** Used for approximate search to speed up search. The higher the number, faster the search but potentially less accurate. */
@@ -1420,6 +1472,23 @@ export interface components {
       include_count?: boolean;
       /** Include facets in the search results */
       include_facets?: boolean;
+    };
+    /** Base class for all abstractmodels */
+    CentroidsGetV2: {
+      /** Unique name of dataset */
+      dataset_id: string;
+      /** List of cluster IDs */
+      cluster_ids: string[];
+      /** The vector field where a clustering task was run. */
+      vector_fields: unknown[];
+      /** Alias is used to name a cluster */
+      alias?: string;
+      /** Size of each page of results */
+      page_size?: number;
+      /** Cursor to paginate the document retrieval */
+      cursor?: string;
+      /** Include vectors in the search results */
+      include_vector?: boolean;
     };
     /** Base class for all abstractmodels */
     ChunkSearchQuery: {
@@ -1468,7 +1537,7 @@ export interface components {
       count?: number;
     };
     /** Base class for all abstractmodels */
-    ClusterAggregateQueryCommons: {
+    ClusterAggregateQueryCommonsV2: {
       /** Unique name of dataset */
       dataset_id: string;
       /** Aggregation query to aggregate data */
@@ -1484,8 +1553,23 @@ export interface components {
       flatten?: boolean;
       /** Alias used to name a vector field. Belongs in field_{alias}_vector_ */
       alias?: string;
-      /** The vector field that was clustered on */
-      vector_field: string;
+      /** The vector field to search in. It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']) or it is a dictionary mapping field to float where the weighting is explicitly specified (e.g. {'check_vector_': 0.2, 'yellow_vector_': 0.5}) */
+      vector_fields: string[];
+    };
+    /** Base class for all abstractmodels */
+    ClustercentroidsList: {
+      /** Unique name of dataset */
+      dataset_id: string;
+      /** The vector field where a clustering task was run. */
+      vector_fields: unknown[];
+      /** Alias is used to name a cluster */
+      alias?: string;
+      /** Size of each page of results */
+      page_size?: number;
+      /** Cursor to paginate the document retrieval */
+      cursor?: string;
+      /** Include vectors in the search results */
+      include_vector?: boolean;
     };
     /** Cluster Task */
     Clusterer: {
@@ -4197,6 +4281,17 @@ export interface operations {
    * - "groupby" is the fields you want to split the data into. These are the available groupby types:
    *     - category" : groupby a field that is a category
    *     - numeric: groupby a field that is a numeric
+   *     - wordcloud: groupby the words. You can also additionally include stop words in your aggregation
+   *     if you add `remove_words` as a field.
+   *
+   *     {
+   *         "name": "wordcloud_research",
+   *         "field": "title",
+   *         "agg": "wordcloud",
+   *         "remove_words": ["learning"]
+   *     }
+   *
+   *
    * - "metrics" is the fields you want to metrics you want to calculate in each of those, every aggregation includes a frequency metric. These are the available metric types:
    *     - "avg", "max", "min", "sum", "cardinality"
    *
@@ -4281,6 +4376,34 @@ export interface operations {
       };
     };
   };
+  /** Retrieves a list of cluster centroids */
+  cluster_centroids_api_v2_services_cluster_centroids_list_post: {
+    parameters: {
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ClustercentroidsList"];
+      };
+    };
+  };
   /** Retrieve the cluster centroids by IDs */
   cluster_centroids_get_api_services_cluster_centroids_get_get: {
     parameters: {
@@ -4318,8 +4441,8 @@ export interface operations {
       };
     };
   };
-  /** Insert your own cluster centroids for it to be used in approximate search settings and cluster aggregations. */
-  insert_cluster_centroids_api_services_cluster_centroids_insert_post: {
+  /** Retrieve the cluster centroids by IDs */
+  cluster_centroids_get_api_services_cluster_centroids_get_post: {
     parameters: {
       header: {
         /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
@@ -4342,7 +4465,153 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CentroidInsertBody"];
+        "application/json": components["schemas"]["CentroidsGetV2"];
+      };
+    };
+  };
+  /** Insert your own cluster centroids for it to be used in approximate search settings and cluster aggregations. */
+  insert_cluster_centroids_2_api_services_cluster_centroids_insert_post: {
+    parameters: {
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CentroidInsertBodyV2"];
+      };
+    };
+  };
+  /** Update a centroid by ID */
+  update_centroids_api_v2_services_cluster_centroids_update_post: {
+    parameters: {
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CentroidUpdateBodyV2"];
+      };
+    };
+  };
+  /** Delete a centroid by ID */
+  delete_centroids_api_services_cluster_centroids__centroid_id__delete_get: {
+    parameters: {
+      path: {
+        centroid_id: string;
+      };
+      query: {
+        dataset_id: string;
+        vector_field: string;
+        alias: string;
+      };
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /** Delete a centroid by ID */
+  delete_centroids_api_services_cluster_centroids__centroid_id__delete_post: {
+    parameters: {
+      path: {
+        centroid_id: string;
+      };
+      query: {
+        dataset_id: string;
+        vector_field: string;
+        alias: string;
+      };
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /** Delete centroids by dataset ID, vector field and alias */
+  cluster_centroids_delete_api_services_cluster_centroids_delete_post: {
+    parameters: {
+      query: {
+        dataset_id: string;
+        vector_field: string;
+        alias: string;
+      };
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
       };
     };
   };
@@ -4406,7 +4675,7 @@ export interface operations {
     };
   };
   /** You can store the metadata about your cluster here. */
-  centroids_metadata_post_api_services_cluster_centroids_metadata_post: {
+  centroids_metadata_post_api_v2_services_cluster_centroids_metadata_post: {
     parameters: {
       header: {
         /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
@@ -4429,12 +4698,12 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CentroidMetadata"];
+        "application/json": components["schemas"]["CentroidMetadataV2"];
       };
     };
   };
   /** List of documents closest from the centre. */
-  centroids_list_closest_to_center_services_cluster_centroids_list_closest_to_center_post: {
+  centroids_list_closest_to_center_v2_services_cluster_centroids_list_closest_to_center_post: {
     parameters: {
       header: {
         /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
@@ -4457,12 +4726,12 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CentroidsClosestToCenter"];
+        "application/json": components["schemas"]["CentroidsClosestToCenterV2"];
       };
     };
   };
-  /** List of documents from from the centre. */
-  centroids_list_furthest_from_center_services_cluster_centroids_list_furthest_from_center_post: {
+  /** List of documents from from the centre */
+  centroids_list_furthest_from_center_v2_services_cluster_centroids_list_furthest_from_center_post: {
     parameters: {
       header: {
         /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
@@ -4485,7 +4754,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CentroidsFurthestFromCenter"];
+        "application/json": components["schemas"]["CentroidsFurthestFromCenterV2"];
       };
     };
   };
@@ -4494,7 +4763,7 @@ export interface operations {
    *
    * Only can be used after a vector field has been clustered with /cluster.
    */
-  cluster_aggregate_api_services_cluster_aggregate_post: {
+  cluster_aggregate_api_v2_services_cluster_aggregate_post: {
     parameters: {
       header: {
         /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
@@ -4517,7 +4786,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["ClusterAggregateQueryCommons"];
+        "application/json": components["schemas"]["ClusterAggregateQueryCommonsV2"];
       };
     };
   };
@@ -4526,11 +4795,13 @@ export interface operations {
    *
    * Only can be used after a vector field has been clustered with /cluster.
    */
-  cluster_facets_api_services_cluster_facets_get: {
+  advanced_cluster_facets_api_services_cluster_facets_get: {
     parameters: {
       query: {
         /** Unique name of dataset */
         dataset_id: string;
+        /** It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']). */
+        vector_field: string;
         /** Fields to include in the facets, if [] then all */
         facets_fields?: string[];
         /** Size of facet page */
@@ -4541,6 +4812,68 @@ export interface operations {
         asc?: boolean;
         /** Interval for date facets */
         date_interval?: string;
+      };
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /** Get a list of cluster IDs based on the relevant information */
+  cluster_list_services_cluster_list_get: {
+    parameters: {
+      query: {
+        /** Unique name of dataset */
+        dataset_id: string;
+        /** It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']). */
+        vector_field: string;
+        /** Alias is used to name a cluster */
+        alias?: string;
+      };
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /** Get a list of cluster IDs */
+  cluster_list_multi_services_cluster_list_post: {
+    parameters: {
+      query: {
+        /** Unique name of dataset */
+        dataset_id: string;
+        /** The vector field to search in. It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']) or it is a dictionary mapping field to float where the weighting is explicitly specified (e.g. {'check_vector_': 0.2, 'yellow_vector_': 0.5}) */
+        vector_fields: string;
+        /** Alias is used to name a cluster */
+        alias?: string;
       };
       header: {
         /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
