@@ -1410,6 +1410,8 @@ export interface components {
       /** List of cluster IDs */
       cluster_ids?: string[];
       /** Centroid vector field */
+      centroid_vector_fields?: string[];
+      /** Centroid vector field */
       centroid_vector_field?: string[];
       /** Fields to include in the search results, empty array/list means all fields. */
       select_fields?: string[];
@@ -1448,6 +1450,8 @@ export interface components {
       cluster_ids?: string[];
       /** Centroid vector field */
       centroid_vector_field?: string[];
+      /** Centroid vector field */
+      centroid_vector_fields?: string[];
       /** Fields to include in the search results, empty array/list means all fields. */
       select_fields?: string[];
       /** Used for approximate search to speed up search. The higher the number, faster the search but potentially less accurate. */
