@@ -137,6 +137,8 @@ export type centroidslistfurthestfromcenterv2servicesclustercentroidslistfurthes
 export type clusteraggregateapiv2servicesclusteraggregatepostOutput = operations['cluster_aggregate_api_v2_services_cluster_aggregate_post']['responses']['200']['content']['application/json']
   export type advancedclusterfacetsapiservicesclusterfacetsgetInput = {}
 export type advancedclusterfacetsapiservicesclusterfacetsgetOutput = operations['advanced_cluster_facets_api_services_cluster_facets_get']['responses']['200']['content']['application/json']
+  export type advancedclusterfacetsapiv2servicesclusterfacetspostInput = operations['advanced_cluster_facets_api_v2_services_cluster_facets_post']['requestBody']['content']['application/json']
+export type advancedclusterfacetsapiv2servicesclusterfacetspostOutput = operations['advanced_cluster_facets_api_v2_services_cluster_facets_post']['responses']['200']['content']['application/json']
   export type clusterlistservicesclusterlistgetInput = {}
 export type clusterlistservicesclusterlistgetOutput = operations['cluster_list_services_cluster_list_get']['responses']['200']['content']['application/json']
   export type clusterlistmultiservicesclusterlistpostInput = {}
@@ -935,6 +937,17 @@ export class VectorApiClient  extends _GenericClient {
     return this.SendRequest({
       input,
       method:'get',
+      path:'/services/cluster/facets',
+      options
+    });
+  }
+  public async advancedclusterfacetsapiv2servicesclusterfacetspost(
+    input: CommandInput<advancedclusterfacetsapiv2servicesclusterfacetspostInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<advancedclusterfacetsapiv2servicesclusterfacetspostOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
       path:'/services/cluster/facets',
       options
     });

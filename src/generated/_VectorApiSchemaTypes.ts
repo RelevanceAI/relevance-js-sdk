@@ -728,11 +728,17 @@ export interface paths {
      * Only can be used after a vector field has been clustered with /cluster.
      */
     get: operations["advanced_cluster_facets_api_services_cluster_facets_get"];
+    /**
+     * Takes a high level aggregation of every field and every cluster in a collection. This helps you interpret each cluster and what is in them.
+     *
+     * Only can be used after a vector field has been clustered with /cluster.
+     */
+    post: operations["advanced_cluster_facets_api_v2_services_cluster_facets_post"];
   };
   "/services/cluster/list": {
     /** Get a list of cluster IDs based on the relevant information */
     get: operations["cluster_list_services_cluster_list_get"];
-    /** Get a list of cluster IDs */
+    /** Get a list of cluster IDs based on the relevant information */
     post: operations["cluster_list_multi_services_cluster_list_post"];
   };
   "/services/tagger/tag": {
@@ -1872,6 +1878,25 @@ export interface components {
       page?: number;
       /** Whether to sort results by ascending or descending order */
       asc?: boolean;
+    };
+    /** Base class for all abstractmodels */
+    FacetsModel: {
+      /** Unique name of dataset */
+      dataset_id: string;
+      /** The vector field to search in. It can either be an array of strings (automatically equally weighted) (e.g. ['check_vector_', 'yellow_vector_']) or it is a dictionary mapping field to float where the weighting is explicitly specified (e.g. {'check_vector_': 0.2, 'yellow_vector_': 0.5}) */
+      vector_fields?: unknown[];
+      /** WARNING: DEPRECATED. Vector field with None */
+      vector_field?: string;
+      /** Fields to include in the facets, if [] then all */
+      facets_fields?: string[];
+      /** Size of facet page */
+      page_size?: number;
+      /** Page of the results */
+      page?: number;
+      /** Whether to sort results by ascending or descending order */
+      asc?: boolean;
+      /** Interval for date facets */
+      date_interval?: string;
     };
     /** Base class for each response model */
     GetDeployableResponse: {
@@ -4837,6 +4862,38 @@ export interface operations {
       };
     };
   };
+  /**
+   * Takes a high level aggregation of every field and every cluster in a collection. This helps you interpret each cluster and what is in them.
+   *
+   * Only can be used after a vector field has been clustered with /cluster.
+   */
+  advanced_cluster_facets_api_v2_services_cluster_facets_post: {
+    parameters: {
+      header: {
+        /** Authorization credentials. Header authorization should be in the form of **"project:api_key"** */
+        Authorization: string;
+      };
+    };
+    responses: {
+      /** Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["FacetsModel"];
+      };
+    };
+  };
   /** Get a list of cluster IDs based on the relevant information */
   cluster_list_services_cluster_list_get: {
     parameters: {
@@ -4868,7 +4925,7 @@ export interface operations {
       };
     };
   };
-  /** Get a list of cluster IDs */
+  /** Get a list of cluster IDs based on the relevant information */
   cluster_list_multi_services_cluster_list_post: {
     parameters: {
       query: {
