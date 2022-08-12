@@ -10,9 +10,4 @@ export const serviceConfigs:{[id:string]:serviceConfig} = {
     endpoint:'https://api.ap-southeast-2.relevance.ai',
     name:'DiscoveryApi',
   },
-  VectorApi:{
-    schema_url:'https://api.ap-southeast-2.relevance.ai/latest/openapi_schema.json',
-    endpoint:'https://api.ap-southeast-2.relevance.ai',
-    name:'VectorApi',
-  }
 }
