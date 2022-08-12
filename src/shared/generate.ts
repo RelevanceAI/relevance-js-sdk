@@ -19,7 +19,7 @@ function GetFlattenedSchema(schema: OpenAPI3) {
 }
 async function GenerateSDKFromOpenAPISchema({ config }: { config: serviceConfig }) {
   const openapiSchema: OpenAPI3 = await (await fetch(config.schema_url)).json();
-  const typescriptOutput = await openapiTS(openapiSchema);
+  const typescriptOutput ='interface definitions {[id:string]:any};\n'+ (await openapiTS(openapiSchema));
   let sdkText = '';
   const pipeline = [
     () => {
