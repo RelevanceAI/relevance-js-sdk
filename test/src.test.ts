@@ -1,6 +1,7 @@
 import {QueryBuilder,VectorApiClient,DiscoveryClient, DiscoveryApiClient, FilterBuilder} from '../src';
 const timeout = 100000;
 describe("Discovery Tests",() => {
+  // comment to trigger update on push
   const discovery = new DiscoveryClient({
     project:'dummy-collections',
     api_key:'UzdYRktIY0JxNmlvb1NpOFNsenU6VGdTU0s4UjhUR0NsaDdnQTVwUkpKZw',
