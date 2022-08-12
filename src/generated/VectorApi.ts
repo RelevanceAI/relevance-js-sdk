@@ -1,1159 +1,186 @@
 import {CommandInput,_GenericClient,CommandOutput,_ClientInput,_GenericMethodOptions} from '../shared/BaseClient';
       import {operations} from './_VectorApiSchemaTypes';
 
-  export type requestreadapikeyapiadminrequestreadapikeypostInput = operations['request_read_api_key_api_admin_request_read_api_key_post']['requestBody']['content']['application/json']
-export type requestreadapikeyapiadminrequestreadapikeypostOutput = operations['request_read_api_key_api_admin_request_read_api_key_post']['responses']['200']['content']['application/json']
-  export type copyforeigndatasetadmincopyforeigndatasetpostInput = operations['copy_foreign_dataset_admin_copy_foreign_dataset_post']['requestBody']['content']['application/json']
-export type copyforeigndatasetadmincopyforeigndatasetpostOutput = operations['copy_foreign_dataset_admin_copy_foreign_dataset_post']['responses']['200']['content']['application/json']
-  export type createdatasetapidatasetscreatepostInput = operations['create_dataset_api_datasets_create_post']['requestBody']['content']['application/json']
-export type createdatasetapidatasetscreatepostOutput = operations['create_dataset_api_datasets_create_post']['responses']['200']['content']['application/json']
-  export type inferschemaapidatasetsinferschemapostInput = operations['infer_schema_api_datasets_infer_schema_post']['requestBody']['content']['application/json']
-export type inferschemaapidatasetsinferschemapostOutput = operations['infer_schema_api_datasets_infer_schema_post']['responses']['200']['content']['application/json']
-  export type schemaapidatasetsdatasetidschemagetInput = {}
-export type schemaapidatasetsdatasetidschemagetOutput = operations['schema_api_datasets__dataset_id__schema_get']['responses']['200']['content']['application/json']
-  export type deletedatasetapidatasetsdeletepostInput = operations['delete_dataset_api_datasets_delete_post']['requestBody']['content']['application/json']
-export type deletedatasetapidatasetsdeletepostOutput = operations['delete_dataset_api_datasets_delete_post']['responses']['200']['content']['application/json']
-  export type listdatasetsapidatasetslistgetInput = {}
-export type listdatasetsapidatasetslistgetOutput = operations['list_datasets_api_datasets_list_get']['responses']['200']['content']['application/json']
-  export type listcollectionsapidatasetslistpostInput = operations['list_collections_api_datasets_list_post']['requestBody']['content']['application/json']
-export type listcollectionsapidatasetslistpostOutput = operations['list_collections_api_datasets_list_post']['responses']['200']['content']['application/json']
-  export type searchdatasetsapidatasetssearchgetInput = {}
-export type searchdatasetsapidatasetssearchgetOutput = operations['search_datasets_api_datasets_search_get']['responses']['200']['content']['application/json']
-  export type facetsapidatasetsdatasetidfacetspostInput = operations['facets_api_datasets__dataset_id__facets_post']['requestBody']['content']['application/json']
-export type facetsapidatasetsdatasetidfacetspostOutput = operations['facets_api_datasets__dataset_id__facets_post']['responses']['200']['content']['application/json']
-  export type clonedatasetapidatasetsdatasetidclonepostInput = operations['clone_dataset_api_datasets__dataset_id__clone_post']['requestBody']['content']['application/json']
-export type clonedatasetapidatasetsdatasetidclonepostOutput = operations['clone_dataset_api_datasets__dataset_id__clone_post']['responses']['200']['content']['application/json']
-  export type storeencoderspipelineapidatasetsdatasetidstoreencoderspipelinepostInput = operations['store_encoders_pipeline_api_datasets__dataset_id__store_encoders_pipeline_post']['requestBody']['content']['application/json']
-export type storeencoderspipelineapidatasetsdatasetidstoreencoderspipelinepostOutput = operations['store_encoders_pipeline_api_datasets__dataset_id__store_encoders_pipeline_post']['responses']['200']['content']['application/json']
-  export type datasetvectormappingsapidatasetsdatasetidvectormappingsgetInput = {}
-export type datasetvectormappingsapidatasetsdatasetidvectormappingsgetOutput = operations['dataset_vector_mappings_api_datasets__dataset_id__vector_mappings_get']['responses']['200']['content']['application/json']
-  export type datasetvectormappingsapipostdatasetsdatasetidvectormappingspostInput = operations['dataset_vector_mappings_api_post_datasets__dataset_id__vector_mappings_post']['requestBody']['content']['application/json']
-export type datasetvectormappingsapipostdatasetsdatasetidvectormappingspostOutput = operations['dataset_vector_mappings_api_post_datasets__dataset_id__vector_mappings_post']['responses']['200']['content']['application/json']
-  export type insertapidatasetsdatasetiddocumentsinsertpostInput = operations['insert_api_datasets__dataset_id__documents_insert_post']['requestBody']['content']['application/json']
-export type insertapidatasetsdatasetiddocumentsinsertpostOutput = operations['insert_api_datasets__dataset_id__documents_insert_post']['responses']['200']['content']['application/json']
-  export type bulkinsertapidatasetsdatasetiddocumentsbulkinsertpostInput = operations['bulk_insert_api_datasets__dataset_id__documents_bulk_insert_post']['requestBody']['content']['application/json']
-export type bulkinsertapidatasetsdatasetiddocumentsbulkinsertpostOutput = operations['bulk_insert_api_datasets__dataset_id__documents_bulk_insert_post']['responses']['200']['content']['application/json']
-  export type idlookupapidatasetsdatasetiddocumentsgetgetInput = {}
-export type idlookupapidatasetsdatasetiddocumentsgetgetOutput = operations['id_lookup_api_datasets__dataset_id__documents_get_get']['responses']['200']['content']['application/json']
-  export type bulkidlookupapidatasetsdatasetiddocumentsbulkgetpostInput = operations['bulk_id_lookup_api_datasets__dataset_id__documents_bulk_get_post']['requestBody']['content']['application/json']
-export type bulkidlookupapidatasetsdatasetiddocumentsbulkgetpostOutput = operations['bulk_id_lookup_api_datasets__dataset_id__documents_bulk_get_post']['responses']['200']['content']['application/json']
-  export type retrievedocumentsapidatasetsdatasetiddocumentslistgetInput = {}
-export type retrievedocumentsapidatasetsdatasetiddocumentslistgetOutput = operations['retrieve_documents_api_datasets__dataset_id__documents_list_get']['responses']['200']['content']['application/json']
-  export type retrievedocumentswithfiltersapidatasetsdatasetiddocumentsgetwherepostInput = operations['retrieve_documents_with_filters_api_datasets__dataset_id__documents_get_where_post']['requestBody']['content']['application/json']
-export type retrievedocumentswithfiltersapidatasetsdatasetiddocumentsgetwherepostOutput = operations['retrieve_documents_with_filters_api_datasets__dataset_id__documents_get_where_post']['responses']['200']['content']['application/json']
-  export type retrievedocumentswithfiltersapidatasetsdatasetiddocumentspaginatepostInput = operations['retrieve_documents_with_filters_api_datasets__dataset_id__documents_paginate_post']['requestBody']['content']['application/json']
-export type retrievedocumentswithfiltersapidatasetsdatasetiddocumentspaginatepostOutput = operations['retrieve_documents_with_filters_api_datasets__dataset_id__documents_paginate_post']['responses']['200']['content']['application/json']
-  export type bulkmissingidapidatasetsdatasetiddocumentsgetmissinggetInput = {}
-export type bulkmissingidapidatasetsdatasetiddocumentsgetmissinggetOutput = operations['bulk_missing_id_api_datasets__dataset_id__documents_get_missing_get']['responses']['200']['content']['application/json']
-  export type updatedocumentapidatasetsdatasetiddocumentsupdatepostInput = operations['update_document_api_datasets__dataset_id__documents_update_post']['requestBody']['content']['application/json']
-export type updatedocumentapidatasetsdatasetiddocumentsupdatepostOutput = operations['update_document_api_datasets__dataset_id__documents_update_post']['responses']['200']['content']['application/json']
-  export type bulkupdatedocumentsapidatasetsdatasetiddocumentsbulkupdatepostInput = operations['bulk_update_documents_api_datasets__dataset_id__documents_bulk_update_post']['requestBody']['content']['application/json']
-export type bulkupdatedocumentsapidatasetsdatasetiddocumentsbulkupdatepostOutput = operations['bulk_update_documents_api_datasets__dataset_id__documents_bulk_update_post']['responses']['200']['content']['application/json']
-  export type deleteapidatasetsdatasetiddocumentsdeletepostInput = operations['delete_api_datasets__dataset_id__documents_delete_post']['requestBody']['content']['application/json']
-export type deleteapidatasetsdatasetiddocumentsdeletepostOutput = operations['delete_api_datasets__dataset_id__documents_delete_post']['responses']['200']['content']['application/json']
-  export type bulkdeleteapidatasetsdatasetiddocumentsbulkdeletepostInput = operations['bulk_delete_api_datasets__dataset_id__documents_bulk_delete_post']['requestBody']['content']['application/json']
-export type bulkdeleteapidatasetsdatasetiddocumentsbulkdeletepostOutput = operations['bulk_delete_api_datasets__dataset_id__documents_bulk_delete_post']['responses']['200']['content']['application/json']
-  export type deletefieldsapidatasetsdatasetiddocumentsdeletefieldspostInput = operations['delete_fields_api_datasets__dataset_id__documents_delete_fields_post']['requestBody']['content']['application/json']
-export type deletefieldsapidatasetsdatasetiddocumentsdeletefieldspostOutput = operations['delete_fields_api_datasets__dataset_id__documents_delete_fields_post']['responses']['200']['content']['application/json']
-  export type updatebyfiltersapidatasetsdatasetiddocumentsupdatewherepostInput = operations['update_by_filters_api_datasets__dataset_id__documents_update_where_post']['requestBody']['content']['application/json']
-export type updatebyfiltersapidatasetsdatasetiddocumentsupdatewherepostOutput = operations['update_by_filters_api_datasets__dataset_id__documents_update_where_post']['responses']['200']['content']['application/json']
-  export type deletebyfiltersapidatasetsdatasetiddocumentsdeletewherepostInput = operations['delete_by_filters_api_datasets__dataset_id__documents_delete_where_post']['requestBody']['content']['application/json']
-export type deletebyfiltersapidatasetsdatasetiddocumentsdeletewherepostOutput = operations['delete_by_filters_api_datasets__dataset_id__documents_delete_where_post']['responses']['200']['content']['application/json']
-  export type collectionmetadataapidatasetsdatasetidmetadatagetInput = {}
-export type collectionmetadataapidatasetsdatasetidmetadatagetOutput = operations['collection_metadata_api_datasets__dataset_id__metadata_get']['responses']['200']['content']['application/json']
-  export type postcollectionmetadataapidatasetsdatasetidmetadatapostInput = operations['post_collection_metadata_api_datasets__dataset_id__metadata_post']['requestBody']['content']['application/json']
-export type postcollectionmetadataapidatasetsdatasetidmetadatapostOutput = operations['post_collection_metadata_api_datasets__dataset_id__metadata_post']['responses']['200']['content']['application/json']
-  export type datasetschemastatsapidatasetsdatasetidmonitorstatsgetInput = {}
-export type datasetschemastatsapidatasetsdatasetidmonitorstatsgetOutput = operations['dataset_schema_stats_api_datasets__dataset_id__monitor_stats_get']['responses']['200']['content']['application/json']
-  export type datasetvectorhealthapidatasetsdatasetidmonitorhealthgetInput = {}
-export type datasetvectorhealthapidatasetsdatasetidmonitorhealthgetOutput = operations['dataset_vector_health_api_datasets__dataset_id__monitor_health_get']['responses']['200']['content']['application/json']
-  export type aggregatelogsapidatasetsdatasetidmonitorusagepostInput = operations['aggregate_logs_api_datasets__dataset_id__monitor_usage_post']['requestBody']['content']['application/json']
-export type aggregatelogsapidatasetsdatasetidmonitorusagepostOutput = operations['aggregate_logs_api_datasets__dataset_id__monitor_usage_post']['responses']['200']['content']['application/json']
-  export type tasksapidatasetsdatasetidtaskscreatepostInput = operations['tasks_api_datasets__dataset_id__tasks_create_post']['requestBody']['content']['application/json']
-export type tasksapidatasetsdatasetidtaskscreatepostOutput = operations['tasks_api_datasets__dataset_id__tasks_create_post']['responses']['200']['content']['application/json']
-  export type listcollectionjobsapidatasetsdatasetidtaskslistgetInput = {}
-export type listcollectionjobsapidatasetsdatasetidtaskslistgetOutput = operations['list_collection_jobs_api_datasets__dataset_id__tasks_list_get']['responses']['200']['content']['application/json']
-  export type tasksstatusapidatasetsdatasetidtaskstaskidstatusgetInput = {}
-export type tasksstatusapidatasetsdatasetidtaskstaskidstatusgetOutput = operations['tasks_status_api_datasets__dataset_id__tasks__task_id__status_get']['responses']['200']['content']['application/json']
-  export type encodebymodelapidatasetsdatasetidvectorizepostInput = operations['encode_by_model_api_datasets__dataset_id__vectorize_post']['requestBody']['content']['application/json']
-export type encodebymodelapidatasetsdatasetidvectorizepostOutput = operations['encode_by_model_api_datasets__dataset_id__vectorize_post']['responses']['200']['content']['application/json']
-  export type taskstatusbymodelapidatasetsdatasetidtaskstatusgetInput = {}
-export type taskstatusbymodelapidatasetsdatasetidtaskstatusgetOutput = operations['task_status_by_model_api_datasets__dataset_id__task_status_get']['responses']['200']['content']['application/json']
-  export type listtasksapidatasetsdatasetidtasksgetInput = {}
-export type listtasksapidatasetsdatasetidtasksgetOutput = operations['list_tasks_api_datasets__dataset_id__tasks_get']['responses']['200']['content']['application/json']
-  export type vectorsearchapiservicessearchvectorpostInput = operations['vector_search_api_services_search_vector_post']['requestBody']['content']['application/json']
-export type vectorsearchapiservicessearchvectorpostOutput = operations['vector_search_api_services_search_vector_post']['responses']['200']['content']['application/json']
-  export type traditionalsearchapiservicessearchtraditionalpostInput = operations['traditional_search_api_services_search_traditional_post']['requestBody']['content']['application/json']
-export type traditionalsearchapiservicessearchtraditionalpostOutput = operations['traditional_search_api_services_search_traditional_post']['responses']['200']['content']['application/json']
-  export type hybridsearchapiservicessearchhybridpostInput = operations['hybrid_search_api_services_search_hybrid_post']['requestBody']['content']['application/json']
-export type hybridsearchapiservicessearchhybridpostOutput = operations['hybrid_search_api_services_search_hybrid_post']['responses']['200']['content']['application/json']
-  export type hybridsearchapiservicessearchsemanticpostInput = operations['hybrid_search_api_services_search_semantic_post']['requestBody']['content']['application/json']
-export type hybridsearchapiservicessearchsemanticpostOutput = operations['hybrid_search_api_services_search_semantic_post']['responses']['200']['content']['application/json']
-  export type chunksearchapiservicessearchchunkpostInput = operations['chunk_search_api_services_search_chunk_post']['requestBody']['content']['application/json']
-export type chunksearchapiservicessearchchunkpostOutput = operations['chunk_search_api_services_search_chunk_post']['responses']['200']['content']['application/json']
-  export type advancedmultistepchunksearchapiservicessearchmultistepchunkpostInput = operations['advanced_multistep_chunk_search_api_services_search_multistep_chunk_post']['requestBody']['content']['application/json']
-export type advancedmultistepchunksearchapiservicessearchmultistepchunkpostOutput = operations['advanced_multistep_chunk_search_api_services_search_multistep_chunk_post']['responses']['200']['content']['application/json']
-  export type advancedchunksearchapiservicessearchadvancedchunkpostInput = operations['advanced_chunk_search_api_services_search_advanced_chunk_post']['requestBody']['content']['application/json']
-export type advancedchunksearchapiservicessearchadvancedchunkpostOutput = operations['advanced_chunk_search_api_services_search_advanced_chunk_post']['responses']['200']['content']['application/json']
-  export type advancedmultistepchunksearchapiservicessearchadvancedmultistepchunkpostInput = operations['advanced_multistep_chunk_search_api_services_search_advanced_multistep_chunk_post']['requestBody']['content']['application/json']
-export type advancedmultistepchunksearchapiservicessearchadvancedmultistepchunkpostOutput = operations['advanced_multistep_chunk_search_api_services_search_advanced_multistep_chunk_post']['responses']['200']['content']['application/json']
-  export type vectorsearchapiservicessearchdiversitypostInput = operations['vector_search_api_services_search_diversity_post']['requestBody']['content']['application/json']
-export type vectorsearchapiservicessearchdiversitypostOutput = operations['vector_search_api_services_search_diversity_post']['responses']['200']['content']['application/json']
-  export type vectorrecommendapiservicesrecommendvectorpostInput = operations['vector_recommend_api_services_recommend_vector_post']['requestBody']['content']['application/json']
-export type vectorrecommendapiservicesrecommendvectorpostOutput = operations['vector_recommend_api_services_recommend_vector_post']['responses']['200']['content']['application/json']
-  export type vectordiversityrecommendapiservicesrecommenddiversitypostInput = operations['vector_diversity_recommend_api_services_recommend_diversity_post']['requestBody']['content']['application/json']
-export type vectordiversityrecommendapiservicesrecommenddiversitypostOutput = operations['vector_diversity_recommend_api_services_recommend_diversity_post']['responses']['200']['content']['application/json']
-  export type aggregatev2apiservicesaggregateaggregatepostInput = operations['aggregate_v2_api_services_aggregate_aggregate_post']['requestBody']['content']['application/json']
-export type aggregatev2apiservicesaggregateaggregatepostOutput = operations['aggregate_v2_api_services_aggregate_aggregate_post']['responses']['200']['content']['application/json']
-  export type clustercentroidsapiservicesclustercentroidslistgetInput = {}
-export type clustercentroidsapiservicesclustercentroidslistgetOutput = operations['cluster_centroids_api_services_cluster_centroids_list_get']['responses']['200']['content']['application/json']
-  export type clustercentroidsapiv2servicesclustercentroidslistpostInput = operations['cluster_centroids_api_v2_services_cluster_centroids_list_post']['requestBody']['content']['application/json']
-export type clustercentroidsapiv2servicesclustercentroidslistpostOutput = operations['cluster_centroids_api_v2_services_cluster_centroids_list_post']['responses']['200']['content']['application/json']
-  export type clustercentroidsgetapiservicesclustercentroidsgetgetInput = {}
-export type clustercentroidsgetapiservicesclustercentroidsgetgetOutput = operations['cluster_centroids_get_api_services_cluster_centroids_get_get']['responses']['200']['content']['application/json']
-  export type clustercentroidsgetapiservicesclustercentroidsgetpostInput = operations['cluster_centroids_get_api_services_cluster_centroids_get_post']['requestBody']['content']['application/json']
-export type clustercentroidsgetapiservicesclustercentroidsgetpostOutput = operations['cluster_centroids_get_api_services_cluster_centroids_get_post']['responses']['200']['content']['application/json']
-  export type insertclustercentroids2apiservicesclustercentroidsinsertpostInput = operations['insert_cluster_centroids_2_api_services_cluster_centroids_insert_post']['requestBody']['content']['application/json']
-export type insertclustercentroids2apiservicesclustercentroidsinsertpostOutput = operations['insert_cluster_centroids_2_api_services_cluster_centroids_insert_post']['responses']['200']['content']['application/json']
-  export type updatecentroidsapiv2servicesclustercentroidsupdatepostInput = operations['update_centroids_api_v2_services_cluster_centroids_update_post']['requestBody']['content']['application/json']
-export type updatecentroidsapiv2servicesclustercentroidsupdatepostOutput = operations['update_centroids_api_v2_services_cluster_centroids_update_post']['responses']['200']['content']['application/json']
-  export type deletecentroidsapiservicesclustercentroidscentroididdeletegetInput = {}
-export type deletecentroidsapiservicesclustercentroidscentroididdeletegetOutput = operations['delete_centroids_api_services_cluster_centroids__centroid_id__delete_get']['responses']['200']['content']['application/json']
-  export type deletecentroidsapiservicesclustercentroidscentroididdeletepostInput = {}
-export type deletecentroidsapiservicesclustercentroidscentroididdeletepostOutput = operations['delete_centroids_api_services_cluster_centroids__centroid_id__delete_post']['responses']['200']['content']['application/json']
-  export type clustercentroidsdeleteapiservicesclustercentroidsdeletepostInput = {}
-export type clustercentroidsdeleteapiservicesclustercentroidsdeletepostOutput = operations['cluster_centroids_delete_api_services_cluster_centroids_delete_post']['responses']['200']['content']['application/json']
-  export type clustercentroidsgetapiservicesclustercentroidsdocumentspostInput = operations['cluster_centroids_get_api_services_cluster_centroids_documents_post']['requestBody']['content']['application/json']
-export type clustercentroidsgetapiservicesclustercentroidsdocumentspostOutput = operations['cluster_centroids_get_api_services_cluster_centroids_documents_post']['responses']['200']['content']['application/json']
-  export type centroidsmetadatagetapiservicesclustercentroidsmetadatagetInput = {}
-export type centroidsmetadatagetapiservicesclustercentroidsmetadatagetOutput = operations['centroids_metadata_get_api_services_cluster_centroids_metadata_get']['responses']['200']['content']['application/json']
-  export type centroidsmetadatapostapiv2servicesclustercentroidsmetadatapostInput = operations['centroids_metadata_post_api_v2_services_cluster_centroids_metadata_post']['requestBody']['content']['application/json']
-export type centroidsmetadatapostapiv2servicesclustercentroidsmetadatapostOutput = operations['centroids_metadata_post_api_v2_services_cluster_centroids_metadata_post']['responses']['200']['content']['application/json']
-  export type centroidslistclosesttocenterv2servicesclustercentroidslistclosesttocenterpostInput = operations['centroids_list_closest_to_center_v2_services_cluster_centroids_list_closest_to_center_post']['requestBody']['content']['application/json']
-export type centroidslistclosesttocenterv2servicesclustercentroidslistclosesttocenterpostOutput = operations['centroids_list_closest_to_center_v2_services_cluster_centroids_list_closest_to_center_post']['responses']['200']['content']['application/json']
-  export type centroidslistfurthestfromcenterv2servicesclustercentroidslistfurthestfromcenterpostInput = operations['centroids_list_furthest_from_center_v2_services_cluster_centroids_list_furthest_from_center_post']['requestBody']['content']['application/json']
-export type centroidslistfurthestfromcenterv2servicesclustercentroidslistfurthestfromcenterpostOutput = operations['centroids_list_furthest_from_center_v2_services_cluster_centroids_list_furthest_from_center_post']['responses']['200']['content']['application/json']
-  export type clusteraggregateapiv2servicesclusteraggregatepostInput = operations['cluster_aggregate_api_v2_services_cluster_aggregate_post']['requestBody']['content']['application/json']
-export type clusteraggregateapiv2servicesclusteraggregatepostOutput = operations['cluster_aggregate_api_v2_services_cluster_aggregate_post']['responses']['200']['content']['application/json']
-  export type advancedclusterfacetsapiservicesclusterfacetsgetInput = {}
-export type advancedclusterfacetsapiservicesclusterfacetsgetOutput = operations['advanced_cluster_facets_api_services_cluster_facets_get']['responses']['200']['content']['application/json']
-  export type advancedclusterfacetsapiv2servicesclusterfacetspostInput = operations['advanced_cluster_facets_api_v2_services_cluster_facets_post']['requestBody']['content']['application/json']
-export type advancedclusterfacetsapiv2servicesclusterfacetspostOutput = operations['advanced_cluster_facets_api_v2_services_cluster_facets_post']['responses']['200']['content']['application/json']
-  export type clusterlistservicesclusterlistgetInput = {}
-export type clusterlistservicesclusterlistgetOutput = operations['cluster_list_services_cluster_list_get']['responses']['200']['content']['application/json']
-  export type clusterlistmultiservicesclusterlistpostInput = {}
-export type clusterlistmultiservicesclusterlistpostOutput = operations['cluster_list_multi_services_cluster_list_post']['responses']['200']['content']['application/json']
-  export type tagapiservicestaggertagpostInput = operations['tag_api_services_tagger_tag_post']['requestBody']['content']['application/json']
-export type tagapiservicestaggertagpostOutput = operations['tag_api_services_tagger_tag_post']['responses']['200']['content']['application/json']
-  export type clusterandtagapiservicestaggerdiversitypostInput = operations['cluster_and_tag_api_services_tagger_diversity_post']['requestBody']['content']['application/json']
-export type clusterandtagapiservicestaggerdiversitypostOutput = operations['cluster_and_tag_api_services_tagger_diversity_post']['responses']['200']['content']['application/json']
-  export type vectorrecommendapiservicesdocumentdiffpostInput = operations['vector_recommend_api_services_document_diff_post']['requestBody']['content']['application/json']
-export type vectorrecommendapiservicesdocumentdiffpostOutput = operations['vector_recommend_api_services_document_diff_post']['responses']['200']['content']['application/json']
-  export type predictknnregressionapiservicespredictionregressionknnpostInput = operations['predict_knn_regression_api_services_prediction_regression_knn_post']['requestBody']['content']['application/json']
-export type predictknnregressionapiservicespredictionregressionknnpostOutput = operations['predict_knn_regression_api_services_prediction_regression_knn_post']['responses']['200']['content']['application/json']
-  export type predictknnregressionfromsearchresultsapiservicespredictionregressionknnfromresultspostInput = operations['predict_knn_regression_from_search_results_api_services_prediction_regression_knn_from_results_post']['requestBody']['content']['application/json']
-export type predictknnregressionfromsearchresultsapiservicespredictionregressionknnfromresultspostOutput = operations['predict_knn_regression_from_search_results_api_services_prediction_regression_knn_from_results_post']['responses']['200']['content']['application/json']
-  export type encodenumericfieldsapiservicesencodersnumericfieldspostInput = operations['encode_numeric_fields_api_services_encoders_numeric_fields_post']['requestBody']['content']['application/json']
-export type encodenumericfieldsapiservicesencodersnumericfieldspostOutput = operations['encode_numeric_fields_api_services_encoders_numeric_fields_post']['responses']['200']['content']['application/json']
-  export type encodecategoriesapiservicesencoderscategoriespostInput = operations['encode_categories_api_services_encoders_categories_post']['requestBody']['content']['application/json']
-export type encodecategoriesapiservicesencoderscategoriespostOutput = operations['encode_categories_api_services_encoders_categories_post']['responses']['200']['content']['application/json']
-  export type encodedictionaryapiservicesencodersdictionarypostInput = operations['encode_dictionary_api_services_encoders_dictionary_post']['requestBody']['content']['application/json']
-export type encodedictionaryapiservicesencodersdictionarypostOutput = operations['encode_dictionary_api_services_encoders_dictionary_post']['responses']['200']['content']['application/json']
-  export type encodetextapiservicesencoderstextgetInput = {}
-export type encodetextapiservicesencoderstextgetOutput = operations['encode_text_api_services_encoders_text_get']['responses']['200']['content']['application/json']
-  export type encodetextapiservicesencodersmultitextgetInput = {}
-export type encodetextapiservicesencodersmultitextgetOutput = operations['encode_text_api_services_encoders_multi_text_get']['responses']['200']['content']['application/json']
-  export type encodeimageapiservicesencodersimagepostInput = operations['encode_image_api_services_encoders_image_post']['requestBody']['content']['application/json']
-export type encodeimageapiservicesencodersimagepostOutput = operations['encode_image_api_services_encoders_image_post']['responses']['200']['content']['application/json']
-  export type encodetextimageapiservicesencoderstextimagegetInput = {}
-export type encodetextimageapiservicesencoderstextimagegetOutput = operations['encode_textimage_api_services_encoders_textimage_get']['responses']['200']['content']['application/json']
-  export type encodeimagetextapiservicesencodersimagetextgetInput = {}
-export type encodeimagetextapiservicesencodersimagetextgetOutput = operations['encode_imagetext_api_services_encoders_imagetext_get']['responses']['200']['content']['application/json']
-  export type retrievedocumentsapiservicesencodersencodepostInput = operations['retrieve_documents_api_services_encoders_encode_post']['requestBody']['content']['application/json']
-export type retrievedocumentsapiservicesencodersencodepostOutput = operations['retrieve_documents_api_services_encoders_encode_post']['responses']['200']['content']['application/json']
-  export type retrievedocumentsapiservicesencodersbulkencodepostInput = operations['retrieve_documents_api_services_encoders_bulk_encode_post']['requestBody']['content']['application/json']
-export type retrievedocumentsapiservicesencodersbulkencodepostOutput = operations['retrieve_documents_api_services_encoders_bulk_encode_post']['responses']['200']['content']['application/json']
-  export type wordcloudsapiserviceswordcloudswordcloudspostInput = operations['wordclouds_api_services_wordclouds_wordclouds_post']['requestBody']['content']['application/json']
-export type wordcloudsapiserviceswordcloudswordcloudspostOutput = operations['wordclouds_api_services_wordclouds_wordclouds_post']['responses']['200']['content']['application/json']
-  export type deployablecreateapideployablescreatepostInput = operations['deployable_create_api_deployables_create_post']['requestBody']['content']['application/json']
-export type deployablecreateapideployablescreatepostOutput = operations['deployable_create_api_deployables_create_post']['responses']['200']['content']['application/json']
-  export type deployableupdateshareableapideployablesdeployableidsharepostInput = {}
-export type deployableupdateshareableapideployablesdeployableidsharepostOutput = operations['deployable_update_shareable_api_deployables__deployable_id__share_post']['responses']['200']['content']['application/json']
-  export type deployableupdateprivateapideployablesdeployableidprivatepostInput = {}
-export type deployableupdateprivateapideployablesdeployableidprivatepostOutput = operations['deployable_update_private_api_deployables__deployable_id__private_post']['responses']['200']['content']['application/json']
-  export type deployableupdateapideployablesdeployableidupdatepostInput = operations['deployable_update_api_deployables__deployable_id__update_post']['requestBody']['content']['application/json']
-export type deployableupdateapideployablesdeployableidupdatepostOutput = operations['deployable_update_api_deployables__deployable_id__update_post']['responses']['200']['content']['application/json']
-  export type deployablegetapideployablesdeployableidgetgetInput = {}
-export type deployablegetapideployablesdeployableidgetgetOutput = operations['deployable_get_api_deployables__deployable_id__get_get']['responses']['200']['content']['application/json']
-  export type deployabledeleteapideployablesdeletepostInput = operations['deployable_delete_api_deployables_delete_post']['requestBody']['content']['application/json']
-export type deployabledeleteapideployablesdeletepostOutput = operations['deployable_delete_api_deployables_delete_post']['responses']['200']['content']['application/json']
-  export type deployablelistapideployableslistgetInput = {}
-export type deployablelistapideployableslistgetOutput = operations['deployable_list_api_deployables_list_get']['responses']['200']['content']['application/json']
+  export type CreateDeployableInput = operations['CreateDeployable']['requestBody']['content']['application/json']
+export type CreateDeployableOutput = operations['CreateDeployable']['responses']['200']['content']['application/json']
+  export type GetDeployableInput = {}
+export type GetDeployableOutput = operations['GetDeployable']['responses']['200']['content']['application/json']
+  export type UpdateDeployableInput = operations['UpdateDeployable']['requestBody']['content']['application/json']
+export type UpdateDeployableOutput = operations['UpdateDeployable']['responses']['200']['content']['application/json']
+  export type DeleteDeployableInput = operations['DeleteDeployable']['requestBody']['content']['application/json']
+export type DeleteDeployableOutput = operations['DeleteDeployable']['responses']['200']['content']['application/json']
+  export type CreateDeployableKeyInput = operations['CreateDeployableKey']['requestBody']['content']['application/json']
+export type CreateDeployableKeyOutput = operations['CreateDeployableKey']['responses']['200']['content']['application/json']
+  export type DeleteDeployableKeyInput = operations['DeleteDeployableKey']['requestBody']['content']['application/json']
+export type DeleteDeployableKeyOutput = operations['DeleteDeployableKey']['responses']['200']['content']['application/json']
+  export type ListDeployablesInput = {}
+export type ListDeployablesOutput = operations['ListDeployables']['responses']['200']['content']['application/json']
+  export type UpdateProjectInput = operations['UpdateProject']['requestBody']['content']['application/json']
+export type UpdateProjectOutput = operations['UpdateProject']['responses']['200']['content']['application/json']
+  export type ListProjectsInput = {}
+export type ListProjectsOutput = operations['ListProjects']['responses']['200']['content']['application/json']
+  export type CreateUserInput = operations['CreateUser']['requestBody']['content']['application/json']
+export type CreateUserOutput = operations['CreateUser']['responses']['200']['content']['application/json']
+  export type ListUsersInput = operations['ListUsers']['requestBody']['content']['application/json']
+export type ListUsersOutput = operations['ListUsers']['responses']['200']['content']['application/json']
+  export type IsUserAuthorizedInput = operations['IsUserAuthorized']['requestBody']['content']['application/json']
+export type IsUserAuthorizedOutput = operations['IsUserAuthorized']['responses']['200']['content']['application/json']
+  export type GetAuthHeaderInfoInput = {}
+export type GetAuthHeaderInfoOutput = operations['GetAuthHeaderInfo']['responses']['200']['content']['application/json']
+  export type CreateProjectInviteInput = operations['CreateProjectInvite']['requestBody']['content']['application/json']
+export type CreateProjectInviteOutput = operations['CreateProjectInvite']['responses']['200']['content']['application/json']
+  export type ListProjectInvitesInput = operations['ListProjectInvites']['requestBody']['content']['application/json']
+export type ListProjectInvitesOutput = operations['ListProjectInvites']['responses']['200']['content']['application/json']
+  export type AcceptProjectInviteInput = operations['AcceptProjectInvite']['requestBody']['content']['application/json']
+export type AcceptProjectInviteOutput = operations['AcceptProjectInvite']['responses']['200']['content']['application/json']
+  export type GetUserInput = {}
+export type GetUserOutput = operations['GetUser']['responses']['200']['content']['application/json']
+  export type UpdateUserInput = operations['UpdateUser']['requestBody']['content']['application/json']
+export type UpdateUserOutput = operations['UpdateUser']['responses']['200']['content']['application/json']
+  export type DeleteUserInput = operations['DeleteUser']['requestBody']['content']['application/json']
+export type DeleteUserOutput = operations['DeleteUser']['responses']['200']['content']['application/json']
+  export type CreateUserKeyInput = operations['CreateUserKey']['requestBody']['content']['application/json']
+export type CreateUserKeyOutput = operations['CreateUserKey']['responses']['200']['content']['application/json']
+  export type ListUserKeysInput = operations['ListUserKeys']['requestBody']['content']['application/json']
+export type ListUserKeysOutput = operations['ListUserKeys']['responses']['200']['content']['application/json']
+  export type DeleteUserKeyInput = operations['DeleteUserKey']['requestBody']['content']['application/json']
+export type DeleteUserKeyOutput = operations['DeleteUserKey']['responses']['200']['content']['application/json']
+  export type InsertClusterCentroidsInput = operations['InsertClusterCentroids']['requestBody']['content']['application/json']
+export type InsertClusterCentroidsOutput = operations['InsertClusterCentroids']['responses']['200']['content']['application/json']
+  export type UpdateClusterCentroidsInput = operations['UpdateClusterCentroids']['requestBody']['content']['application/json']
+export type UpdateClusterCentroidsOutput = operations['UpdateClusterCentroids']['responses']['200']['content']['application/json']
+  export type CompareClusterCentroidsInput = operations['CompareClusterCentroids']['requestBody']['content']['application/json']
+export type CompareClusterCentroidsOutput = operations['CompareClusterCentroids']['responses']['200']['content']['application/json']
+  export type AggregateInput = operations['Aggregate']['requestBody']['content']['application/json']
+export type AggregateOutput = operations['Aggregate']['responses']['200']['content']['application/json']
+  export type AggregateClustersInput = operations['AggregateClusters']['requestBody']['content']['application/json']
+export type AggregateClustersOutput = operations['AggregateClusters']['responses']['200']['content']['application/json']
+  export type ListClusterFacetsInput = operations['ListClusterFacets']['requestBody']['content']['application/json']
+export type ListClusterFacetsOutput = operations['ListClusterFacets']['responses']['200']['content']['application/json']
+  export type ListClosestToCentroidsInput = operations['ListClosestToCentroids']['requestBody']['content']['application/json']
+export type ListClosestToCentroidsOutput = operations['ListClosestToCentroids']['responses']['200']['content']['application/json']
+  export type ListFurthestFromCentroidsInput = operations['ListFurthestFromCentroids']['requestBody']['content']['application/json']
+export type ListFurthestFromCentroidsOutput = operations['ListFurthestFromCentroids']['responses']['200']['content']['application/json']
+  export type ListCentroidsInput = operations['ListCentroids']['requestBody']['content']['application/json']
+export type ListCentroidsOutput = operations['ListCentroids']['responses']['200']['content']['application/json']
+  export type DeleteCentroidInput = operations['DeleteCentroid']['requestBody']['content']['application/json']
+export type DeleteCentroidOutput = operations['DeleteCentroid']['responses']['200']['content']['application/json']
+  export type RealtimeClusteringInput = operations['RealtimeClustering']['requestBody']['content']['application/json']
+export type RealtimeClusteringOutput = operations['RealtimeClustering']['responses']['200']['content']['application/json']
+  export type MergeClustersInput = operations['MergeClusters']['requestBody']['content']['application/json']
+export type MergeClustersOutput = operations['MergeClusters']['responses']['200']['content']['application/json']
+  export type CreateClusterSummariesInput = operations['CreateClusterSummaries']['requestBody']['content']['application/json']
+export type CreateClusterSummariesOutput = operations['CreateClusterSummaries']['responses']['200']['content']['application/json']
+  export type ListClusterSummariesInput = operations['ListClusterSummaries']['requestBody']['content']['application/json']
+export type ListClusterSummariesOutput = operations['ListClusterSummaries']['responses']['200']['content']['application/json']
+  export type DeleteClusterSummariesInput = operations['DeleteClusterSummaries']['requestBody']['content']['application/json']
+export type DeleteClusterSummariesOutput = operations['DeleteClusterSummaries']['responses']['200']['content']['application/json']
+  export type InsertInput = operations['Insert']['requestBody']['content']['application/json']
+export type InsertOutput = operations['Insert']['responses']['200']['content']['application/json']
+  export type BulkInsertInput = operations['BulkInsert']['requestBody']['content']['application/json']
+export type BulkInsertOutput = operations['BulkInsert']['responses']['200']['content']['application/json']
+  export type GetFileUploadUrlsForDatasetInput = operations['GetFileUploadUrlsForDataset']['requestBody']['content']['application/json']
+export type GetFileUploadUrlsForDatasetOutput = operations['GetFileUploadUrlsForDataset']['responses']['200']['content']['application/json']
+  export type ParseBlobInput = operations['ParseBlob']['requestBody']['content']['application/json']
+export type ParseBlobOutput = operations['ParseBlob']['responses']['200']['content']['application/json']
+  export type CopyForeignDatasetInput = operations['CopyForeignDataset']['requestBody']['content']['application/json']
+export type CopyForeignDatasetOutput = operations['CopyForeignDataset']['responses']['200']['content']['application/json']
+  export type CreateProjectReadKeyInput = operations['CreateProjectReadKey']['requestBody']['content']['application/json']
+export type CreateProjectReadKeyOutput = operations['CreateProjectReadKey']['responses']['200']['content']['application/json']
+  export type DeleteDatasetInput = operations['DeleteDataset']['requestBody']['content']['application/json']
+export type DeleteDatasetOutput = operations['DeleteDataset']['responses']['200']['content']['application/json']
+  export type CreateDatasetInput = operations['CreateDataset']['requestBody']['content']['application/json']
+export type CreateDatasetOutput = operations['CreateDataset']['responses']['200']['content']['application/json']
+  export type GetSchemaInput = {}
+export type GetSchemaOutput = operations['GetSchema']['responses']['200']['content']['application/json']
+  export type ListDatasetsInput = {}
+export type ListDatasetsOutput = operations['ListDatasets']['responses']['200']['content']['application/json']
+  export type CombineDatasetsInput = operations['CombineDatasets']['requestBody']['content']['application/json']
+export type CombineDatasetsOutput = operations['CombineDatasets']['responses']['200']['content']['application/json']
+  export type GetCombineJobStatusInput = operations['GetCombineJobStatus']['requestBody']['content']['application/json']
+export type GetCombineJobStatusOutput = operations['GetCombineJobStatus']['responses']['200']['content']['application/json']
+  export type SearchDatasetsInput = {}
+export type SearchDatasetsOutput = operations['SearchDatasets']['responses']['200']['content']['application/json']
+  export type GetFieldHealthInput = {}
+export type GetFieldHealthOutput = operations['GetFieldHealth']['responses']['200']['content']['application/json']
+  export type GetDatasetStatsInput = {}
+export type GetDatasetStatsOutput = operations['GetDatasetStats']['responses']['200']['content']['application/json']
+  export type GetDatasetUsageInput = operations['GetDatasetUsage']['requestBody']['content']['application/json']
+export type GetDatasetUsageOutput = operations['GetDatasetUsage']['responses']['200']['content']['application/json']
+  export type GetVectorMappingsInput = {}
+export type GetVectorMappingsOutput = operations['GetVectorMappings']['responses']['200']['content']['application/json']
+  export type GetDatasetDetailsInput = operations['GetDatasetDetails']['requestBody']['content']['application/json']
+export type GetDatasetDetailsOutput = operations['GetDatasetDetails']['responses']['200']['content']['application/json']
+  export type GetDocumentInput = {}
+export type GetDocumentOutput = operations['GetDocument']['responses']['200']['content']['application/json']
+  export type DeleteDocumentInput = operations['DeleteDocument']['requestBody']['content']['application/json']
+export type DeleteDocumentOutput = operations['DeleteDocument']['responses']['200']['content']['application/json']
+  export type UpsertDatasetSettingsInput = operations['UpsertDatasetSettings']['requestBody']['content']['application/json']
+export type UpsertDatasetSettingsOutput = operations['UpsertDatasetSettings']['responses']['200']['content']['application/json']
+  export type GetDatasetSettingsInput = {}
+export type GetDatasetSettingsOutput = operations['GetDatasetSettings']['responses']['200']['content']['application/json']
+  export type UpsertDatasetMetadataInput = operations['UpsertDatasetMetadata']['requestBody']['content']['application/json']
+export type UpsertDatasetMetadataOutput = operations['UpsertDatasetMetadata']['responses']['200']['content']['application/json']
+  export type GetDatasetMetadataInput = {}
+export type GetDatasetMetadataOutput = operations['GetDatasetMetadata']['responses']['200']['content']['application/json']
+  export type UpdateInput = operations['Update']['requestBody']['content']['application/json']
+export type UpdateOutput = operations['Update']['responses']['200']['content']['application/json']
+  export type DeleteDocumentFieldsInput = operations['DeleteDocumentFields']['requestBody']['content']['application/json']
+export type DeleteDocumentFieldsOutput = operations['DeleteDocumentFields']['responses']['200']['content']['application/json']
+  export type BulkUpdateInput = operations['BulkUpdate']['requestBody']['content']['application/json']
+export type BulkUpdateOutput = operations['BulkUpdate']['responses']['200']['content']['application/json']
+  export type UpdateWhereInput = operations['UpdateWhere']['requestBody']['content']['application/json']
+export type UpdateWhereOutput = operations['UpdateWhere']['responses']['200']['content']['application/json']
+  export type ListFacetsInput = operations['ListFacets']['requestBody']['content']['application/json']
+export type ListFacetsOutput = operations['ListFacets']['responses']['200']['content']['application/json']
+  export type GetWhereInput = operations['GetWhere']['requestBody']['content']['application/json']
+export type GetWhereOutput = operations['GetWhere']['responses']['200']['content']['application/json']
+  export type PaginateDocumentsInput = operations['PaginateDocuments']['requestBody']['content']['application/json']
+export type PaginateDocumentsOutput = operations['PaginateDocuments']['responses']['200']['content']['application/json']
+  export type BulkGetDocumentsInput = operations['BulkGetDocuments']['requestBody']['content']['application/json']
+export type BulkGetDocumentsOutput = operations['BulkGetDocuments']['responses']['200']['content']['application/json']
+  export type BulkDeleteDocumentsInput = operations['BulkDeleteDocuments']['requestBody']['content']['application/json']
+export type BulkDeleteDocumentsOutput = operations['BulkDeleteDocuments']['responses']['200']['content']['application/json']
+  export type ListDocumentsInput = {}
+export type ListDocumentsOutput = operations['ListDocuments']['responses']['200']['content']['application/json']
+  export type DeleteWhereInput = operations['DeleteWhere']['requestBody']['content']['application/json']
+export type DeleteWhereOutput = operations['DeleteWhere']['responses']['200']['content']['application/json']
+  export type SimpleSearchPostInput = operations['SimpleSearchPost']['requestBody']['content']['application/json']
+export type SimpleSearchPostOutput = operations['SimpleSearchPost']['responses']['200']['content']['application/json']
+  export type FastSearchInput = operations['FastSearch']['requestBody']['content']['application/json']
+export type FastSearchOutput = operations['FastSearch']['responses']['200']['content']['application/json']
+  export type RecommendInput = operations['Recommend']['requestBody']['content']['application/json']
+export type RecommendOutput = operations['Recommend']['responses']['200']['content']['application/json']
+  export type CloneDatasetInput = operations['CloneDataset']['requestBody']['content']['application/json']
+export type CloneDatasetOutput = operations['CloneDataset']['responses']['200']['content']['application/json']
+  export type PredictKNNRegressionInput = operations['PredictKNNRegression']['requestBody']['content']['application/json']
+export type PredictKNNRegressionOutput = operations['PredictKNNRegression']['responses']['200']['content']['application/json']
+  export type PredictKNNFromResultsInput = operations['PredictKNNFromResults']['requestBody']['content']['application/json']
+export type PredictKNNFromResultsOutput = operations['PredictKNNFromResults']['responses']['200']['content']['application/json']
+  export type BiasEvaluationInput = operations['BiasEvaluation']['requestBody']['content']['application/json']
+export type BiasEvaluationOutput = operations['BiasEvaluation']['responses']['200']['content']['application/json']
+  export type VectorizeInput = operations['Vectorize']['requestBody']['content']['application/json']
+export type VectorizeOutput = operations['Vectorize']['responses']['200']['content']['application/json']
+  export type VectorizeAndInsertInput = operations['VectorizeAndInsert']['requestBody']['content']['application/json']
+export type VectorizeAndInsertOutput = operations['VectorizeAndInsert']['responses']['200']['content']['application/json']
+  export type VectorizeFieldInput = operations['VectorizeField']['requestBody']['content']['application/json']
+export type VectorizeFieldOutput = operations['VectorizeField']['responses']['200']['content']['application/json']
+  export type TriggerWorkflowInput = operations['TriggerWorkflow']['requestBody']['content']['application/json']
+export type TriggerWorkflowOutput = operations['TriggerWorkflow']['responses']['200']['content']['application/json']
+  export type ListWorkflowsInput = {}
+export type ListWorkflowsOutput = operations['ListWorkflows']['responses']['200']['content']['application/json']
+  export type GetWorkflowStatusInput = operations['GetWorkflowStatus']['requestBody']['content']['application/json']
+export type GetWorkflowStatusOutput = operations['GetWorkflowStatus']['responses']['200']['content']['application/json']
+  export type UpsertWorkflowMetadataInput = operations['UpsertWorkflowMetadata']['requestBody']['content']['application/json']
+export type UpsertWorkflowMetadataOutput = operations['UpsertWorkflowMetadata']['responses']['200']['content']['application/json']
 export class VectorApiClient  extends _GenericClient {
   constructor(config:_ClientInput){
     super({...config,service_name:'VectorApi'});
   }
-  public async requestreadapikeyapiadminrequestreadapikeypost(
-    input: CommandInput<requestreadapikeyapiadminrequestreadapikeypostInput>,
+  public async CreateDeployable(
+    input: CommandInput<CreateDeployableInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<requestreadapikeyapiadminrequestreadapikeypostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/admin/request_read_api_key',
-      options
-    });
-  }
-  public async copyforeigndatasetadmincopyforeigndatasetpost(
-    input: CommandInput<copyforeigndatasetadmincopyforeigndatasetpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<copyforeigndatasetadmincopyforeigndatasetpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/admin/copy_foreign_dataset',
-      options
-    });
-  }
-  public async createdatasetapidatasetscreatepost(
-    input: CommandInput<createdatasetapidatasetscreatepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<createdatasetapidatasetscreatepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/create',
-      options
-    });
-  }
-  public async inferschemaapidatasetsinferschemapost(
-    input: CommandInput<inferschemaapidatasetsinferschemapostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<inferschemaapidatasetsinferschemapostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/infer_schema',
-      options
-    });
-  }
-  public async schemaapidatasetsdatasetidschemaget(
-    input: CommandInput<schemaapidatasetsdatasetidschemagetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<schemaapidatasetsdatasetidschemagetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/{dataset_id}/schema',
-      options
-    });
-  }
-  public async deletedatasetapidatasetsdeletepost(
-    input: CommandInput<deletedatasetapidatasetsdeletepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<deletedatasetapidatasetsdeletepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/delete',
-      options
-    });
-  }
-  public async listdatasetsapidatasetslistget(
-    input: CommandInput<listdatasetsapidatasetslistgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<listdatasetsapidatasetslistgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/list',
-      options
-    });
-  }
-  public async listcollectionsapidatasetslistpost(
-    input: CommandInput<listcollectionsapidatasetslistpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<listcollectionsapidatasetslistpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/list',
-      options
-    });
-  }
-  public async searchdatasetsapidatasetssearchget(
-    input: CommandInput<searchdatasetsapidatasetssearchgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<searchdatasetsapidatasetssearchgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/search',
-      options
-    });
-  }
-  public async facetsapidatasetsdatasetidfacetspost(
-    input: CommandInput<facetsapidatasetsdatasetidfacetspostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<facetsapidatasetsdatasetidfacetspostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/facets',
-      options
-    });
-  }
-  public async clonedatasetapidatasetsdatasetidclonepost(
-    input: CommandInput<clonedatasetapidatasetsdatasetidclonepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<clonedatasetapidatasetsdatasetidclonepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/clone',
-      options
-    });
-  }
-  public async storeencoderspipelineapidatasetsdatasetidstoreencoderspipelinepost(
-    input: CommandInput<storeencoderspipelineapidatasetsdatasetidstoreencoderspipelinepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<storeencoderspipelineapidatasetsdatasetidstoreencoderspipelinepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/store_encoders_pipeline',
-      options
-    });
-  }
-  public async datasetvectormappingsapidatasetsdatasetidvectormappingsget(
-    input: CommandInput<datasetvectormappingsapidatasetsdatasetidvectormappingsgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<datasetvectormappingsapidatasetsdatasetidvectormappingsgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/{dataset_id}/vector_mappings',
-      options
-    });
-  }
-  public async datasetvectormappingsapipostdatasetsdatasetidvectormappingspost(
-    input: CommandInput<datasetvectormappingsapipostdatasetsdatasetidvectormappingspostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<datasetvectormappingsapipostdatasetsdatasetidvectormappingspostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/vector_mappings',
-      options
-    });
-  }
-  public async insertapidatasetsdatasetiddocumentsinsertpost(
-    input: CommandInput<insertapidatasetsdatasetiddocumentsinsertpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<insertapidatasetsdatasetiddocumentsinsertpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/documents/insert',
-      options
-    });
-  }
-  public async bulkinsertapidatasetsdatasetiddocumentsbulkinsertpost(
-    input: CommandInput<bulkinsertapidatasetsdatasetiddocumentsbulkinsertpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<bulkinsertapidatasetsdatasetiddocumentsbulkinsertpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/documents/bulk_insert',
-      options
-    });
-  }
-  public async idlookupapidatasetsdatasetiddocumentsgetget(
-    input: CommandInput<idlookupapidatasetsdatasetiddocumentsgetgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<idlookupapidatasetsdatasetiddocumentsgetgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/{dataset_id}/documents/get',
-      options
-    });
-  }
-  public async bulkidlookupapidatasetsdatasetiddocumentsbulkgetpost(
-    input: CommandInput<bulkidlookupapidatasetsdatasetiddocumentsbulkgetpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<bulkidlookupapidatasetsdatasetiddocumentsbulkgetpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/documents/bulk_get',
-      options
-    });
-  }
-  public async retrievedocumentsapidatasetsdatasetiddocumentslistget(
-    input: CommandInput<retrievedocumentsapidatasetsdatasetiddocumentslistgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<retrievedocumentsapidatasetsdatasetiddocumentslistgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/{dataset_id}/documents/list',
-      options
-    });
-  }
-  public async retrievedocumentswithfiltersapidatasetsdatasetiddocumentsgetwherepost(
-    input: CommandInput<retrievedocumentswithfiltersapidatasetsdatasetiddocumentsgetwherepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<retrievedocumentswithfiltersapidatasetsdatasetiddocumentsgetwherepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/documents/get_where',
-      options
-    });
-  }
-  public async retrievedocumentswithfiltersapidatasetsdatasetiddocumentspaginatepost(
-    input: CommandInput<retrievedocumentswithfiltersapidatasetsdatasetiddocumentspaginatepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<retrievedocumentswithfiltersapidatasetsdatasetiddocumentspaginatepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/documents/paginate',
-      options
-    });
-  }
-  public async bulkmissingidapidatasetsdatasetiddocumentsgetmissingget(
-    input: CommandInput<bulkmissingidapidatasetsdatasetiddocumentsgetmissinggetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<bulkmissingidapidatasetsdatasetiddocumentsgetmissinggetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/{dataset_id}/documents/get_missing',
-      options
-    });
-  }
-  public async updatedocumentapidatasetsdatasetiddocumentsupdatepost(
-    input: CommandInput<updatedocumentapidatasetsdatasetiddocumentsupdatepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<updatedocumentapidatasetsdatasetiddocumentsupdatepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/documents/update',
-      options
-    });
-  }
-  public async bulkupdatedocumentsapidatasetsdatasetiddocumentsbulkupdatepost(
-    input: CommandInput<bulkupdatedocumentsapidatasetsdatasetiddocumentsbulkupdatepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<bulkupdatedocumentsapidatasetsdatasetiddocumentsbulkupdatepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/documents/bulk_update',
-      options
-    });
-  }
-  public async deleteapidatasetsdatasetiddocumentsdeletepost(
-    input: CommandInput<deleteapidatasetsdatasetiddocumentsdeletepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<deleteapidatasetsdatasetiddocumentsdeletepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/documents/delete',
-      options
-    });
-  }
-  public async bulkdeleteapidatasetsdatasetiddocumentsbulkdeletepost(
-    input: CommandInput<bulkdeleteapidatasetsdatasetiddocumentsbulkdeletepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<bulkdeleteapidatasetsdatasetiddocumentsbulkdeletepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/documents/bulk_delete',
-      options
-    });
-  }
-  public async deletefieldsapidatasetsdatasetiddocumentsdeletefieldspost(
-    input: CommandInput<deletefieldsapidatasetsdatasetiddocumentsdeletefieldspostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<deletefieldsapidatasetsdatasetiddocumentsdeletefieldspostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/documents/delete_fields',
-      options
-    });
-  }
-  public async updatebyfiltersapidatasetsdatasetiddocumentsupdatewherepost(
-    input: CommandInput<updatebyfiltersapidatasetsdatasetiddocumentsupdatewherepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<updatebyfiltersapidatasetsdatasetiddocumentsupdatewherepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/documents/update_where',
-      options
-    });
-  }
-  public async deletebyfiltersapidatasetsdatasetiddocumentsdeletewherepost(
-    input: CommandInput<deletebyfiltersapidatasetsdatasetiddocumentsdeletewherepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<deletebyfiltersapidatasetsdatasetiddocumentsdeletewherepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/documents/delete_where',
-      options
-    });
-  }
-  public async collectionmetadataapidatasetsdatasetidmetadataget(
-    input: CommandInput<collectionmetadataapidatasetsdatasetidmetadatagetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<collectionmetadataapidatasetsdatasetidmetadatagetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/{dataset_id}/metadata',
-      options
-    });
-  }
-  public async postcollectionmetadataapidatasetsdatasetidmetadatapost(
-    input: CommandInput<postcollectionmetadataapidatasetsdatasetidmetadatapostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<postcollectionmetadataapidatasetsdatasetidmetadatapostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/metadata',
-      options
-    });
-  }
-  public async datasetschemastatsapidatasetsdatasetidmonitorstatsget(
-    input: CommandInput<datasetschemastatsapidatasetsdatasetidmonitorstatsgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<datasetschemastatsapidatasetsdatasetidmonitorstatsgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/{dataset_id}/monitor/stats',
-      options
-    });
-  }
-  public async datasetvectorhealthapidatasetsdatasetidmonitorhealthget(
-    input: CommandInput<datasetvectorhealthapidatasetsdatasetidmonitorhealthgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<datasetvectorhealthapidatasetsdatasetidmonitorhealthgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/{dataset_id}/monitor/health',
-      options
-    });
-  }
-  public async aggregatelogsapidatasetsdatasetidmonitorusagepost(
-    input: CommandInput<aggregatelogsapidatasetsdatasetidmonitorusagepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<aggregatelogsapidatasetsdatasetidmonitorusagepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/monitor/usage',
-      options
-    });
-  }
-  public async tasksapidatasetsdatasetidtaskscreatepost(
-    input: CommandInput<tasksapidatasetsdatasetidtaskscreatepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<tasksapidatasetsdatasetidtaskscreatepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/tasks/create',
-      options
-    });
-  }
-  public async listcollectionjobsapidatasetsdatasetidtaskslistget(
-    input: CommandInput<listcollectionjobsapidatasetsdatasetidtaskslistgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<listcollectionjobsapidatasetsdatasetidtaskslistgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/{dataset_id}/tasks/list',
-      options
-    });
-  }
-  public async tasksstatusapidatasetsdatasetidtaskstaskidstatusget(
-    input: CommandInput<tasksstatusapidatasetsdatasetidtaskstaskidstatusgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<tasksstatusapidatasetsdatasetidtaskstaskidstatusgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/{dataset_id}/tasks/{task_id}/status',
-      options
-    });
-  }
-  public async encodebymodelapidatasetsdatasetidvectorizepost(
-    input: CommandInput<encodebymodelapidatasetsdatasetidvectorizepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<encodebymodelapidatasetsdatasetidvectorizepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/vectorize',
-      options
-    });
-  }
-  public async taskstatusbymodelapidatasetsdatasetidtaskstatusget(
-    input: CommandInput<taskstatusbymodelapidatasetsdatasetidtaskstatusgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<taskstatusbymodelapidatasetsdatasetidtaskstatusgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/{dataset_id}/task_status',
-      options
-    });
-  }
-  public async listtasksapidatasetsdatasetidtasksget(
-    input: CommandInput<listtasksapidatasetsdatasetidtasksgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<listtasksapidatasetsdatasetidtasksgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/datasets/{dataset_id}/tasks',
-      options
-    });
-  }
-  public async vectorsearchapiservicessearchvectorpost(
-    input: CommandInput<vectorsearchapiservicessearchvectorpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<vectorsearchapiservicessearchvectorpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/search/vector',
-      options
-    });
-  }
-  public async traditionalsearchapiservicessearchtraditionalpost(
-    input: CommandInput<traditionalsearchapiservicessearchtraditionalpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<traditionalsearchapiservicessearchtraditionalpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/search/traditional',
-      options
-    });
-  }
-  public async hybridsearchapiservicessearchhybridpost(
-    input: CommandInput<hybridsearchapiservicessearchhybridpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<hybridsearchapiservicessearchhybridpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/search/hybrid',
-      options
-    });
-  }
-  public async hybridsearchapiservicessearchsemanticpost(
-    input: CommandInput<hybridsearchapiservicessearchsemanticpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<hybridsearchapiservicessearchsemanticpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/search/semantic',
-      options
-    });
-  }
-  public async chunksearchapiservicessearchchunkpost(
-    input: CommandInput<chunksearchapiservicessearchchunkpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<chunksearchapiservicessearchchunkpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/search/chunk',
-      options
-    });
-  }
-  public async advancedmultistepchunksearchapiservicessearchmultistepchunkpost(
-    input: CommandInput<advancedmultistepchunksearchapiservicessearchmultistepchunkpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<advancedmultistepchunksearchapiservicessearchmultistepchunkpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/search/multistep_chunk',
-      options
-    });
-  }
-  public async advancedchunksearchapiservicessearchadvancedchunkpost(
-    input: CommandInput<advancedchunksearchapiservicessearchadvancedchunkpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<advancedchunksearchapiservicessearchadvancedchunkpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/search/advanced_chunk',
-      options
-    });
-  }
-  public async advancedmultistepchunksearchapiservicessearchadvancedmultistepchunkpost(
-    input: CommandInput<advancedmultistepchunksearchapiservicessearchadvancedmultistepchunkpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<advancedmultistepchunksearchapiservicessearchadvancedmultistepchunkpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/search/advanced_multistep_chunk',
-      options
-    });
-  }
-  public async vectorsearchapiservicessearchdiversitypost(
-    input: CommandInput<vectorsearchapiservicessearchdiversitypostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<vectorsearchapiservicessearchdiversitypostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/search/diversity',
-      options
-    });
-  }
-  public async vectorrecommendapiservicesrecommendvectorpost(
-    input: CommandInput<vectorrecommendapiservicesrecommendvectorpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<vectorrecommendapiservicesrecommendvectorpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/recommend/vector',
-      options
-    });
-  }
-  public async vectordiversityrecommendapiservicesrecommenddiversitypost(
-    input: CommandInput<vectordiversityrecommendapiservicesrecommenddiversitypostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<vectordiversityrecommendapiservicesrecommenddiversitypostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/recommend/diversity',
-      options
-    });
-  }
-  public async aggregatev2apiservicesaggregateaggregatepost(
-    input: CommandInput<aggregatev2apiservicesaggregateaggregatepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<aggregatev2apiservicesaggregateaggregatepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/aggregate/aggregate',
-      options
-    });
-  }
-  public async clustercentroidsapiservicesclustercentroidslistget(
-    input: CommandInput<clustercentroidsapiservicesclustercentroidslistgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<clustercentroidsapiservicesclustercentroidslistgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/services/cluster/centroids/list',
-      options
-    });
-  }
-  public async clustercentroidsapiv2servicesclustercentroidslistpost(
-    input: CommandInput<clustercentroidsapiv2servicesclustercentroidslistpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<clustercentroidsapiv2servicesclustercentroidslistpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/cluster/centroids/list',
-      options
-    });
-  }
-  public async clustercentroidsgetapiservicesclustercentroidsgetget(
-    input: CommandInput<clustercentroidsgetapiservicesclustercentroidsgetgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<clustercentroidsgetapiservicesclustercentroidsgetgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/services/cluster/centroids/get',
-      options
-    });
-  }
-  public async clustercentroidsgetapiservicesclustercentroidsgetpost(
-    input: CommandInput<clustercentroidsgetapiservicesclustercentroidsgetpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<clustercentroidsgetapiservicesclustercentroidsgetpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/cluster/centroids/get',
-      options
-    });
-  }
-  public async insertclustercentroids2apiservicesclustercentroidsinsertpost(
-    input: CommandInput<insertclustercentroids2apiservicesclustercentroidsinsertpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<insertclustercentroids2apiservicesclustercentroidsinsertpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/cluster/centroids/insert',
-      options
-    });
-  }
-  public async updatecentroidsapiv2servicesclustercentroidsupdatepost(
-    input: CommandInput<updatecentroidsapiv2servicesclustercentroidsupdatepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<updatecentroidsapiv2servicesclustercentroidsupdatepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/cluster/centroids/update',
-      options
-    });
-  }
-  public async deletecentroidsapiservicesclustercentroidscentroididdeleteget(
-    input: CommandInput<deletecentroidsapiservicesclustercentroidscentroididdeletegetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<deletecentroidsapiservicesclustercentroidscentroididdeletegetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/services/cluster/centroids/{centroid_id}/delete',
-      options
-    });
-  }
-  public async deletecentroidsapiservicesclustercentroidscentroididdeletepost(
-    input: CommandInput<deletecentroidsapiservicesclustercentroidscentroididdeletepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<deletecentroidsapiservicesclustercentroidscentroididdeletepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/cluster/centroids/{centroid_id}/delete',
-      options
-    });
-  }
-  public async clustercentroidsdeleteapiservicesclustercentroidsdeletepost(
-    input: CommandInput<clustercentroidsdeleteapiservicesclustercentroidsdeletepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<clustercentroidsdeleteapiservicesclustercentroidsdeletepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/cluster/centroids/delete',
-      options
-    });
-  }
-  public async clustercentroidsgetapiservicesclustercentroidsdocumentspost(
-    input: CommandInput<clustercentroidsgetapiservicesclustercentroidsdocumentspostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<clustercentroidsgetapiservicesclustercentroidsdocumentspostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/cluster/centroids/documents',
-      options
-    });
-  }
-  public async centroidsmetadatagetapiservicesclustercentroidsmetadataget(
-    input: CommandInput<centroidsmetadatagetapiservicesclustercentroidsmetadatagetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<centroidsmetadatagetapiservicesclustercentroidsmetadatagetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/services/cluster/centroids/metadata',
-      options
-    });
-  }
-  public async centroidsmetadatapostapiv2servicesclustercentroidsmetadatapost(
-    input: CommandInput<centroidsmetadatapostapiv2servicesclustercentroidsmetadatapostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<centroidsmetadatapostapiv2servicesclustercentroidsmetadatapostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/cluster/centroids/metadata',
-      options
-    });
-  }
-  public async centroidslistclosesttocenterv2servicesclustercentroidslistclosesttocenterpost(
-    input: CommandInput<centroidslistclosesttocenterv2servicesclustercentroidslistclosesttocenterpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<centroidslistclosesttocenterv2servicesclustercentroidslistclosesttocenterpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/cluster/centroids/list_closest_to_center',
-      options
-    });
-  }
-  public async centroidslistfurthestfromcenterv2servicesclustercentroidslistfurthestfromcenterpost(
-    input: CommandInput<centroidslistfurthestfromcenterv2servicesclustercentroidslistfurthestfromcenterpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<centroidslistfurthestfromcenterv2servicesclustercentroidslistfurthestfromcenterpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/cluster/centroids/list_furthest_from_center',
-      options
-    });
-  }
-  public async clusteraggregateapiv2servicesclusteraggregatepost(
-    input: CommandInput<clusteraggregateapiv2servicesclusteraggregatepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<clusteraggregateapiv2servicesclusteraggregatepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/cluster/aggregate',
-      options
-    });
-  }
-  public async advancedclusterfacetsapiservicesclusterfacetsget(
-    input: CommandInput<advancedclusterfacetsapiservicesclusterfacetsgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<advancedclusterfacetsapiservicesclusterfacetsgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/services/cluster/facets',
-      options
-    });
-  }
-  public async advancedclusterfacetsapiv2servicesclusterfacetspost(
-    input: CommandInput<advancedclusterfacetsapiv2servicesclusterfacetspostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<advancedclusterfacetsapiv2servicesclusterfacetspostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/cluster/facets',
-      options
-    });
-  }
-  public async clusterlistservicesclusterlistget(
-    input: CommandInput<clusterlistservicesclusterlistgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<clusterlistservicesclusterlistgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/services/cluster/list',
-      options
-    });
-  }
-  public async clusterlistmultiservicesclusterlistpost(
-    input: CommandInput<clusterlistmultiservicesclusterlistpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<clusterlistmultiservicesclusterlistpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/cluster/list',
-      options
-    });
-  }
-  public async tagapiservicestaggertagpost(
-    input: CommandInput<tagapiservicestaggertagpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<tagapiservicestaggertagpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/tagger/tag',
-      options
-    });
-  }
-  public async clusterandtagapiservicestaggerdiversitypost(
-    input: CommandInput<clusterandtagapiservicestaggerdiversitypostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<clusterandtagapiservicestaggerdiversitypostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/tagger/diversity',
-      options
-    });
-  }
-  public async vectorrecommendapiservicesdocumentdiffpost(
-    input: CommandInput<vectorrecommendapiservicesdocumentdiffpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<vectorrecommendapiservicesdocumentdiffpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/document_diff',
-      options
-    });
-  }
-  public async predictknnregressionapiservicespredictionregressionknnpost(
-    input: CommandInput<predictknnregressionapiservicespredictionregressionknnpostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<predictknnregressionapiservicespredictionregressionknnpostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/prediction/regression/knn',
-      options
-    });
-  }
-  public async predictknnregressionfromsearchresultsapiservicespredictionregressionknnfromresultspost(
-    input: CommandInput<predictknnregressionfromsearchresultsapiservicespredictionregressionknnfromresultspostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<predictknnregressionfromsearchresultsapiservicespredictionregressionknnfromresultspostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/prediction/regression/knn_from_results',
-      options
-    });
-  }
-  public async encodenumericfieldsapiservicesencodersnumericfieldspost(
-    input: CommandInput<encodenumericfieldsapiservicesencodersnumericfieldspostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<encodenumericfieldsapiservicesencodersnumericfieldspostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/encoders/numeric_fields',
-      options
-    });
-  }
-  public async encodecategoriesapiservicesencoderscategoriespost(
-    input: CommandInput<encodecategoriesapiservicesencoderscategoriespostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<encodecategoriesapiservicesencoderscategoriespostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/encoders/categories',
-      options
-    });
-  }
-  public async encodedictionaryapiservicesencodersdictionarypost(
-    input: CommandInput<encodedictionaryapiservicesencodersdictionarypostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<encodedictionaryapiservicesencodersdictionarypostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/encoders/dictionary',
-      options
-    });
-  }
-  public async encodetextapiservicesencoderstextget(
-    input: CommandInput<encodetextapiservicesencoderstextgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<encodetextapiservicesencoderstextgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/services/encoders/text',
-      options
-    });
-  }
-  public async encodetextapiservicesencodersmultitextget(
-    input: CommandInput<encodetextapiservicesencodersmultitextgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<encodetextapiservicesencodersmultitextgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/services/encoders/multi_text',
-      options
-    });
-  }
-  public async encodeimageapiservicesencodersimagepost(
-    input: CommandInput<encodeimageapiservicesencodersimagepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<encodeimageapiservicesencodersimagepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/encoders/image',
-      options
-    });
-  }
-  public async encodetextimageapiservicesencoderstextimageget(
-    input: CommandInput<encodetextimageapiservicesencoderstextimagegetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<encodetextimageapiservicesencoderstextimagegetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/services/encoders/textimage',
-      options
-    });
-  }
-  public async encodeimagetextapiservicesencodersimagetextget(
-    input: CommandInput<encodeimagetextapiservicesencodersimagetextgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<encodeimagetextapiservicesencodersimagetextgetOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/services/encoders/imagetext',
-      options
-    });
-  }
-  public async retrievedocumentsapiservicesencodersencodepost(
-    input: CommandInput<retrievedocumentsapiservicesencodersencodepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<retrievedocumentsapiservicesencodersencodepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/encoders/encode',
-      options
-    });
-  }
-  public async retrievedocumentsapiservicesencodersbulkencodepost(
-    input: CommandInput<retrievedocumentsapiservicesencodersbulkencodepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<retrievedocumentsapiservicesencodersbulkencodepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/encoders/bulk_encode',
-      options
-    });
-  }
-  public async wordcloudsapiserviceswordcloudswordcloudspost(
-    input: CommandInput<wordcloudsapiserviceswordcloudswordcloudspostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<wordcloudsapiserviceswordcloudswordcloudspostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/services/wordclouds/wordclouds',
-      options
-    });
-  }
-  public async deployablecreateapideployablescreatepost(
-    input: CommandInput<deployablecreateapideployablescreatepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<deployablecreateapideployablescreatepostOutput>> {
+  ):Promise<CommandOutput<CreateDeployableOutput>> {
     return this.SendRequest({
       input,
       method:'post',
@@ -1161,43 +188,10 @@ export class VectorApiClient  extends _GenericClient {
       options
     });
   }
-  public async deployableupdateshareableapideployablesdeployableidsharepost(
-    input: CommandInput<deployableupdateshareableapideployablesdeployableidsharepostInput>,
+  public async GetDeployable(
+    input: CommandInput<GetDeployableInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<deployableupdateshareableapideployablesdeployableidsharepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/deployables/{deployable_id}/share',
-      options
-    });
-  }
-  public async deployableupdateprivateapideployablesdeployableidprivatepost(
-    input: CommandInput<deployableupdateprivateapideployablesdeployableidprivatepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<deployableupdateprivateapideployablesdeployableidprivatepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/deployables/{deployable_id}/private',
-      options
-    });
-  }
-  public async deployableupdateapideployablesdeployableidupdatepost(
-    input: CommandInput<deployableupdateapideployablesdeployableidupdatepostInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<deployableupdateapideployablesdeployableidupdatepostOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/deployables/{deployable_id}/update',
-      options
-    });
-  }
-  public async deployablegetapideployablesdeployableidgetget(
-    input: CommandInput<deployablegetapideployablesdeployableidgetgetInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<deployablegetapideployablesdeployableidgetgetOutput>> {
+  ):Promise<CommandOutput<GetDeployableOutput>> {
     return this.SendRequest({
       input,
       method:'get',
@@ -1205,10 +199,21 @@ export class VectorApiClient  extends _GenericClient {
       options
     });
   }
-  public async deployabledeleteapideployablesdeletepost(
-    input: CommandInput<deployabledeleteapideployablesdeletepostInput>,
+  public async UpdateDeployable(
+    input: CommandInput<UpdateDeployableInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<deployabledeleteapideployablesdeletepostOutput>> {
+  ):Promise<CommandOutput<UpdateDeployableOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployables/{deployable_id}/update',
+      options
+    });
+  }
+  public async DeleteDeployable(
+    input: CommandInput<DeleteDeployableInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteDeployableOutput>> {
     return this.SendRequest({
       input,
       method:'post',
@@ -1216,14 +221,905 @@ export class VectorApiClient  extends _GenericClient {
       options
     });
   }
-  public async deployablelistapideployableslistget(
-    input: CommandInput<deployablelistapideployableslistgetInput>,
+  public async CreateDeployableKey(
+    input: CommandInput<CreateDeployableKeyInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<deployablelistapideployableslistgetOutput>> {
+  ):Promise<CommandOutput<CreateDeployableKeyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployables/{deployable_id}/share',
+      options
+    });
+  }
+  public async DeleteDeployableKey(
+    input: CommandInput<DeleteDeployableKeyInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteDeployableKeyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployables/{deployable_id}/private',
+      options
+    });
+  }
+  public async ListDeployables(
+    input: CommandInput<ListDeployablesInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListDeployablesOutput>> {
     return this.SendRequest({
       input,
       method:'get',
       path:'/deployables/list',
+      options
+    });
+  }
+  public async UpdateProject(
+    input: CommandInput<UpdateProjectInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateProjectOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/projects/update',
+      options
+    });
+  }
+  public async ListProjects(
+    input: CommandInput<ListProjectsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListProjectsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/projects/list',
+      options
+    });
+  }
+  public async CreateUser(
+    input: CommandInput<CreateUserInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateUserOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/auth/users/create',
+      options
+    });
+  }
+  public async ListUsers(
+    input: CommandInput<ListUsersInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListUsersOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/auth/users/list',
+      options
+    });
+  }
+  public async IsUserAuthorized(
+    input: CommandInput<IsUserAuthorizedInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<IsUserAuthorizedOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/auth/is_authorized',
+      options
+    });
+  }
+  public async GetAuthHeaderInfo(
+    input: CommandInput<GetAuthHeaderInfoInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetAuthHeaderInfoOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/auth/info',
+      options
+    });
+  }
+  public async CreateProjectInvite(
+    input: CommandInput<CreateProjectInviteInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateProjectInviteOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/auth/invite/create',
+      options
+    });
+  }
+  public async ListProjectInvites(
+    input: CommandInput<ListProjectInvitesInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListProjectInvitesOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/auth/invite/list',
+      options
+    });
+  }
+  public async AcceptProjectInvite(
+    input: CommandInput<AcceptProjectInviteInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<AcceptProjectInviteOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/auth/invite/accept',
+      options
+    });
+  }
+  public async GetUser(
+    input: CommandInput<GetUserInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetUserOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/auth/users/{user_id}',
+      options
+    });
+  }
+  public async UpdateUser(
+    input: CommandInput<UpdateUserInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateUserOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/auth/users/{user_id}/update',
+      options
+    });
+  }
+  public async DeleteUser(
+    input: CommandInput<DeleteUserInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteUserOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/auth/users/{user_id}/delete',
+      options
+    });
+  }
+  public async CreateUserKey(
+    input: CommandInput<CreateUserKeyInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateUserKeyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/auth/users/{user_id}/keys/create',
+      options
+    });
+  }
+  public async ListUserKeys(
+    input: CommandInput<ListUserKeysInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListUserKeysOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/auth/users/{user_id}/keys/list',
+      options
+    });
+  }
+  public async DeleteUserKey(
+    input: CommandInput<DeleteUserKeyInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteUserKeyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/auth/users/{user_id}/keys/delete',
+      options
+    });
+  }
+  public async InsertClusterCentroids(
+    input: CommandInput<InsertClusterCentroidsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<InsertClusterCentroidsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/centroids/insert',
+      options
+    });
+  }
+  public async UpdateClusterCentroids(
+    input: CommandInput<UpdateClusterCentroidsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateClusterCentroidsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/centroids/update',
+      options
+    });
+  }
+  public async CompareClusterCentroids(
+    input: CommandInput<CompareClusterCentroidsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CompareClusterCentroidsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/centroids/compare_centroids',
+      options
+    });
+  }
+  public async Aggregate(
+    input: CommandInput<AggregateInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<AggregateOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/aggregate',
+      options
+    });
+  }
+  public async AggregateClusters(
+    input: CommandInput<AggregateClustersInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<AggregateClustersOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/aggregate',
+      options
+    });
+  }
+  public async ListClusterFacets(
+    input: CommandInput<ListClusterFacetsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListClusterFacetsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/facets',
+      options
+    });
+  }
+  public async ListClosestToCentroids(
+    input: CommandInput<ListClosestToCentroidsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListClosestToCentroidsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/centroids/list_closest_to_center',
+      options
+    });
+  }
+  public async ListFurthestFromCentroids(
+    input: CommandInput<ListFurthestFromCentroidsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListFurthestFromCentroidsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/centroids/list_furthest_from_center',
+      options
+    });
+  }
+  public async ListCentroids(
+    input: CommandInput<ListCentroidsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListCentroidsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/centroids/documents',
+      options
+    });
+  }
+  public async DeleteCentroid(
+    input: CommandInput<DeleteCentroidInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteCentroidOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/centroids/{centroid_id}/delete',
+      options
+    });
+  }
+  public async RealtimeClustering(
+    input: CommandInput<RealtimeClusteringInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<RealtimeClusteringOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/realtime',
+      options
+    });
+  }
+  public async MergeClusters(
+    input: CommandInput<MergeClustersInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<MergeClustersOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/merge',
+      options
+    });
+  }
+  public async CreateClusterSummaries(
+    input: CommandInput<CreateClusterSummariesInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateClusterSummariesOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/centroids/summaries/create',
+      options
+    });
+  }
+  public async ListClusterSummaries(
+    input: CommandInput<ListClusterSummariesInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListClusterSummariesOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/centroids/summaries/list',
+      options
+    });
+  }
+  public async DeleteClusterSummaries(
+    input: CommandInput<DeleteClusterSummariesInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteClusterSummariesOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/centroids/summaries/bulk_delete',
+      options
+    });
+  }
+  public async Insert(
+    input: CommandInput<InsertInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<InsertOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/insert',
+      options
+    });
+  }
+  public async BulkInsert(
+    input: CommandInput<BulkInsertInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<BulkInsertOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/bulk_insert',
+      options
+    });
+  }
+  public async GetFileUploadUrlsForDataset(
+    input: CommandInput<GetFileUploadUrlsForDatasetInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetFileUploadUrlsForDatasetOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/get_file_upload_urls',
+      options
+    });
+  }
+  public async ParseBlob(
+    input: CommandInput<ParseBlobInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ParseBlobOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/parse_blob',
+      options
+    });
+  }
+  public async CopyForeignDataset(
+    input: CommandInput<CopyForeignDatasetInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CopyForeignDatasetOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/admin/copy_foreign_dataset',
+      options
+    });
+  }
+  public async CreateProjectReadKey(
+    input: CommandInput<CreateProjectReadKeyInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateProjectReadKeyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/admin/request_read_api_key',
+      options
+    });
+  }
+  public async DeleteDataset(
+    input: CommandInput<DeleteDatasetInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteDatasetOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/delete',
+      options
+    });
+  }
+  public async CreateDataset(
+    input: CommandInput<CreateDatasetInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateDatasetOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/create',
+      options
+    });
+  }
+  public async GetSchema(
+    input: CommandInput<GetSchemaInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetSchemaOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/schema',
+      options
+    });
+  }
+  public async ListDatasets(
+    input: CommandInput<ListDatasetsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListDatasetsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/list',
+      options
+    });
+  }
+  public async CombineDatasets(
+    input: CommandInput<CombineDatasetsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CombineDatasetsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/combine',
+      options
+    });
+  }
+  public async GetCombineJobStatus(
+    input: CommandInput<GetCombineJobStatusInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetCombineJobStatusOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/combine/{job_id}/get',
+      options
+    });
+  }
+  public async SearchDatasets(
+    input: CommandInput<SearchDatasetsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<SearchDatasetsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/search',
+      options
+    });
+  }
+  public async GetFieldHealth(
+    input: CommandInput<GetFieldHealthInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetFieldHealthOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/monitor/health',
+      options
+    });
+  }
+  public async GetDatasetStats(
+    input: CommandInput<GetDatasetStatsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetDatasetStatsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/monitor/stats',
+      options
+    });
+  }
+  public async GetDatasetUsage(
+    input: CommandInput<GetDatasetUsageInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetDatasetUsageOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/monitor/usage',
+      options
+    });
+  }
+  public async GetVectorMappings(
+    input: CommandInput<GetVectorMappingsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetVectorMappingsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/vector_mappings',
+      options
+    });
+  }
+  public async GetDatasetDetails(
+    input: CommandInput<GetDatasetDetailsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetDatasetDetailsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/details',
+      options
+    });
+  }
+  public async GetDocument(
+    input: CommandInput<GetDocumentInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetDocumentOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/documents/get',
+      options
+    });
+  }
+  public async DeleteDocument(
+    input: CommandInput<DeleteDocumentInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteDocumentOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/delete',
+      options
+    });
+  }
+  public async UpsertDatasetSettings(
+    input: CommandInput<UpsertDatasetSettingsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpsertDatasetSettingsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/settings',
+      options
+    });
+  }
+  public async GetDatasetSettings(
+    input: CommandInput<GetDatasetSettingsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetDatasetSettingsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/settings',
+      options
+    });
+  }
+  public async UpsertDatasetMetadata(
+    input: CommandInput<UpsertDatasetMetadataInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpsertDatasetMetadataOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/metadata',
+      options
+    });
+  }
+  public async GetDatasetMetadata(
+    input: CommandInput<GetDatasetMetadataInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetDatasetMetadataOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/metadata',
+      options
+    });
+  }
+  public async Update(
+    input: CommandInput<UpdateInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/update',
+      options
+    });
+  }
+  public async DeleteDocumentFields(
+    input: CommandInput<DeleteDocumentFieldsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteDocumentFieldsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/delete_fields',
+      options
+    });
+  }
+  public async BulkUpdate(
+    input: CommandInput<BulkUpdateInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<BulkUpdateOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/bulk_update',
+      options
+    });
+  }
+  public async UpdateWhere(
+    input: CommandInput<UpdateWhereInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateWhereOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/update_where',
+      options
+    });
+  }
+  public async ListFacets(
+    input: CommandInput<ListFacetsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListFacetsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/facets',
+      options
+    });
+  }
+  public async GetWhere(
+    input: CommandInput<GetWhereInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetWhereOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/get_where',
+      options
+    });
+  }
+  public async PaginateDocuments(
+    input: CommandInput<PaginateDocumentsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<PaginateDocumentsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/paginate',
+      options
+    });
+  }
+  public async BulkGetDocuments(
+    input: CommandInput<BulkGetDocumentsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<BulkGetDocumentsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/bulk_get',
+      options
+    });
+  }
+  public async BulkDeleteDocuments(
+    input: CommandInput<BulkDeleteDocumentsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<BulkDeleteDocumentsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/bulk_delete',
+      options
+    });
+  }
+  public async ListDocuments(
+    input: CommandInput<ListDocumentsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListDocumentsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/documents/list',
+      options
+    });
+  }
+  public async DeleteWhere(
+    input: CommandInput<DeleteWhereInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteWhereOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/delete_where',
+      options
+    });
+  }
+  public async SimpleSearchPost(
+    input: CommandInput<SimpleSearchPostInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<SimpleSearchPostOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/simple_search',
+      options
+    });
+  }
+  public async FastSearch(
+    input: CommandInput<FastSearchInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<FastSearchOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/fast_search',
+      options
+    });
+  }
+  public async Recommend(
+    input: CommandInput<RecommendInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<RecommendOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/recommend',
+      options
+    });
+  }
+  public async CloneDataset(
+    input: CommandInput<CloneDatasetInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CloneDatasetOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/clone',
+      options
+    });
+  }
+  public async PredictKNNRegression(
+    input: CommandInput<PredictKNNRegressionInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<PredictKNNRegressionOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/prediction/regression/knn',
+      options
+    });
+  }
+  public async PredictKNNFromResults(
+    input: CommandInput<PredictKNNFromResultsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<PredictKNNFromResultsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/prediction/knn_from_results',
+      options
+    });
+  }
+  public async BiasEvaluation(
+    input: CommandInput<BiasEvaluationInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<BiasEvaluationOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/evaluation/bias',
+      options
+    });
+  }
+  public async Vectorize(
+    input: CommandInput<VectorizeInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<VectorizeOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/vectorize',
+      options
+    });
+  }
+  public async VectorizeAndInsert(
+    input: CommandInput<VectorizeAndInsertInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<VectorizeAndInsertOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/vectorize/{dataset_id}/vectorize_and_insert',
+      options
+    });
+  }
+  public async VectorizeField(
+    input: CommandInput<VectorizeFieldInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<VectorizeFieldOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/vectorize/{dataset_id}',
+      options
+    });
+  }
+  public async TriggerWorkflow(
+    input: CommandInput<TriggerWorkflowInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<TriggerWorkflowOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/trigger',
+      options
+    });
+  }
+  public async ListWorkflows(
+    input: CommandInput<ListWorkflowsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListWorkflowsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/workflows/list',
+      options
+    });
+  }
+  public async GetWorkflowStatus(
+    input: CommandInput<GetWorkflowStatusInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetWorkflowStatusOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/{workflow_id}/get',
+      options
+    });
+  }
+  public async UpsertWorkflowMetadata(
+    input: CommandInput<UpsertWorkflowMetadataInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpsertWorkflowMetadataOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/{workflow_id}/metadata',
       options
     });
   }}

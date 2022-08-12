@@ -4,6 +4,193 @@
  */
 
 export interface paths {
+  "/deployables/create": {
+    /** Create a private deployable. */
+    post: operations["CreateDeployable"];
+  };
+  "/deployables/{deployable_id}/get": {
+    /** Get a deployable. */
+    get: operations["GetDeployable"];
+  };
+  "/deployables/{deployable_id}/update": {
+    /** Update a deployable */
+    post: operations["UpdateDeployable"];
+  };
+  "/deployables/delete": {
+    post: operations["DeleteDeployable"];
+  };
+  "/deployables/{deployable_id}/share": {
+    /** Share a private deployable. */
+    post: operations["CreateDeployableKey"];
+  };
+  "/deployables/{deployable_id}/private": {
+    /** Unshare a shared deployable, making it private. */
+    post: operations["DeleteDeployableKey"];
+  };
+  "/deployables/list": {
+    /** List all deployables. */
+    get: operations["ListDeployables"];
+  };
+  "/projects/update": {
+    /** Update metadata of a Project */
+    post: operations["UpdateProject"];
+  };
+  "/projects/list": {
+    /** List all projects and their metadata */
+    get: operations["ListProjects"];
+  };
+  "/auth/users/create": {
+    post: operations["CreateUser"];
+  };
+  "/auth/users/list": {
+    post: operations["ListUsers"];
+  };
+  "/auth/is_authorized": {
+    post: operations["IsUserAuthorized"];
+  };
+  "/auth/info": {
+    /** Get user_id, key_id and permissions from an auth header. */
+    get: operations["GetAuthHeaderInfo"];
+  };
+  "/auth/invite/create": {
+    /** Invite a user to a project using either their email or their user_id */
+    post: operations["CreateProjectInvite"];
+  };
+  "/auth/invite/list": {
+    post: operations["ListProjectInvites"];
+  };
+  "/auth/invite/accept": {
+    post: operations["AcceptProjectInvite"];
+  };
+  "/auth/users/{user_id}": {
+    get: operations["GetUser"];
+  };
+  "/auth/users/{user_id}/update": {
+    post: operations["UpdateUser"];
+  };
+  "/auth/users/{user_id}/delete": {
+    /** Deletes a User from ONLY your project. If they have permissions for other projects, they will still have acces to them. */
+    post: operations["DeleteUser"];
+  };
+  "/auth/users/{user_id}/keys/create": {
+    post: operations["CreateUserKey"];
+  };
+  "/auth/users/{user_id}/keys/list": {
+    post: operations["ListUserKeys"];
+  };
+  "/auth/users/{user_id}/keys/delete": {
+    post: operations["DeleteUserKey"];
+  };
+  "/datasets/{dataset_id}/cluster/centroids/insert": {
+    /** Insert your own cluster centroids for it to be used in approximate search settings and cluster aggregations. */
+    post: operations["InsertClusterCentroids"];
+  };
+  "/datasets/{dataset_id}/cluster/centroids/update": {
+    /** Update your own cluster centroids for it to be used in approximate search settings and cluster aggregations. Will merge rather than replace centroids. */
+    post: operations["UpdateClusterCentroids"];
+  };
+  "/datasets/{dataset_id}/cluster/centroids/compare_centroids": {
+    /** For each centroid in a list of centroids, find the closest centroids in another set of centroids. */
+    post: operations["CompareClusterCentroids"];
+  };
+  "/datasets/{dataset_id}/aggregate": {
+    /**
+     * Aggregation/Groupby of a collection using an aggregation query.
+     * The aggregation query is a json body that follows the schema of:
+     *
+     *     {
+     *         "groupby" : [
+     *             {"name": <alias>, "field": <field in the collection>, "agg": "category"},
+     *             {"name": <alias>, "field": <another groupby field in the collection>, "agg": "numeric"}
+     *         ],
+     *         "metrics" : [
+     *             {"name": <alias>, "field": <numeric field in the collection>, "agg": "avg"}
+     *             {"name": <alias>, "field": <another numeric field in the collection>, "agg": "max"}
+     *             {"name": <alias>, "fields": [<numeric field in the collection>, <another numeric field in the collection>], "agg": "correlation"}
+     *         ]
+     *     }
+     *     For example, one can use the following aggregations to group score based on region and player name.
+     *     {
+     *         "groupby" : [
+     *             {"name": "region", "field": "player_region", "agg": "category"},
+     *             {"name": "player_name", "field": "name", "agg": "category"}
+     *         ],
+     *         "metrics" : [
+     *             {"name": "average_score", "field": "final_score", "agg": "avg"},
+     *             {"name": "max_score", "field": "final_score", "agg": "max"},
+     *             {'name':'total_score','field':"final_score", 'agg':'sum'},
+     *             {'name':'average_deaths','field':"final_deaths", 'agg':'avg'},
+     *             {'name':'highest_deaths','field':"final_deaths", 'agg':'max'},
+     *             {'name':'score_death_correlation', 'fields':['final_deaths', 'final_score'], 'agg': 'correlation'},
+     *         ]
+     *     }
+     * - "groupby" is the fields you want to split the data into. These are the available groupby types:
+     *     - category" : groupby a field that is a category
+     *     - numeric: groupby a field that is a numeric
+     * - "metrics" is the fields you want to metrics you want to calculate in each of those, every aggregation includes a frequency metric. These are the available metric types:
+     *     - For single fields: "avg"/"average"/"mean", "cardinality", "count", "kurtosis", "max", "min", "percentiles", "kurtosis", "std_deviation", "std_deviation_bounds", "sum", "sum_of_squares", "variance"
+     *     - For multiple fields (the attribute "fields" must be used instead of "field"): "correlation", "covariance", "kurtosis", "mean", "skewness", "variance"
+     *
+     * The response returned has the following in descending order.
+     *
+     * IF you want to return documents, specify a "group_size" parameter and a "select_fields" parameter if you want to limit the specific fields chosen.
+     * This looks as such:
+     *
+     *     {
+     *       'groupby':[
+     *         {'name':'Manufacturer','field':'manufacturer','agg':'category',
+     *         'group_size': 10, 'select_fields': ["name"]},
+     *       ],
+     *       'metrics':[
+     *         {'name':'Price Average','field':'price','agg':'avg'},
+     *       ],
+     *     }
+     *
+     *     {"title": {"title": "books", "frequency": 200, "documents": [{...}, {...}]}, {"title": "books", "frequency": 100, "documents": [{...}, {...}]}}
+     *
+     * For array-aggregations, you can add "agg": "array" into the aggregation query.
+     */
+    post: operations["Aggregate"];
+  };
+  "/datasets/{dataset_id}/cluster/aggregate": {
+    /** Takes an aggregation query and gets the aggregate of each cluster in a collection. This helps you interpret each cluster and what is in them. */
+    post: operations["AggregateClusters"];
+  };
+  "/datasets/{dataset_id}/cluster/facets": {
+    /** Takes a high level aggregation of every field and every cluster in a collection. This helps you interpret each cluster and what is in them. */
+    post: operations["ListClusterFacets"];
+  };
+  "/datasets/{dataset_id}/cluster/centroids/list_closest_to_center": {
+    /** List documents with vector fields closest to centroids. */
+    post: operations["ListClosestToCentroids"];
+  };
+  "/datasets/{dataset_id}/cluster/centroids/list_furthest_from_center": {
+    /** List documents with vector fields furthest from centroids. */
+    post: operations["ListFurthestFromCentroids"];
+  };
+  "/datasets/{dataset_id}/cluster/centroids/documents": {
+    /** List centroids, optionally filtering by their ids. */
+    post: operations["ListCentroids"];
+  };
+  "/datasets/{dataset_id}/cluster/centroids/{centroid_id}/delete": {
+    /** Delete a centroid by ID */
+    post: operations["DeleteCentroid"];
+  };
+  "/datasets/{dataset_id}/cluster/realtime": {
+    post: operations["RealtimeClustering"];
+  };
+  "/datasets/{dataset_id}/cluster/merge": {
+    post: operations["MergeClusters"];
+  };
+  "/datasets/{dataset_id}/cluster/centroids/summaries/create": {
+    post: operations["CreateClusterSummaries"];
+  };
+  "/datasets/{dataset_id}/cluster/centroids/summaries/list": {
+    post: operations["ListClusterSummaries"];
+  };
+  "/datasets/{dataset_id}/cluster/centroids/summaries/bulk_delete": {
+    post: operations["DeleteClusterSummaries"];
+  };
   "/datasets/{dataset_id}/documents/insert": {
     /**
      * When inserting the document you can specify your own id for a document by using the field name **"\_id"**.
@@ -19,35 +206,170 @@ export interface paths {
   };
   "/datasets/{dataset_id}/documents/bulk_insert": {
     /**
-     * When inserting documents you can specify your own id for a document by using the field name **"\_id"**.
-     * For specifying your own vector use the suffix (ends with)  **"\_vector\_"** for the field name.
-     * e.g. "product\_description\_vector\_"
+     * Insert one or more documents.
+     *
+     * This method is the same as [`/insert`](/reference/insert) but provides support for more than one document to be inserted at a time.
+     *
+     * For each insertion, if an `_id` is provided and a document with that ID already exists, all existing field values will be deleted and the new ones will be stored. If no `_id` field is provided, one will automatically be added to the document.
+     *
+     * This method will entirely replace the documents. If you would like to only partially update a document, use [`/update_where`](/reference/updatewhere).
+     *
+     * If the document with the provided `_id` doesn't exist, one will be automatically created.
+     * If the provided dataset doesn't exist, one will be automatically created.
+     *
+     * Limit the payload of documents to a maximum 100MB for optimal performance.
      */
     post: operations["BulkInsert"];
   };
-  "/datasets/{dataset_id}/blob_access_urls": {
-    /**
-     * Generate an upload and download url for temporary storing of large files.
-     *
-     *     Used in conjunction with parse_blob to upload large datasets.
-     */
-    post: operations["BlobAccessURLs"];
+  "/datasets/{dataset_id}/get_file_upload_urls": {
+    /** specify a list of file paths. For each file path, a url upload_url is returned. files can be POSTed on upload_url to upload them. They can then be accessed on url. Upon dataset deletion, these files will be deleted. */
+    post: operations["GetFileUploadUrlsForDataset"];
   };
   "/datasets/{dataset_id}/parse_blob": {
     /** Bulk insert a large number of documents by downloading a file using "download url". This bypasses the need to directly send documents to the api, as happens in BulkInsert. */
     post: operations["ParseBlob"];
   };
+  "/admin/copy_foreign_dataset": {
+    /** Copy a dataset from another users projects into your project. This is considered a project job. */
+    post: operations["CopyForeignDataset"];
+  };
+  "/admin/request_read_api_key": {
+    /** Creates a read only key for your project. Make sure to save the api key somewhere safe. When doing a search the admin username should still be used. */
+    post: operations["CreateProjectReadKey"];
+  };
+  "/datasets/{dataset_id}/delete": {
+    /** Delete a dataset. */
+    post: operations["DeleteDataset"];
+  };
+  "/datasets/create": {
+    /**
+     * A dataset can store documents to be **searched, retrieved, filtered and aggregated** (similar to Collections in MongoDB, Tables in SQL, Indexes in ElasticSearch).
+     *
+     * A powerful and core feature of VecDB is that you can store both your metadata and vectors in the same document.
+     * When specifying the schema of a dataset and inserting your own vector use the suffix (ends with) **"\_vector\_"** for the field name, and specify the length of the vector in dataset_schema.
+     *
+     * For example:
+     *
+     *     {
+     *         "product_image_vector_": 1024,
+     *         "product_text_description_vector_" : 128
+     *     }
+     *
+     * These are the field types supported in our datasets: **["text", "numeric", "date", "dict", "chunks", "vector", "chunkvector"]**.
+     *
+     * For example:
+     *
+     *     {
+     *         "product_text_description" : "text",
+     *         "price" : "numeric",
+     *         "created_date" : "date",
+     *         "product_texts_chunk_": "chunks",
+     *         "product_text_chunkvector_" : 1024
+     *     }
+     *
+     * You don't have to specify the schema of every single field when creating a dataset, as VecDB will automatically detect the appropriate data type for each field (vectors will be automatically identified by its **"\_vector\_"** suffix). Infact you also don't always have to use this endpoint to create a dataset as **\/datasets/bulk_insert** will infer and create the dataset and schema as you insert new documents.
+     *
+     * Note:
+     *  * A dataset name/id can only contain undercase letters, dash, underscore and numbers.
+     *  * "\_id" is reserved as the key and id of a document.
+     *  * Once a schema is set for a dataset it cannot be altered. If it has to be altered, utlise the copy dataset endpoint.
+     *
+     * For more information about vectors check out the 'Vectorizing' section, **\/services/search/vector** or out blog at [https://relevance.ai/blog](https://relevance.ai/blog).
+     * For more information about chunks and chunk vectors check out **\/services/search/chunk**.
+     */
+    post: operations["CreateDataset"];
+  };
+  "/datasets/{dataset_id}/schema": {
+    get: operations["GetSchema"];
+  };
+  "/datasets/list": {
+    /** List all datasets in a project that you are authorized to read/write. */
+    get: operations["ListDatasets"];
+  };
+  "/datasets/combine": {
+    post: operations["CombineDatasets"];
+  };
+  "/datasets/combine/{job_id}/get": {
+    post: operations["GetCombineJobStatus"];
+  };
+  "/datasets/search": {
+    /** Search all datasets in a project that you are authorized to read/write. */
+    get: operations["SearchDatasets"];
+  };
+  "/datasets/{dataset_id}/monitor/health": {
+    /** Gives you a summary of the health of your vectors, e.g. how many documents with vectors are missing, how many documents with zero vectors */
+    get: operations["GetFieldHealth"];
+  };
+  "/datasets/{dataset_id}/monitor/stats": {
+    /** View the usage statistics of a dataset. */
+    get: operations["GetDatasetStats"];
+  };
+  "/datasets/{dataset_id}/monitor/usage": {
+    /** View api call usage statistics for a dataset. */
+    post: operations["GetDatasetUsage"];
+  };
+  "/datasets/{dataset_id}/vector_mappings": {
+    /** DEPRECATED !!!! Retrieve the mapping of vectors generated through fields, dictionary, array, etc */
+    get: operations["GetVectorMappings"];
+  };
+  "/datasets/{dataset_id}/details": {
+    /**
+     * Returns a page of datasets and in detail the dataset's associated information that you are authorized to read/write. The information includes:
+     *
+     * | Information      | Description |
+     * | ----------- | ----------- |
+     * | schema      | Data schema of a dataset. (returns same data as **\/dataset/{dataset_id}/schema**) |
+     * | metadata   | Metadata of a dataset. (returns same data as **\/dataset/{dataset_id}/metadata**) |
+     * | stats   | Statistics of number of documents and size of a dataset. (returns same data as **\/dataset/{dataset_id}/monitor/stats**) |
+     * | vector_health   | Number of zero vectors stored. (returns same data as **\/dataset/{dataset_id}/monitor/health**) |
+     * | schema_stats   | Fields and number of documents missing/not missing for that field. (returns same data as **\/dataset/{dataset_id}/monitor/stats**) |
+     * | active_jobs   | All active jobs/tasks on the dataset. (returns same data as **\/dataset/{dataset_id}/tasks/list**) |
+     */
+    post: operations["GetDatasetDetails"];
+  };
   "/datasets/{dataset_id}/documents/get": {
-    /** Get a document by its _id. this is a POST endpoint, and supports extra options such as include_vector. An example body for this endpoint is {document_id:"abcd"} */
-    post: operations["GetDocument"];
+    /**
+     * Retrieve a document by its `_id`.
+     *
+     * This is the most performant method to get a document or check if it exists, faster than filtering a dataset for by an `_id`.
+     */
+    get: operations["GetDocument"];
   };
   "/datasets/{dataset_id}/documents/delete": {
-    /** Delete a document by its _id. this is a POST endpoint. An example body for this endpoint is {document_id:"abcd"} */
+    /**
+     * Delete a document by its `_id` and remove it from the dataset.
+     *
+     * Support for deleting many documents at once is available through [`/bulk_delete`](/reference/bulk_delete_api_datasets__dataset_id__documents_bulk_delete_post).
+     */
     post: operations["DeleteDocument"];
   };
+  "/datasets/{dataset_id}/settings": {
+    /** Retreives settings for dataset. */
+    get: operations["GetDatasetSettings"];
+    /** Add and overwrite settings about a dataset. Notably description, data source, etc. */
+    post: operations["UpsertDatasetSettings"];
+  };
+  "/datasets/{dataset_id}/metadata": {
+    /** Retreives metadata about a dataset. Notably description, data source, etc */
+    get: operations["GetDatasetMetadata"];
+    /** Retreives metadata about a dataset. Notably description, data source, etc */
+    post: operations["UpsertDatasetMetadata"];
+  };
   "/datasets/{dataset_id}/documents/update": {
-    /** Edit by providing a key value pair of fields you are adding or changing. */
+    /**
+     * Update an existing document by providing its `_id` and an object containing the new field values.
+     *
+     * This method supports a partial update so you may add new fields or update existing ones. It will not overwrite the entire existing document.
+     *
+     * If the provided `_id` has no matching document in the dataset, a new document will be created. Likewise, if the provided `dataset_id` does not match a dataset in your project a new one will be created.
+     *
+     * Support for updating many documents at once with a filter condition is available through [`/update_where`](/reference/updatewhere).
+     */
     post: operations["Update"];
+  };
+  "/datasets/{dataset_id}/documents/delete_fields": {
+    /** Delete fields in a document in a dataset by its id. */
+    post: operations["DeleteDocumentFields"];
   };
   "/datasets/{dataset_id}/documents/bulk_update": {
     /**
@@ -60,8 +382,50 @@ export interface paths {
     post: operations["BulkUpdate"];
   };
   "/datasets/{dataset_id}/documents/update_where": {
-    /** Updates documents by filters. The updates to make to the documents that is returned by a filter. The updates should be specified in a format of {"field_name": "value"}. e.g. {"item.status" : "Sold Out"} */
+    /**
+     * Update fields in all existing documents that match a filter condition.
+     *
+     * This method supports a partial update so you may add new fields or update only those you need. Other fields will remain unaffected.
+     *
+     * If the provided `dataset_id` does not match a dataset in your project, a new one will be created.
+     */
     post: operations["UpdateWhere"];
+  };
+  "/datasets/{dataset_id}/facets": {
+    /** Takes a high level aggregation of every field, return their unique values and frequencies. This is used to help create the filter bar for search. */
+    post: operations["ListFacets"];
+  };
+  "/datasets/{dataset_id}/documents/get_where": {
+    /**
+     * Retrieve documents with filters.
+     * afterId is provided to retrieve even more documents. Loop through it to retrieve all documents in the database.
+     * Filter is used to retrieve documents that match the conditions set in a filter query.
+     */
+    post: operations["GetWhere"];
+  };
+  "/datasets/{dataset_id}/documents/paginate": {
+    /**
+     * Retrieve documents with filters.
+     * afterId is provided to retrieve even more documents. Loop through it to retrieve all documents in the database.
+     * Filter is used to retrieve documents that match the conditions set in a filter query.
+     */
+    post: operations["PaginateDocuments"];
+  };
+  "/datasets/{dataset_id}/documents/bulk_get": {
+    /** Retrieve documents by their IDs ("_id" field). This will retrieve the documents faster than a filter applied on the "_id" field. For single id lookup version of this request use /datasets/{dataset_id}/documents/get. */
+    post: operations["BulkGetDocuments"];
+  };
+  "/datasets/{dataset_id}/documents/bulk_delete": {
+    /** Delete a list of documents by their IDs. For deleting a single document refer to /datasets/{dataset_id}/documents/delete or deleting documents by filters refer to /datasets/{dataset_id}/documents/delete_where. */
+    post: operations["BulkDeleteDocuments"];
+  };
+  "/datasets/{dataset_id}/documents/list": {
+    /**
+     * Retrieve documents with filters.
+     * afterId is provided to retrieve even more documents. Loop through it to retrieve all documents in the database.
+     * Filter is used to retrieve documents that match the conditions set in a filter query.
+     */
+    get: operations["ListDocuments"];
   };
   "/datasets/{dataset_id}/documents/delete_where": {
     /** Delete documents that match on a filters. At least one filter must be provided. */
@@ -75,51 +439,3134 @@ export interface paths {
     /** SimpleSearch is an easy way to use vector search and traditional text matching to search your dataset. It also supports filtering, sorting and aggregating results. */
     post: operations["FastSearch"];
   };
+  "/datasets/{dataset_id}/recommend": {
+    /** Recommend documents similar to specific documents. Specify which vector field must be used for recommendation using  the documentsToRecommend property. */
+    post: operations["Recommend"];
+  };
+  "/datasets/{dataset_id}/clone": {
+    post: operations["CloneDataset"];
+  };
+  "/services/prediction/regression/knn": {
+    /** Predict using KNN regression. */
+    post: operations["PredictKNNRegression"];
+  };
+  "/services/prediction/knn_from_results": {
+    /** Predict using KNN regression from search results. */
+    post: operations["PredictKNNFromResults"];
+  };
+  "/services/evaluation/bias": {
+    post: operations["BiasEvaluation"];
+  };
+  "/services/vectorize": {
+    post: operations["Vectorize"];
+  };
+  "/services/vectorize/{dataset_id}/vectorize_and_insert": {
+    post: operations["VectorizeAndInsert"];
+  };
+  "/services/vectorize/{dataset_id}": {
+    post: operations["VectorizeField"];
+  };
+  "/workflows/trigger": {
+    post: operations["TriggerWorkflow"];
+  };
+  "/workflows/list": {
+    get: operations["ListWorkflows"];
+  };
+  "/workflows/{workflow_id}/get": {
+    post: operations["GetWorkflowStatus"];
+  };
+  "/workflows/{workflow_id}/metadata": {
+    /** Update metadata for a workflow run */
+    post: operations["UpsertWorkflowMetadata"];
+  };
 }
 
 export interface components {
   schemas: {
-    InsertInput: {
-      /** Whether to include insert date as a field 'insert_date_'. */
-      insert_date?: boolean;
+    CreateDeployableInput: {
+      /** The deployable configuration. */
+      configuration?: { [key: string]: unknown };
+      /** Dataset to create deployable for. */
+      dataset_id?: string;
+    };
+    CreateDeployableOutput: {
+      deployable_id: string;
+      dataset_id: string;
+      project_id: string;
+      configuration: { [key: string]: unknown };
+      private?: boolean;
+    };
+    GetDeployableInput: unknown;
+    GetDeployableOutput: {
+      deployable_id?: string;
+      dataset_id?: string;
+      project_id?: string;
+      api_key?: string;
+      configuration?: { [key: string]: unknown };
+      private?: boolean;
+      updated_at?: string;
+    };
+    UpdateDeployableInput: {
+      /** The deployable configuration. */
+      configuration?: { [key: string]: unknown };
+      /** Dataset to create deployable for. */
+      dataset_id?: string;
       /** Whether to overwrite document if it exists. */
       overwrite?: boolean;
-      /** Whether the api should check the documents for vector datatype to update the schema. */
-      update_schema?: boolean;
-      /** Whether to return before all documents have finished updating. */
-      wait_for_update?: boolean;
-      /** Before insertion, fields of documents will be transformed according to this array of rules. If transformation fails, the output field will not be generated. */
-      field_transformers?: {
-        /** Field to transform. to transform a nested field, use a.b */
-        field: string;
-        /** If specified, place result in this field. To place in a nested field, use format a.b */
-        output_field?: string;
-        /** Whether to strip html tags from field. */
-        remove_html?: boolean;
-        /** Whether transform a text field into an array of text by splitting sentences. */
-        split_sentences?: boolean;
+      /** This is prioritised over overwrite. If True, adds new fields. */
+      upsert?: boolean;
+    };
+    UpdateDeployableOutput: {
+      status: string;
+      message: string;
+    };
+    DeleteDeployableInput: {
+      /** The deployable ID. */
+      id: string;
+    };
+    DeleteDeployableOutput: unknown;
+    CreateDeployableKeyInput: unknown;
+    CreateDeployableKeyOutput: {
+      status: string;
+      message: string;
+    };
+    DeleteDeployableKeyInput: unknown;
+    DeleteDeployableKeyOutput: {
+      status: string;
+      message: string;
+    };
+    ListDeployablesInput: unknown;
+    ListDeployablesOutput: {
+      deployables: {
+        deployable_id?: string;
+        dataset_id?: string;
+        project_id?: string;
+        api_key?: string;
+        configuration?: { [key: string]: unknown };
+        private?: boolean;
+        updated_at?: string;
       }[];
-      /** A list of jobs to run once all documents are processed. */
-      jobs_to_trigger?: {
-        /** Specify this to run an encoding job after documents are processed. Supports chunk field encoding, encoding many fields, and storing results in a new field specified by alias. */
-        encode?: {
-          /** Chunk field to encode. Will produce a field with _chunkvector_ suffix. */
-          chunk_field?: string;
-          /** Regular fields to encode. Will produce a field with _vector suffix. */
-          fields?: string[];
-          /** If provided, this string will be added to the output field name. */
-          alias?: string;
-          /** Model name to use for encoding. */
-          model_name?: string;
+      count: number;
+    };
+    UpdateProjectInput: {
+      /** The name of the project */
+      name?: string;
+      /** The description of the project */
+      description?: string;
+    };
+    UpdateProjectOutput: {
+      status: string;
+      message: string;
+    };
+    ListProjectsInput: unknown;
+    ListProjectsOutput: {
+      projects: {
+        project_id?: string;
+        name?: string;
+        description?: string;
+        permissions?: { [key: string]: unknown };
+        updated_at?: string;
+      }[];
+      count: number;
+    };
+    permissions: {
+      items: {
+        [key: string]: {
+          resources?: {
+            datasets?: { [key: string]: boolean };
+            deployables?: { [key: string]: boolean };
+            users?: { [key: string]: boolean };
+            workflows?: { [key: string]: boolean };
+          };
+          actions?: { [key: string]: boolean };
+        };
+      };
+    };
+    CreateUserInput: {
+      name?: string;
+      referral_code?: string;
+      permissions?: components["schemas"]["permissions"];
+      /** The name of the project. This will contain all your datasets. */
+      project?: string;
+      /** The id token for a signed in account. This attaches the sign in account to the user. */
+      id_token?: string;
+    };
+    CreateUserOutput: {
+      user_id: string;
+      api_key: string;
+      project: string;
+    };
+    ListUsersInput: {
+      page?: number;
+      page_size?: number;
+    };
+    ListUsersOutput: {
+      results: {
+        name?: string;
+        permissions: {
+          projects: {
+            [key: string]: {
+              items: {
+                [key: string]: {
+                  resources?: {
+                    datasets?: { [key: string]: boolean };
+                    deployables?: { [key: string]: boolean };
+                    users?: { [key: string]: boolean };
+                    workflows?: { [key: string]: boolean };
+                  };
+                  actions?: { [key: string]: boolean };
+                };
+              };
+            };
+          };
+        };
+        type: "user" | "machine";
+        _id: string;
+        email?: string;
+      }[];
+    };
+    IsUserAuthorizedInput: {
+      permissions?: components["schemas"]["permissions"];
+    };
+    IsUserAuthorizedOutput: {
+      valid: boolean;
+      message: string;
+    };
+    GetAuthHeaderInfoInput: unknown;
+    fullUserPermissions: {
+      projects: {
+        [key: string]: {
+          items: {
+            [key: string]: {
+              resources?: {
+                datasets?: { [key: string]: boolean };
+                deployables?: { [key: string]: boolean };
+                users?: { [key: string]: boolean };
+                workflows?: { [key: string]: boolean };
+              };
+              actions?: { [key: string]: boolean };
+            };
+          };
+        };
+      };
+    };
+    GetAuthHeaderInfoOutput: {
+      name?: string;
+      user_id: string;
+      key_id: string;
+      permissions: components["schemas"]["fullUserPermissions"];
+      email?: string;
+    };
+    CreateProjectInviteInput: (unknown | unknown) & {
+      email?: string;
+      user_id?: string;
+      permissions?: {
+        items: {
+          [key: string]: {
+            resources?: {
+              datasets?: { [key: string]: boolean };
+              deployables?: { [key: string]: boolean };
+              users?: { [key: string]: boolean };
+              workflows?: { [key: string]: boolean };
+            };
+            actions?: { [key: string]: boolean };
+          };
+        };
+      };
+    };
+    CreateProjectInviteOutput: {
+      invite_code: string;
+    };
+    ListProjectInvitesInput: unknown;
+    ListProjectInvitesOutput: {
+      results: {
+        _id: string;
+        email?: string;
+        project?: string;
+      }[];
+    };
+    AcceptProjectInviteInput: {
+      invite_code: string;
+    };
+    AcceptProjectInviteOutput: { [key: string]: unknown };
+    GetUserInput: { [key: string]: unknown };
+    GetUserOutput: {
+      name?: string;
+      permissions: {
+        projects: {
+          [key: string]: {
+            items: {
+              [key: string]: {
+                resources?: {
+                  datasets?: { [key: string]: boolean };
+                  deployables?: { [key: string]: boolean };
+                  users?: { [key: string]: boolean };
+                  workflows?: { [key: string]: boolean };
+                };
+                actions?: { [key: string]: boolean };
+              };
+            };
+          };
+        };
+      };
+      type: "user" | "machine";
+      _id: string;
+      email?: string;
+    };
+    UpdateUserInput: {
+      name?: string;
+      permissions?: components["schemas"]["permissions"];
+      /** The id token for a signed in account. This attaches the sign in account to the user. */
+      id_token?: string;
+    };
+    UpdateUserOutput: { [key: string]: unknown };
+    DeleteUserInput: { [key: string]: unknown };
+    DeleteUserOutput: { [key: string]: unknown };
+    CreateUserKeyInput: unknown;
+    CreateUserKeyOutput: {
+      api_key: string;
+      id: string;
+    };
+    ListUserKeysInput: unknown;
+    ListUserKeysOutput: {
+      results: {
+        _id: string;
+      }[];
+    };
+    DeleteUserKeyInput: {
+      id: string;
+    };
+    DeleteUserKeyOutput: { [key: string]: unknown };
+    InsertClusterCentroidsInput: {
+      /** The vector fields that these centroids are associated with. */
+      vector_fields?: string[];
+      centroid_vector_fields?: string[];
+      /** Alias is used to name a cluster. */
+      alias?: string;
+      dataset_id?: string;
+      /**
+       * Insert cluster centers.
+       *   Cluster center documents needs to be the following:
+       *   [
+       *       {
+       *           "_id": "cluster_0",
+       *           "centroid_vector_": [0.1, 0.2, 0.1]
+       *       }
+       *   ]
+       */
+      cluster_centers: {
+        _id: string;
+      }[];
+    };
+    InsertClusterCentroidsOutput: {
+      /** Number of successfully processed documents. */
+      inserted: number;
+      /** Information about documents that were not processed successfully. */
+      failed_documents: {
+        /** _id field of unprocessed document. */
+        _id?: unknown;
+        error?: {
+          /** http status code of individual document insertion operation. */
+          status?: number;
+          /** body response of individual document insertion operation. */
+          body?: string;
         };
       }[];
+    };
+    UpdateClusterCentroidsInput: {
+      /** The vector fields that these centroids are associated with. */
+      vector_fields?: string[];
+      centroid_vector_fields?: string[];
+      /** Alias is used to name a cluster. */
+      alias?: string;
+      dataset_id?: string;
+      /**
+       * Insert cluster centers.
+       *   Cluster center documents needs to be the following:
+       *   [
+       *       {
+       *           "_id": "cluster_0",
+       *           "centroid_vector_": [0.1, 0.2, 0.1]
+       *       }
+       *   ]
+       */
+      cluster_centers: {
+        _id: string;
+      }[];
+    };
+    UpdateClusterCentroidsOutput: {
+      /** Number of successfully processed documents. */
+      inserted: number;
+      /** Information about documents that were not processed successfully. */
+      failed_documents: {
+        /** _id field of unprocessed document. */
+        _id?: unknown;
+        error?: {
+          /** http status code of individual document insertion operation. */
+          status?: number;
+          /** body response of individual document insertion operation. */
+          body?: string;
+        };
+      }[];
+    };
+    CompareClusterCentroidsInput: {
+      /** The vector fields that these centroids are associated with. */
+      vector_fields?: string[];
+      centroid_vector_fields?: string[];
+      /** Alias is used to name a cluster. */
+      alias?: string;
+      dataset_id?: string;
+      comparison_centroids: {
+        /** The vector fields that these centroids are associated with. */
+        vector_fields?: string[];
+        centroid_vector_fields?: string[];
+        /** Alias is used to name a cluster. */
+        alias?: string;
+        dataset_id?: string;
+      };
+    };
+    CompareClusterCentroidsOutput: {
+      results: {
+        [key: string]: {
+          results?: unknown[];
+        };
+      };
+    };
+    simpleSearchAndFlatFilterItem: Partial<{
+      /** Match where document[field] is in value list. */
+      match?: {
+        /** If matching on text, match even if there are extra words / case insensitivity */
+        fuzzy?: boolean;
+        /** Field to match on. */
+        field?: string;
+        /** Can be either a single item or a list of items to match on. */
+        value: string | boolean | number | unknown[];
+      };
+      /** Match where document._id is in value list. */
+      matchIds?: {
+        /** Can be either a single item or a list of items to match on. */
+        value: string | boolean | number | unknown[];
+      };
+      /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+      range?: {
+        /** Field to match on. */
+        field?: string;
+        greaterThan?: unknown;
+        lessThan?: unknown;
+      };
+      /**
+       * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+       *
+       * Possible matching patterns:
+       *
+       * * - documents where the field has any value
+       * ? - documents where a single character from the field matches the provided values
+       *
+       * Example:
+       *
+       * {
+       *   wildcard: {
+       *      field: "title",
+       *      value: [ "Avenger*" ]
+       *   }
+       * }
+       */
+      wildcard?: {
+        /** Field to match on. */
+        field?: string;
+        /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+        value: string | string[];
+      };
+      /** hybrid search query that must reach a certain value to filter */
+      search?: {
+        /**
+         * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+         *
+         *     "tele" matches "Television", "This television is an excellent product…"
+         *
+         *     Example: "tele"
+         */
+        query?: string;
+        /** Configuration for traditional search query. */
+        queryConfig?: {
+          /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+          weight?: number;
+          /**
+           * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+           *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+           */
+          sentenceWeight?: number;
+        };
+        /**
+         * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+         *
+         *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+         *
+         *     It can be an object or a list of objects.
+         *
+         *
+         *
+         *     Example payloads:
+         *
+         *     {"field":"animaltype_vector_","query":"kitten"}
+         *
+         *     [
+         *
+         *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+         *
+         *     ]
+         */
+        vectorSearchQuery?:
+          | {
+              /** Vector name to search on. For example, title_vector_ */
+              field: string;
+              /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+              query?: string;
+              /** Model name to generate the vector with. */
+              model?: string;
+              /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+              model_url?: string;
+              /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+              weight?: number;
+              /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+              vector?: number[];
+              chunkConfig?: {
+                chunkField: string;
+                page?: number;
+                pageSize?: number;
+              };
+            }
+          | {
+              /** Vector name to search on. For example, title_vector_ */
+              field: string;
+              /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+              query?: string;
+              /** Model name to generate the vector with. */
+              model?: string;
+              /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+              model_url?: string;
+              /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+              weight?: number;
+              /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+              vector?: number[];
+              chunkConfig?: {
+                chunkField: string;
+                page?: number;
+                pageSize?: number;
+              };
+            }[];
+        /**
+         * A list of fields to search using the "query" parameter.
+         *
+         *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+         *
+         *     Default behaviour is to search all fields.
+         *
+         *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+         */
+        fieldsToSearch?: (
+          | string
+          | {
+              /** Field name to search. */
+              field?: string;
+              /** Multiply the relevance contribution of a specific field when using traditional search. */
+              weight?: number;
+              /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+              chunkField?: string;
+            }
+        )[];
+        /**
+         * Only return documents with a _relevance above this threshold.
+         *
+         *     Example: 0.3
+         */
+        minimumRelevance: number;
+      };
+      /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+      fieldExists?: {
+        /** Field that must exist. */
+        field?: string;
+      };
+      /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+      selfreference?: {
+        /** First field in comparison. */
+        a: string;
+        /** Second field in comparison. */
+        b: string;
+        /** Operator used to compare a and b. */
+        operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+      };
+      /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+      wordCount?: {
+        /** Field to match on. */
+        field: string;
+        /** Minimum word count. */
+        greaterThan?: number;
+        /** Maximum word count. */
+        lessThan?: number;
+      };
+      /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+      characterCount?: {
+        /** Field to match on. */
+        field: string;
+        /** Minimum character count. */
+        greaterThan?: number;
+        /** Maximum character count. */
+        lessThan?: number;
+      };
+      /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+      or?: (
+        | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+        | components["schemas"]["simpleSearchAndFlatFilterItem"]
+      )[];
+      /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+      not?:
+        | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+        | components["schemas"]["simpleSearchAndFlatFilterItem"];
+      /** Filter based on data within a _chunk_ field. */
+      chunk?: {
+        /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+        path: string;
+        filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+      };
+    }> &
+      Partial<{
+        strict?: "must" | "should" | "must_or";
+        condition?: string;
+        field?: string;
+        filter_type?:
+          | "text_match"
+          | "word_match"
+          | "term"
+          | "terms"
+          | "text"
+          | "texts"
+          | "match"
+          | "contains"
+          | "substring"
+          | "class"
+          | "category"
+          | "exact_match"
+          | "classes"
+          | "categories"
+          | "exists"
+          | "traditional"
+          | "fuzzy"
+          | "regexp"
+          | "ids"
+          | "date"
+          | "numeric"
+          | "search"
+          | "or"
+          | "word_count"
+          | "character_count";
+        condition_value?: unknown;
+        fuzzy?: number;
+        join?: boolean;
+      }>;
+    AggregateInput: {
+      filters?: unknown[];
+      items?: Partial<{
+        /** Match where document[field] is in value list. */
+        match?: {
+          /** If matching on text, match even if there are extra words / case insensitivity */
+          fuzzy?: boolean;
+          /** Field to match on. */
+          field?: string;
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match where document._id is in value list. */
+        matchIds?: {
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+        range?: {
+          /** Field to match on. */
+          field?: string;
+          greaterThan?: unknown;
+          lessThan?: unknown;
+        };
+        /**
+         * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+         *
+         * Possible matching patterns:
+         *
+         * * - documents where the field has any value
+         * ? - documents where a single character from the field matches the provided values
+         *
+         * Example:
+         *
+         * {
+         *   wildcard: {
+         *      field: "title",
+         *      value: [ "Avenger*" ]
+         *   }
+         * }
+         */
+        wildcard?: {
+          /** Field to match on. */
+          field?: string;
+          /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+          value: string | string[];
+        };
+        /** hybrid search query that must reach a certain value to filter */
+        search?: {
+          /**
+           * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+           *
+           *     "tele" matches "Television", "This television is an excellent product…"
+           *
+           *     Example: "tele"
+           */
+          query?: string;
+          /** Configuration for traditional search query. */
+          queryConfig?: {
+            /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+            weight?: number;
+            /**
+             * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+             *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+             */
+            sentenceWeight?: number;
+          };
+          /**
+           * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+           *
+           *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+           *
+           *     It can be an object or a list of objects.
+           *
+           *
+           *
+           *     Example payloads:
+           *
+           *     {"field":"animaltype_vector_","query":"kitten"}
+           *
+           *     [
+           *
+           *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+           *
+           *     ]
+           */
+          vectorSearchQuery?:
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }[];
+          /**
+           * A list of fields to search using the "query" parameter.
+           *
+           *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+           *
+           *     Default behaviour is to search all fields.
+           *
+           *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+           */
+          fieldsToSearch?: (
+            | string
+            | {
+                /** Field name to search. */
+                field?: string;
+                /** Multiply the relevance contribution of a specific field when using traditional search. */
+                weight?: number;
+                /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                chunkField?: string;
+              }
+          )[];
+          /**
+           * Only return documents with a _relevance above this threshold.
+           *
+           *     Example: 0.3
+           */
+          minimumRelevance: number;
+        };
+        /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+        fieldExists?: {
+          /** Field that must exist. */
+          field?: string;
+        };
+        /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+        selfreference?: {
+          /** First field in comparison. */
+          a: string;
+          /** Second field in comparison. */
+          b: string;
+          /** Operator used to compare a and b. */
+          operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+        };
+        /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+        wordCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum word count. */
+          greaterThan?: number;
+          /** Maximum word count. */
+          lessThan?: number;
+        };
+        /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+        characterCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum character count. */
+          greaterThan?: number;
+          /** Maximum character count. */
+          lessThan?: number;
+        };
+        /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+        or?: (
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"]
+        )[];
+        /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+        not?:
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"];
+        /** Filter based on data within a _chunk_ field. */
+        chunk?: {
+          /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+          path: string;
+          filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+        };
+      }> &
+        Partial<{
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }>;
+      /** Aggregation query to aggregate data */
+      aggregation_query?: {
+        groupby?: {
+          agg?:
+            | "texts"
+            | "categories"
+            | "classes"
+            | "text"
+            | "category"
+            | "class"
+            | "terms"
+            | "number"
+            | "numeric"
+            | "bool"
+            | "wordcloud"
+            | "array"
+            | "boolean_filter"
+            | "histogram";
+          size?: number;
+          field?: string;
+          name?: string;
+          boolean_filter?: Partial<{
+            /** Match where document[field] is in value list. */
+            match?: {
+              /** If matching on text, match even if there are extra words / case insensitivity */
+              fuzzy?: boolean;
+              /** Field to match on. */
+              field?: string;
+              /** Can be either a single item or a list of items to match on. */
+              value: string | boolean | number | unknown[];
+            };
+            /** Match where document._id is in value list. */
+            matchIds?: {
+              /** Can be either a single item or a list of items to match on. */
+              value: string | boolean | number | unknown[];
+            };
+            /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+            range?: {
+              /** Field to match on. */
+              field?: string;
+              greaterThan?: unknown;
+              lessThan?: unknown;
+            };
+            /**
+             * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+             *
+             * Possible matching patterns:
+             *
+             * * - documents where the field has any value
+             * ? - documents where a single character from the field matches the provided values
+             *
+             * Example:
+             *
+             * {
+             *   wildcard: {
+             *      field: "title",
+             *      value: [ "Avenger*" ]
+             *   }
+             * }
+             */
+            wildcard?: {
+              /** Field to match on. */
+              field?: string;
+              /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+              value: string | string[];
+            };
+            /** hybrid search query that must reach a certain value to filter */
+            search?: {
+              /**
+               * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+               *
+               *     "tele" matches "Television", "This television is an excellent product…"
+               *
+               *     Example: "tele"
+               */
+              query?: string;
+              /** Configuration for traditional search query. */
+              queryConfig?: {
+                /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+                weight?: number;
+                /**
+                 * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+                 *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+                 */
+                sentenceWeight?: number;
+              };
+              /**
+               * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+               *
+               *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+               *
+               *     It can be an object or a list of objects.
+               *
+               *
+               *
+               *     Example payloads:
+               *
+               *     {"field":"animaltype_vector_","query":"kitten"}
+               *
+               *     [
+               *
+               *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+               *
+               *     ]
+               */
+              vectorSearchQuery?:
+                | {
+                    /** Vector name to search on. For example, title_vector_ */
+                    field: string;
+                    /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                    query?: string;
+                    /** Model name to generate the vector with. */
+                    model?: string;
+                    /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                    model_url?: string;
+                    /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                    weight?: number;
+                    /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                    vector?: number[];
+                    chunkConfig?: {
+                      chunkField: string;
+                      page?: number;
+                      pageSize?: number;
+                    };
+                  }
+                | {
+                    /** Vector name to search on. For example, title_vector_ */
+                    field: string;
+                    /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                    query?: string;
+                    /** Model name to generate the vector with. */
+                    model?: string;
+                    /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                    model_url?: string;
+                    /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                    weight?: number;
+                    /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                    vector?: number[];
+                    chunkConfig?: {
+                      chunkField: string;
+                      page?: number;
+                      pageSize?: number;
+                    };
+                  }[];
+              /**
+               * A list of fields to search using the "query" parameter.
+               *
+               *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+               *
+               *     Default behaviour is to search all fields.
+               *
+               *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+               */
+              fieldsToSearch?: (
+                | string
+                | {
+                    /** Field name to search. */
+                    field?: string;
+                    /** Multiply the relevance contribution of a specific field when using traditional search. */
+                    weight?: number;
+                    /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                    chunkField?: string;
+                  }
+              )[];
+              /**
+               * Only return documents with a _relevance above this threshold.
+               *
+               *     Example: 0.3
+               */
+              minimumRelevance: number;
+            };
+            /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+            fieldExists?: {
+              /** Field that must exist. */
+              field?: string;
+            };
+            /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+            selfreference?: {
+              /** First field in comparison. */
+              a: string;
+              /** Second field in comparison. */
+              b: string;
+              /** Operator used to compare a and b. */
+              operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+            };
+            /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+            wordCount?: {
+              /** Field to match on. */
+              field: string;
+              /** Minimum word count. */
+              greaterThan?: number;
+              /** Maximum word count. */
+              lessThan?: number;
+            };
+            /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+            characterCount?: {
+              /** Field to match on. */
+              field: string;
+              /** Minimum character count. */
+              greaterThan?: number;
+              /** Maximum character count. */
+              lessThan?: number;
+            };
+            /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+            or?: (
+              | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+              | components["schemas"]["simpleSearchAndFlatFilterItem"]
+            )[];
+            /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+            not?:
+              | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+              | components["schemas"]["simpleSearchAndFlatFilterItem"];
+            /** Filter based on data within a _chunk_ field. */
+            chunk?: {
+              /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+              path: string;
+              filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+            };
+          }> &
+            Partial<{
+              strict?: "must" | "should" | "must_or";
+              condition?: string;
+              field?: string;
+              filter_type?:
+                | "text_match"
+                | "word_match"
+                | "term"
+                | "terms"
+                | "text"
+                | "texts"
+                | "match"
+                | "contains"
+                | "substring"
+                | "class"
+                | "category"
+                | "exact_match"
+                | "classes"
+                | "categories"
+                | "exists"
+                | "traditional"
+                | "fuzzy"
+                | "regexp"
+                | "ids"
+                | "date"
+                | "numeric"
+                | "search"
+                | "or"
+                | "word_count"
+                | "character_count";
+              condition_value?: unknown;
+              fuzzy?: number;
+              join?: boolean;
+            }>;
+          /** Control the number of results for this aggregation level. This will default to the page_size provided in the root body if not provided. */
+          page_size?: number;
+          group_size?: number;
+          select_fields?: string[];
+          remove_words?: string[];
+          date_interval?:
+            | "monthly"
+            | "daily"
+            | "yearly"
+            | "hourly"
+            | "minutely"
+            | "weekly";
+          buckets?: Partial<{
+            histogram?: {
+              interval?: number;
+              min_doc_count?: number;
+            };
+          }> &
+            Partial<
+              {
+                from?: number;
+                to?: number;
+              }[]
+            >;
+        }[];
+        metrics?: {
+          field?: string;
+          fields?: string[];
+          agg?:
+            | "avg"
+            | "average"
+            | "cardinality"
+            | "max"
+            | "mean"
+            | "min"
+            | "sum"
+            | "percentiles"
+            | "sum_of_squares"
+            | "variance"
+            | "std_deviation"
+            | "std_deviation_bounds"
+            | "kurtosis"
+            | "covariance"
+            | "skewness"
+            | "character_count"
+            | "count"
+            | "correlation"
+            | "missing";
+          name?: string;
+        }[];
+        sort?: (string | { [key: string]: "asc" | "desc" })[];
+      };
+      /** Size of each page of results */
+      page_size?: number;
+      /** Page of the results */
+      page?: number;
+      /** Whether to sort results by ascending or descending order. */
+      asc?: boolean;
+      dataset_ids?: string[];
+      dataset_id?: string;
+    };
+    AggregateOutput: {
+      results?: unknown[];
+    };
+    AggregateClustersInput: {
+      filters?: unknown[];
+      items?: Partial<{
+        /** Match where document[field] is in value list. */
+        match?: {
+          /** If matching on text, match even if there are extra words / case insensitivity */
+          fuzzy?: boolean;
+          /** Field to match on. */
+          field?: string;
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match where document._id is in value list. */
+        matchIds?: {
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+        range?: {
+          /** Field to match on. */
+          field?: string;
+          greaterThan?: unknown;
+          lessThan?: unknown;
+        };
+        /**
+         * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+         *
+         * Possible matching patterns:
+         *
+         * * - documents where the field has any value
+         * ? - documents where a single character from the field matches the provided values
+         *
+         * Example:
+         *
+         * {
+         *   wildcard: {
+         *      field: "title",
+         *      value: [ "Avenger*" ]
+         *   }
+         * }
+         */
+        wildcard?: {
+          /** Field to match on. */
+          field?: string;
+          /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+          value: string | string[];
+        };
+        /** hybrid search query that must reach a certain value to filter */
+        search?: {
+          /**
+           * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+           *
+           *     "tele" matches "Television", "This television is an excellent product…"
+           *
+           *     Example: "tele"
+           */
+          query?: string;
+          /** Configuration for traditional search query. */
+          queryConfig?: {
+            /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+            weight?: number;
+            /**
+             * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+             *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+             */
+            sentenceWeight?: number;
+          };
+          /**
+           * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+           *
+           *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+           *
+           *     It can be an object or a list of objects.
+           *
+           *
+           *
+           *     Example payloads:
+           *
+           *     {"field":"animaltype_vector_","query":"kitten"}
+           *
+           *     [
+           *
+           *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+           *
+           *     ]
+           */
+          vectorSearchQuery?:
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }[];
+          /**
+           * A list of fields to search using the "query" parameter.
+           *
+           *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+           *
+           *     Default behaviour is to search all fields.
+           *
+           *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+           */
+          fieldsToSearch?: (
+            | string
+            | {
+                /** Field name to search. */
+                field?: string;
+                /** Multiply the relevance contribution of a specific field when using traditional search. */
+                weight?: number;
+                /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                chunkField?: string;
+              }
+          )[];
+          /**
+           * Only return documents with a _relevance above this threshold.
+           *
+           *     Example: 0.3
+           */
+          minimumRelevance: number;
+        };
+        /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+        fieldExists?: {
+          /** Field that must exist. */
+          field?: string;
+        };
+        /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+        selfreference?: {
+          /** First field in comparison. */
+          a: string;
+          /** Second field in comparison. */
+          b: string;
+          /** Operator used to compare a and b. */
+          operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+        };
+        /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+        wordCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum word count. */
+          greaterThan?: number;
+          /** Maximum word count. */
+          lessThan?: number;
+        };
+        /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+        characterCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum character count. */
+          greaterThan?: number;
+          /** Maximum character count. */
+          lessThan?: number;
+        };
+        /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+        or?: (
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"]
+        )[];
+        /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+        not?:
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"];
+        /** Filter based on data within a _chunk_ field. */
+        chunk?: {
+          /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+          path: string;
+          filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+        };
+      }> &
+        Partial<{
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }>;
+      /** Aggregation query to aggregate data */
+      aggregation_query?: {
+        groupby?: {
+          agg?:
+            | "texts"
+            | "categories"
+            | "classes"
+            | "text"
+            | "category"
+            | "class"
+            | "terms"
+            | "number"
+            | "numeric"
+            | "bool"
+            | "wordcloud"
+            | "array"
+            | "boolean_filter"
+            | "histogram";
+          size?: number;
+          field?: string;
+          name?: string;
+          boolean_filter?: Partial<{
+            /** Match where document[field] is in value list. */
+            match?: {
+              /** If matching on text, match even if there are extra words / case insensitivity */
+              fuzzy?: boolean;
+              /** Field to match on. */
+              field?: string;
+              /** Can be either a single item or a list of items to match on. */
+              value: string | boolean | number | unknown[];
+            };
+            /** Match where document._id is in value list. */
+            matchIds?: {
+              /** Can be either a single item or a list of items to match on. */
+              value: string | boolean | number | unknown[];
+            };
+            /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+            range?: {
+              /** Field to match on. */
+              field?: string;
+              greaterThan?: unknown;
+              lessThan?: unknown;
+            };
+            /**
+             * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+             *
+             * Possible matching patterns:
+             *
+             * * - documents where the field has any value
+             * ? - documents where a single character from the field matches the provided values
+             *
+             * Example:
+             *
+             * {
+             *   wildcard: {
+             *      field: "title",
+             *      value: [ "Avenger*" ]
+             *   }
+             * }
+             */
+            wildcard?: {
+              /** Field to match on. */
+              field?: string;
+              /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+              value: string | string[];
+            };
+            /** hybrid search query that must reach a certain value to filter */
+            search?: {
+              /**
+               * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+               *
+               *     "tele" matches "Television", "This television is an excellent product…"
+               *
+               *     Example: "tele"
+               */
+              query?: string;
+              /** Configuration for traditional search query. */
+              queryConfig?: {
+                /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+                weight?: number;
+                /**
+                 * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+                 *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+                 */
+                sentenceWeight?: number;
+              };
+              /**
+               * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+               *
+               *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+               *
+               *     It can be an object or a list of objects.
+               *
+               *
+               *
+               *     Example payloads:
+               *
+               *     {"field":"animaltype_vector_","query":"kitten"}
+               *
+               *     [
+               *
+               *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+               *
+               *     ]
+               */
+              vectorSearchQuery?:
+                | {
+                    /** Vector name to search on. For example, title_vector_ */
+                    field: string;
+                    /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                    query?: string;
+                    /** Model name to generate the vector with. */
+                    model?: string;
+                    /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                    model_url?: string;
+                    /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                    weight?: number;
+                    /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                    vector?: number[];
+                    chunkConfig?: {
+                      chunkField: string;
+                      page?: number;
+                      pageSize?: number;
+                    };
+                  }
+                | {
+                    /** Vector name to search on. For example, title_vector_ */
+                    field: string;
+                    /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                    query?: string;
+                    /** Model name to generate the vector with. */
+                    model?: string;
+                    /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                    model_url?: string;
+                    /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                    weight?: number;
+                    /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                    vector?: number[];
+                    chunkConfig?: {
+                      chunkField: string;
+                      page?: number;
+                      pageSize?: number;
+                    };
+                  }[];
+              /**
+               * A list of fields to search using the "query" parameter.
+               *
+               *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+               *
+               *     Default behaviour is to search all fields.
+               *
+               *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+               */
+              fieldsToSearch?: (
+                | string
+                | {
+                    /** Field name to search. */
+                    field?: string;
+                    /** Multiply the relevance contribution of a specific field when using traditional search. */
+                    weight?: number;
+                    /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                    chunkField?: string;
+                  }
+              )[];
+              /**
+               * Only return documents with a _relevance above this threshold.
+               *
+               *     Example: 0.3
+               */
+              minimumRelevance: number;
+            };
+            /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+            fieldExists?: {
+              /** Field that must exist. */
+              field?: string;
+            };
+            /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+            selfreference?: {
+              /** First field in comparison. */
+              a: string;
+              /** Second field in comparison. */
+              b: string;
+              /** Operator used to compare a and b. */
+              operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+            };
+            /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+            wordCount?: {
+              /** Field to match on. */
+              field: string;
+              /** Minimum word count. */
+              greaterThan?: number;
+              /** Maximum word count. */
+              lessThan?: number;
+            };
+            /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+            characterCount?: {
+              /** Field to match on. */
+              field: string;
+              /** Minimum character count. */
+              greaterThan?: number;
+              /** Maximum character count. */
+              lessThan?: number;
+            };
+            /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+            or?: (
+              | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+              | components["schemas"]["simpleSearchAndFlatFilterItem"]
+            )[];
+            /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+            not?:
+              | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+              | components["schemas"]["simpleSearchAndFlatFilterItem"];
+            /** Filter based on data within a _chunk_ field. */
+            chunk?: {
+              /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+              path: string;
+              filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+            };
+          }> &
+            Partial<{
+              strict?: "must" | "should" | "must_or";
+              condition?: string;
+              field?: string;
+              filter_type?:
+                | "text_match"
+                | "word_match"
+                | "term"
+                | "terms"
+                | "text"
+                | "texts"
+                | "match"
+                | "contains"
+                | "substring"
+                | "class"
+                | "category"
+                | "exact_match"
+                | "classes"
+                | "categories"
+                | "exists"
+                | "traditional"
+                | "fuzzy"
+                | "regexp"
+                | "ids"
+                | "date"
+                | "numeric"
+                | "search"
+                | "or"
+                | "word_count"
+                | "character_count";
+              condition_value?: unknown;
+              fuzzy?: number;
+              join?: boolean;
+            }>;
+          /** Control the number of results for this aggregation level. This will default to the page_size provided in the root body if not provided. */
+          page_size?: number;
+          group_size?: number;
+          select_fields?: string[];
+          remove_words?: string[];
+          date_interval?:
+            | "monthly"
+            | "daily"
+            | "yearly"
+            | "hourly"
+            | "minutely"
+            | "weekly";
+          buckets?: Partial<{
+            histogram?: {
+              interval?: number;
+              min_doc_count?: number;
+            };
+          }> &
+            Partial<
+              {
+                from?: number;
+                to?: number;
+              }[]
+            >;
+        }[];
+        metrics?: {
+          field?: string;
+          fields?: string[];
+          agg?:
+            | "avg"
+            | "average"
+            | "cardinality"
+            | "max"
+            | "mean"
+            | "min"
+            | "sum"
+            | "percentiles"
+            | "sum_of_squares"
+            | "variance"
+            | "std_deviation"
+            | "std_deviation_bounds"
+            | "kurtosis"
+            | "covariance"
+            | "skewness"
+            | "character_count"
+            | "count"
+            | "correlation"
+            | "missing";
+          name?: string;
+        }[];
+        sort?: (string | { [key: string]: "asc" | "desc" })[];
+      };
+      /** Size of each page of results */
+      page_size?: number;
+      /** Page of the results */
+      page?: number;
+      /** Whether to sort results by ascending or descending order. */
+      asc?: boolean;
+      dataset_ids?: string[];
+      dataset_id?: string;
+      alias?: string;
+      vector_fields?: string[];
+      /** Field to cluster on */
+      cluster_field?: string;
+      /** List of cluster IDs to aggregate on */
+      cluster_ids?: unknown[];
+      /** Filter if clusters with certain characteristics should be hidden in results. */
+      cluster_properties_filter?: {
+        /** Clusters with less than this many items will be hidden from results. */
+        minimum_cluster_size?: number;
+        /** Whether to add to list of cluster to show (or), or filter clusters to show based on minimum_cluster_size (and) */
+        minimum_cluster_size_filter_type?: "or" | "and";
+        cluster_page?: number;
+        cluster_page_size?: number;
+      };
+    };
+    AggregateClustersOutput: {
+      results: { [key: string]: unknown[] };
+      info: {
+        [key: string]: {
+          percentage: number;
+          count: number;
+        };
+      };
+    };
+    ListClusterFacetsInput: {
+      filters?: unknown[];
+      items?: Partial<{
+        /** Match where document[field] is in value list. */
+        match?: {
+          /** If matching on text, match even if there are extra words / case insensitivity */
+          fuzzy?: boolean;
+          /** Field to match on. */
+          field?: string;
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match where document._id is in value list. */
+        matchIds?: {
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+        range?: {
+          /** Field to match on. */
+          field?: string;
+          greaterThan?: unknown;
+          lessThan?: unknown;
+        };
+        /**
+         * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+         *
+         * Possible matching patterns:
+         *
+         * * - documents where the field has any value
+         * ? - documents where a single character from the field matches the provided values
+         *
+         * Example:
+         *
+         * {
+         *   wildcard: {
+         *      field: "title",
+         *      value: [ "Avenger*" ]
+         *   }
+         * }
+         */
+        wildcard?: {
+          /** Field to match on. */
+          field?: string;
+          /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+          value: string | string[];
+        };
+        /** hybrid search query that must reach a certain value to filter */
+        search?: {
+          /**
+           * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+           *
+           *     "tele" matches "Television", "This television is an excellent product…"
+           *
+           *     Example: "tele"
+           */
+          query?: string;
+          /** Configuration for traditional search query. */
+          queryConfig?: {
+            /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+            weight?: number;
+            /**
+             * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+             *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+             */
+            sentenceWeight?: number;
+          };
+          /**
+           * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+           *
+           *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+           *
+           *     It can be an object or a list of objects.
+           *
+           *
+           *
+           *     Example payloads:
+           *
+           *     {"field":"animaltype_vector_","query":"kitten"}
+           *
+           *     [
+           *
+           *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+           *
+           *     ]
+           */
+          vectorSearchQuery?:
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }[];
+          /**
+           * A list of fields to search using the "query" parameter.
+           *
+           *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+           *
+           *     Default behaviour is to search all fields.
+           *
+           *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+           */
+          fieldsToSearch?: (
+            | string
+            | {
+                /** Field name to search. */
+                field?: string;
+                /** Multiply the relevance contribution of a specific field when using traditional search. */
+                weight?: number;
+                /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                chunkField?: string;
+              }
+          )[];
+          /**
+           * Only return documents with a _relevance above this threshold.
+           *
+           *     Example: 0.3
+           */
+          minimumRelevance: number;
+        };
+        /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+        fieldExists?: {
+          /** Field that must exist. */
+          field?: string;
+        };
+        /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+        selfreference?: {
+          /** First field in comparison. */
+          a: string;
+          /** Second field in comparison. */
+          b: string;
+          /** Operator used to compare a and b. */
+          operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+        };
+        /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+        wordCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum word count. */
+          greaterThan?: number;
+          /** Maximum word count. */
+          lessThan?: number;
+        };
+        /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+        characterCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum character count. */
+          greaterThan?: number;
+          /** Maximum character count. */
+          lessThan?: number;
+        };
+        /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+        or?: (
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"]
+        )[];
+        /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+        not?:
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"];
+        /** Filter based on data within a _chunk_ field. */
+        chunk?: {
+          /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+          path: string;
+          filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+        };
+      }> &
+        Partial<{
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }>;
+      /** Aggregation query to aggregate data */
+      aggregation_query?: {
+        groupby?: {
+          agg?:
+            | "texts"
+            | "categories"
+            | "classes"
+            | "text"
+            | "category"
+            | "class"
+            | "terms"
+            | "number"
+            | "numeric"
+            | "bool"
+            | "wordcloud"
+            | "array"
+            | "boolean_filter"
+            | "histogram";
+          size?: number;
+          field?: string;
+          name?: string;
+          boolean_filter?: Partial<{
+            /** Match where document[field] is in value list. */
+            match?: {
+              /** If matching on text, match even if there are extra words / case insensitivity */
+              fuzzy?: boolean;
+              /** Field to match on. */
+              field?: string;
+              /** Can be either a single item or a list of items to match on. */
+              value: string | boolean | number | unknown[];
+            };
+            /** Match where document._id is in value list. */
+            matchIds?: {
+              /** Can be either a single item or a list of items to match on. */
+              value: string | boolean | number | unknown[];
+            };
+            /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+            range?: {
+              /** Field to match on. */
+              field?: string;
+              greaterThan?: unknown;
+              lessThan?: unknown;
+            };
+            /**
+             * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+             *
+             * Possible matching patterns:
+             *
+             * * - documents where the field has any value
+             * ? - documents where a single character from the field matches the provided values
+             *
+             * Example:
+             *
+             * {
+             *   wildcard: {
+             *      field: "title",
+             *      value: [ "Avenger*" ]
+             *   }
+             * }
+             */
+            wildcard?: {
+              /** Field to match on. */
+              field?: string;
+              /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+              value: string | string[];
+            };
+            /** hybrid search query that must reach a certain value to filter */
+            search?: {
+              /**
+               * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+               *
+               *     "tele" matches "Television", "This television is an excellent product…"
+               *
+               *     Example: "tele"
+               */
+              query?: string;
+              /** Configuration for traditional search query. */
+              queryConfig?: {
+                /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+                weight?: number;
+                /**
+                 * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+                 *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+                 */
+                sentenceWeight?: number;
+              };
+              /**
+               * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+               *
+               *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+               *
+               *     It can be an object or a list of objects.
+               *
+               *
+               *
+               *     Example payloads:
+               *
+               *     {"field":"animaltype_vector_","query":"kitten"}
+               *
+               *     [
+               *
+               *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+               *
+               *     ]
+               */
+              vectorSearchQuery?:
+                | {
+                    /** Vector name to search on. For example, title_vector_ */
+                    field: string;
+                    /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                    query?: string;
+                    /** Model name to generate the vector with. */
+                    model?: string;
+                    /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                    model_url?: string;
+                    /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                    weight?: number;
+                    /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                    vector?: number[];
+                    chunkConfig?: {
+                      chunkField: string;
+                      page?: number;
+                      pageSize?: number;
+                    };
+                  }
+                | {
+                    /** Vector name to search on. For example, title_vector_ */
+                    field: string;
+                    /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                    query?: string;
+                    /** Model name to generate the vector with. */
+                    model?: string;
+                    /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                    model_url?: string;
+                    /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                    weight?: number;
+                    /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                    vector?: number[];
+                    chunkConfig?: {
+                      chunkField: string;
+                      page?: number;
+                      pageSize?: number;
+                    };
+                  }[];
+              /**
+               * A list of fields to search using the "query" parameter.
+               *
+               *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+               *
+               *     Default behaviour is to search all fields.
+               *
+               *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+               */
+              fieldsToSearch?: (
+                | string
+                | {
+                    /** Field name to search. */
+                    field?: string;
+                    /** Multiply the relevance contribution of a specific field when using traditional search. */
+                    weight?: number;
+                    /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                    chunkField?: string;
+                  }
+              )[];
+              /**
+               * Only return documents with a _relevance above this threshold.
+               *
+               *     Example: 0.3
+               */
+              minimumRelevance: number;
+            };
+            /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+            fieldExists?: {
+              /** Field that must exist. */
+              field?: string;
+            };
+            /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+            selfreference?: {
+              /** First field in comparison. */
+              a: string;
+              /** Second field in comparison. */
+              b: string;
+              /** Operator used to compare a and b. */
+              operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+            };
+            /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+            wordCount?: {
+              /** Field to match on. */
+              field: string;
+              /** Minimum word count. */
+              greaterThan?: number;
+              /** Maximum word count. */
+              lessThan?: number;
+            };
+            /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+            characterCount?: {
+              /** Field to match on. */
+              field: string;
+              /** Minimum character count. */
+              greaterThan?: number;
+              /** Maximum character count. */
+              lessThan?: number;
+            };
+            /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+            or?: (
+              | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+              | components["schemas"]["simpleSearchAndFlatFilterItem"]
+            )[];
+            /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+            not?:
+              | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+              | components["schemas"]["simpleSearchAndFlatFilterItem"];
+            /** Filter based on data within a _chunk_ field. */
+            chunk?: {
+              /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+              path: string;
+              filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+            };
+          }> &
+            Partial<{
+              strict?: "must" | "should" | "must_or";
+              condition?: string;
+              field?: string;
+              filter_type?:
+                | "text_match"
+                | "word_match"
+                | "term"
+                | "terms"
+                | "text"
+                | "texts"
+                | "match"
+                | "contains"
+                | "substring"
+                | "class"
+                | "category"
+                | "exact_match"
+                | "classes"
+                | "categories"
+                | "exists"
+                | "traditional"
+                | "fuzzy"
+                | "regexp"
+                | "ids"
+                | "date"
+                | "numeric"
+                | "search"
+                | "or"
+                | "word_count"
+                | "character_count";
+              condition_value?: unknown;
+              fuzzy?: number;
+              join?: boolean;
+            }>;
+          /** Control the number of results for this aggregation level. This will default to the page_size provided in the root body if not provided. */
+          page_size?: number;
+          group_size?: number;
+          select_fields?: string[];
+          remove_words?: string[];
+          date_interval?:
+            | "monthly"
+            | "daily"
+            | "yearly"
+            | "hourly"
+            | "minutely"
+            | "weekly";
+          buckets?: Partial<{
+            histogram?: {
+              interval?: number;
+              min_doc_count?: number;
+            };
+          }> &
+            Partial<
+              {
+                from?: number;
+                to?: number;
+              }[]
+            >;
+        }[];
+        metrics?: {
+          field?: string;
+          fields?: string[];
+          agg?:
+            | "avg"
+            | "average"
+            | "cardinality"
+            | "max"
+            | "mean"
+            | "min"
+            | "sum"
+            | "percentiles"
+            | "sum_of_squares"
+            | "variance"
+            | "std_deviation"
+            | "std_deviation_bounds"
+            | "kurtosis"
+            | "covariance"
+            | "skewness"
+            | "character_count"
+            | "count"
+            | "correlation"
+            | "missing";
+          name?: string;
+        }[];
+        sort?: (string | { [key: string]: "asc" | "desc" })[];
+      };
+      /** Size of facet page */
+      page_size?: number;
+      /** Page of the results */
+      page?: number;
+      /** Whether to sort results by ascending or descending frequency */
+      asc?: boolean;
+      dataset_ids?: string[];
+      dataset_id?: string;
+      alias?: string;
+      vector_fields?: string[];
+      /** Field to cluster on */
+      cluster_field?: string;
+      /** List of cluster IDs to aggregate on */
+      cluster_ids?: unknown[];
+      /** Filter if clusters with certain characteristics should be hidden in results. */
+      cluster_properties_filter?: {
+        /** Clusters with less than this many items will be hidden from results. */
+        minimum_cluster_size?: number;
+        /** Whether to add to list of cluster to show (or), or filter clusters to show based on minimum_cluster_size (and) */
+        minimum_cluster_size_filter_type?: "or" | "and";
+        cluster_page?: number;
+        cluster_page_size?: number;
+      };
+      /** Fields to include in the facets, if [] then all */
+      facet_fields?: string[];
+      date_interval?:
+        | "monthly"
+        | "daily"
+        | "yearly"
+        | "hourly"
+        | "minutely"
+        | "weekly";
+    };
+    ListClusterFacetsOutput: {
+      results?: {
+        [key: string]: {
+          results: {
+            [key: string]:
+              | ({
+                  avg: number;
+                  max: number;
+                  min: number;
+                  sum: number;
+                  date?: ({
+                    value: unknown;
+                    frequency: number;
+                  } & { [key: string]: unknown })[];
+                } & { [key: string]: unknown })
+              | ({
+                  value: unknown;
+                  frequency: number;
+                } & { [key: string]: unknown })[];
+          };
+        };
+      };
+    };
+    ListClosestToCentroidsInput: {
+      /** The vector fields that these centroids are associated with. */
+      vector_fields?: string[];
+      centroid_vector_fields?: string[];
+      /** Alias is used to name a cluster. */
+      alias?: string;
+      dataset_id?: string;
+      filters?: unknown[];
+      items?: Partial<{
+        /** Match where document[field] is in value list. */
+        match?: {
+          /** If matching on text, match even if there are extra words / case insensitivity */
+          fuzzy?: boolean;
+          /** Field to match on. */
+          field?: string;
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match where document._id is in value list. */
+        matchIds?: {
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+        range?: {
+          /** Field to match on. */
+          field?: string;
+          greaterThan?: unknown;
+          lessThan?: unknown;
+        };
+        /**
+         * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+         *
+         * Possible matching patterns:
+         *
+         * * - documents where the field has any value
+         * ? - documents where a single character from the field matches the provided values
+         *
+         * Example:
+         *
+         * {
+         *   wildcard: {
+         *      field: "title",
+         *      value: [ "Avenger*" ]
+         *   }
+         * }
+         */
+        wildcard?: {
+          /** Field to match on. */
+          field?: string;
+          /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+          value: string | string[];
+        };
+        /** hybrid search query that must reach a certain value to filter */
+        search?: {
+          /**
+           * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+           *
+           *     "tele" matches "Television", "This television is an excellent product…"
+           *
+           *     Example: "tele"
+           */
+          query?: string;
+          /** Configuration for traditional search query. */
+          queryConfig?: {
+            /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+            weight?: number;
+            /**
+             * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+             *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+             */
+            sentenceWeight?: number;
+          };
+          /**
+           * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+           *
+           *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+           *
+           *     It can be an object or a list of objects.
+           *
+           *
+           *
+           *     Example payloads:
+           *
+           *     {"field":"animaltype_vector_","query":"kitten"}
+           *
+           *     [
+           *
+           *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+           *
+           *     ]
+           */
+          vectorSearchQuery?:
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }[];
+          /**
+           * A list of fields to search using the "query" parameter.
+           *
+           *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+           *
+           *     Default behaviour is to search all fields.
+           *
+           *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+           */
+          fieldsToSearch?: (
+            | string
+            | {
+                /** Field name to search. */
+                field?: string;
+                /** Multiply the relevance contribution of a specific field when using traditional search. */
+                weight?: number;
+                /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                chunkField?: string;
+              }
+          )[];
+          /**
+           * Only return documents with a _relevance above this threshold.
+           *
+           *     Example: 0.3
+           */
+          minimumRelevance: number;
+        };
+        /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+        fieldExists?: {
+          /** Field that must exist. */
+          field?: string;
+        };
+        /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+        selfreference?: {
+          /** First field in comparison. */
+          a: string;
+          /** Second field in comparison. */
+          b: string;
+          /** Operator used to compare a and b. */
+          operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+        };
+        /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+        wordCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum word count. */
+          greaterThan?: number;
+          /** Maximum word count. */
+          lessThan?: number;
+        };
+        /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+        characterCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum character count. */
+          greaterThan?: number;
+          /** Maximum character count. */
+          lessThan?: number;
+        };
+        /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+        or?: (
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"]
+        )[];
+        /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+        not?:
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"];
+        /** Filter based on data within a _chunk_ field. */
+        chunk?: {
+          /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+          path: string;
+          filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+        };
+      }> &
+        Partial<{
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }>;
+      /** List of cluster IDs to retrieve */
+      cluster_ids?: unknown[];
+      /** Field to cluster on */
+      cluster_field?: string;
+      select_fields?: string[];
+      approx?: number;
+      sum_fields?: boolean;
+      /** Size of each page of results */
+      page_size?: number;
+      /** Page of the results */
+      page?: number;
+      similarity_metric?: "cosine" | "l2" | "l1" | "dp";
+      min_score?: number;
+      /** Include vectors in the search results */
+      include_vector?: boolean;
+      include_count?: boolean;
+      /** Filter if clusters with certain characteristics should be hidden in results. */
+      cluster_properties_filter?: {
+        /** Clusters with less than this many items will be hidden from results. */
+        minimum_cluster_size?: number;
+        /** Whether to add to list of cluster to show (or), or filter clusters to show based on minimum_cluster_size (and) */
+        minimum_cluster_size_filter_type?: "or" | "and";
+        cluster_page?: number;
+        cluster_page_size?: number;
+      };
+      /** Whether to include relevance scores for each item in each cluster. */
+      include_relevance?: boolean;
+    };
+    ListClosestToCentroidsOutput: {
+      results: {
+        [key: string]: {
+          results?: unknown[];
+        };
+      };
+    };
+    ListFurthestFromCentroidsInput: {
+      /** The vector fields that these centroids are associated with. */
+      vector_fields?: string[];
+      centroid_vector_fields?: string[];
+      /** Alias is used to name a cluster. */
+      alias?: string;
+      dataset_id?: string;
+      filters?: unknown[];
+      items?: Partial<{
+        /** Match where document[field] is in value list. */
+        match?: {
+          /** If matching on text, match even if there are extra words / case insensitivity */
+          fuzzy?: boolean;
+          /** Field to match on. */
+          field?: string;
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match where document._id is in value list. */
+        matchIds?: {
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+        range?: {
+          /** Field to match on. */
+          field?: string;
+          greaterThan?: unknown;
+          lessThan?: unknown;
+        };
+        /**
+         * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+         *
+         * Possible matching patterns:
+         *
+         * * - documents where the field has any value
+         * ? - documents where a single character from the field matches the provided values
+         *
+         * Example:
+         *
+         * {
+         *   wildcard: {
+         *      field: "title",
+         *      value: [ "Avenger*" ]
+         *   }
+         * }
+         */
+        wildcard?: {
+          /** Field to match on. */
+          field?: string;
+          /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+          value: string | string[];
+        };
+        /** hybrid search query that must reach a certain value to filter */
+        search?: {
+          /**
+           * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+           *
+           *     "tele" matches "Television", "This television is an excellent product…"
+           *
+           *     Example: "tele"
+           */
+          query?: string;
+          /** Configuration for traditional search query. */
+          queryConfig?: {
+            /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+            weight?: number;
+            /**
+             * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+             *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+             */
+            sentenceWeight?: number;
+          };
+          /**
+           * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+           *
+           *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+           *
+           *     It can be an object or a list of objects.
+           *
+           *
+           *
+           *     Example payloads:
+           *
+           *     {"field":"animaltype_vector_","query":"kitten"}
+           *
+           *     [
+           *
+           *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+           *
+           *     ]
+           */
+          vectorSearchQuery?:
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }[];
+          /**
+           * A list of fields to search using the "query" parameter.
+           *
+           *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+           *
+           *     Default behaviour is to search all fields.
+           *
+           *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+           */
+          fieldsToSearch?: (
+            | string
+            | {
+                /** Field name to search. */
+                field?: string;
+                /** Multiply the relevance contribution of a specific field when using traditional search. */
+                weight?: number;
+                /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                chunkField?: string;
+              }
+          )[];
+          /**
+           * Only return documents with a _relevance above this threshold.
+           *
+           *     Example: 0.3
+           */
+          minimumRelevance: number;
+        };
+        /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+        fieldExists?: {
+          /** Field that must exist. */
+          field?: string;
+        };
+        /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+        selfreference?: {
+          /** First field in comparison. */
+          a: string;
+          /** Second field in comparison. */
+          b: string;
+          /** Operator used to compare a and b. */
+          operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+        };
+        /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+        wordCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum word count. */
+          greaterThan?: number;
+          /** Maximum word count. */
+          lessThan?: number;
+        };
+        /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+        characterCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum character count. */
+          greaterThan?: number;
+          /** Maximum character count. */
+          lessThan?: number;
+        };
+        /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+        or?: (
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"]
+        )[];
+        /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+        not?:
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"];
+        /** Filter based on data within a _chunk_ field. */
+        chunk?: {
+          /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+          path: string;
+          filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+        };
+      }> &
+        Partial<{
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }>;
+      /** List of cluster IDs to retrieve */
+      cluster_ids?: unknown[];
+      /** Field to cluster on */
+      cluster_field?: string;
+      select_fields?: string[];
+      approx?: number;
+      sum_fields?: boolean;
+      /** Size of each page of results */
+      page_size?: number;
+      /** Page of the results */
+      page?: number;
+      similarity_metric?: "cosine" | "l2" | "l1" | "dp";
+      min_score?: number;
+      /** Include vectors in the search results */
+      include_vector?: boolean;
+      include_count?: boolean;
+      /** Filter if clusters with certain characteristics should be hidden in results. */
+      cluster_properties_filter?: {
+        /** Clusters with less than this many items will be hidden from results. */
+        minimum_cluster_size?: number;
+        /** Whether to add to list of cluster to show (or), or filter clusters to show based on minimum_cluster_size (and) */
+        minimum_cluster_size_filter_type?: "or" | "and";
+        cluster_page?: number;
+        cluster_page_size?: number;
+      };
+      /** Whether to include relevance scores for each item in each cluster. */
+      include_relevance?: boolean;
+    };
+    ListFurthestFromCentroidsOutput: {
+      results: {
+        [key: string]: {
+          results?: unknown[];
+        };
+      };
+    };
+    ListCentroidsInput: {
+      /** The vector fields that these centroids are associated with. */
+      vector_fields?: string[];
+      centroid_vector_fields?: string[];
+      /** Alias is used to name a cluster. */
+      alias?: string;
+      dataset_id?: string;
+      /** List of cluster IDs to retrieve */
+      cluster_ids?: unknown[];
+      /** Size of each page of results */
+      page_size?: number;
+      /** Page of the results */
+      page?: number;
+      /** Include vectors in the search results */
+      include_vector?: boolean;
+    };
+    ListCentroidsOutput: {
+      /**
+       * List of documents. List items are affected by page, pageSize, query, filters. Items order is affected by vectorSeachQuery, sort, textSort.
+       *
+       *     Example: [{"_id":"abcd","animal":"cat","price":10}, {"_id":"abcd","price":13}]
+       */
+      results: {
+        /** Measures how closely a document matches on query and vectorSearchQuery. */
+        _relevance?: number;
+        _chunk_results?: {
+          [key: string]: {
+            results: {
+              _relevance?: number;
+            }[];
+            _relevance: number;
+          };
+        };
+      }[];
+    };
+    DeleteCentroidInput: {
+      /** The vector fields that these centroids are associated with. */
+      vector_fields?: string[];
+      centroid_vector_fields?: string[];
+      /** Alias is used to name a cluster. */
+      alias?: string;
+      dataset_id?: string;
+    };
+    DeleteCentroidOutput: unknown;
+    RealtimeClusteringInput: {
+      /** The vector field to cluster in real-time. */
+      vector_field: string;
+      /** The keyword query to apply during vector retrieval */
+      keyword_query: string;
+      /** The number of documents to get. */
+      number_of_documents?: number;
+      /** The number of clusters to cluster the documents over. */
+      number_of_clusters?: number;
+    };
+    RealtimeClusteringOutput: {
+      results?: unknown[];
+    };
+    MergeClustersInput: {
+      /** The vector fields that these centroids are associated with. */
+      vector_fields?: string[];
+      centroid_vector_fields?: string[];
+      /** Alias is used to name a cluster. */
+      alias?: string;
+      dataset_id?: string;
+      cluster_ids: unknown[];
+    };
+    MergeClustersOutput: {
+      results?: string;
+    };
+    CreateClusterSummariesInput: {
+      /** The vector fields that these centroids are associated with. */
+      vector_fields?: string[];
+      centroid_vector_fields?: string[];
+      /** Alias is used to name a cluster. */
+      alias?: string;
+      dataset_id?: string;
+      cluster_ids?: unknown[];
+      /** Set to true to only return summaries, not save them. */
+      dont_save_summaries?: boolean;
+      questions: {
+        cluster_ids?: unknown[];
+        /**
+         * Summarise the top results in a sentence. Fields will form a string like:
+         *   ```
+         *   {question_prefix}
+         *   {item_prefix} 1:{field_value}
+         *   {item_prefix} 2: {field_value_2}
+         *   {question_suffix}}
+         *   ```
+         *   To create a summary on a field name 'feedback' for each cluster, An example payload could be:
+         *
+         *   ```
+         *   "cluster_text_summary":[
+         *     {"item_prefix":"Feedback","question_suffix":"Summarise the feedback in one short sentence.","field":"feedback"}
+         *   ]
+         *   ```
+         */
+        config: {
+          /** Text field of clusters to summarize */
+          field: string;
+          question_prefix?: string;
+          question_suffix?: string;
+          item_prefix?: string;
+          /** Add 1:,2:,3:... to each item. This makes it more likely output will be numbered. */
+          items_numbered?: boolean;
+          /** Cluster items provide context to the question. Limiting cluster item char length reduces cost, but may miss end of sentences with context. */
+          max_item_length?: number;
+          /** Cluster items provide context to the question. Limiting cluster item count reduces cost, but may miss items with context. */
+          max_item_count?: number;
+          /** Controls answer quality. Higher quality answers have exponentially higher cost. */
+          accuracy?: 1 | 2 | 3 | 4;
+          /** Maximum number of words that will be generated. */
+          max_answer_length?: number;
+          /** To avoid overloading our summary API, you can increase / decrease the ms delay between questions. */
+          delay_between_summary_generation?: number;
+        };
+      }[];
+    };
+    CreateClusterSummariesOutput: {
+      results: {
+        [key: string]: {
+          answers: {
+            answer: string;
+            question: string;
+            /**
+             * Summarise the top results in a sentence. Fields will form a string like:
+             *   ```
+             *   {question_prefix}
+             *   {item_prefix} 1:{field_value}
+             *   {item_prefix} 2: {field_value_2}
+             *   {question_suffix}}
+             *   ```
+             *   To create a summary on a field name 'feedback' for each cluster, An example payload could be:
+             *
+             *   ```
+             *   "cluster_text_summary":[
+             *     {"item_prefix":"Feedback","question_suffix":"Summarise the feedback in one short sentence.","field":"feedback"}
+             *   ]
+             *   ```
+             */
+            config: {
+              /** Text field of clusters to summarize */
+              field: string;
+              question_prefix?: string;
+              question_suffix?: string;
+              item_prefix?: string;
+              /** Add 1:,2:,3:... to each item. This makes it more likely output will be numbered. */
+              items_numbered?: boolean;
+              /** Cluster items provide context to the question. Limiting cluster item char length reduces cost, but may miss end of sentences with context. */
+              max_item_length?: number;
+              /** Cluster items provide context to the question. Limiting cluster item count reduces cost, but may miss items with context. */
+              max_item_count?: number;
+              /** Controls answer quality. Higher quality answers have exponentially higher cost. */
+              accuracy?: 1 | 2 | 3 | 4;
+              /** Maximum number of words that will be generated. */
+              max_answer_length?: number;
+              /** To avoid overloading our summary API, you can increase / decrease the ms delay between questions. */
+              delay_between_summary_generation?: number;
+            };
+            confidence?: number;
+          }[];
+        };
+      };
+    };
+    ListClusterSummariesInput: {
+      /** The vector fields that these centroids are associated with. */
+      vector_fields?: string[];
+      centroid_vector_fields?: string[];
+      /** Alias is used to name a cluster. */
+      alias?: string;
+      dataset_id?: string;
+    };
+    ListClusterSummariesOutput: {
+      results: {
+        [key: string]: {
+          answers: {
+            answer: string;
+            question: string;
+            /**
+             * Summarise the top results in a sentence. Fields will form a string like:
+             *   ```
+             *   {question_prefix}
+             *   {item_prefix} 1:{field_value}
+             *   {item_prefix} 2: {field_value_2}
+             *   {question_suffix}}
+             *   ```
+             *   To create a summary on a field name 'feedback' for each cluster, An example payload could be:
+             *
+             *   ```
+             *   "cluster_text_summary":[
+             *     {"item_prefix":"Feedback","question_suffix":"Summarise the feedback in one short sentence.","field":"feedback"}
+             *   ]
+             *   ```
+             */
+            config: {
+              /** Text field of clusters to summarize */
+              field: string;
+              question_prefix?: string;
+              question_suffix?: string;
+              item_prefix?: string;
+              /** Add 1:,2:,3:... to each item. This makes it more likely output will be numbered. */
+              items_numbered?: boolean;
+              /** Cluster items provide context to the question. Limiting cluster item char length reduces cost, but may miss end of sentences with context. */
+              max_item_length?: number;
+              /** Cluster items provide context to the question. Limiting cluster item count reduces cost, but may miss items with context. */
+              max_item_count?: number;
+              /** Controls answer quality. Higher quality answers have exponentially higher cost. */
+              accuracy?: 1 | 2 | 3 | 4;
+              /** Maximum number of words that will be generated. */
+              max_answer_length?: number;
+              /** To avoid overloading our summary API, you can increase / decrease the ms delay between questions. */
+              delay_between_summary_generation?: number;
+            };
+            confidence?: number;
+          }[];
+        };
+      };
+    };
+    DeleteClusterSummariesInput: {
+      /** The vector fields that these centroids are associated with. */
+      vector_fields?: string[];
+      centroid_vector_fields?: string[];
+      /** Alias is used to name a cluster. */
+      alias?: string;
+      dataset_id?: string;
+      cluster_ids: unknown[];
+    };
+    DeleteClusterSummariesOutput: unknown;
+    InsertInput: {
       /** Each document to upsert must have an _id field matching an existing document. */
       document?: {
         _id?: unknown;
       } & { [key: string]: unknown };
-    };
-    InsertOutput: unknown;
-    BulkInsertInput: {
+      /** Return immediately after storing data in a spot where it can be ingested in the background. Best for large datasets. */
+      ingest_in_background?: boolean;
       /** Whether to include insert date as a field 'insert_date_'. */
       insert_date?: boolean;
       /** Whether to overwrite document if it exists. */
@@ -128,6 +3575,22 @@ export interface components {
       update_schema?: boolean;
       /** Whether to return before all documents have finished updating. */
       wait_for_update?: boolean;
+      encoders?: {
+        /** The model url to use */
+        model_url?: string;
+        /** The model name to use. */
+        model_name?:
+          | "image_text"
+          | "text_image"
+          | "all-mpnet-base-v2"
+          | "sentence-transformers";
+        /** Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
+        body?: string;
+        /** The document field to encode. */
+        field: string;
+        /** Add 'alias' to a created vector field name. Output format is {field}_{alias}_vector_. */
+        alias?: string;
+      }[];
       /** Before insertion, fields of documents will be transformed according to this array of rules. If transformation fails, the output field will not be generated. */
       field_transformers?: {
         /** Field to transform. to transform a nested field, use a.b */
@@ -138,6 +3601,11 @@ export interface components {
         remove_html?: boolean;
         /** Whether transform a text field into an array of text by splitting sentences. */
         split_sentences?: boolean;
+        /** If specified, documents with the vector fields will be clustered according to the clustering alias */
+        assign_to_cluster?: {
+          /** The alias of the clustering. */
+          alias?: string;
+        };
       }[];
       /** A list of jobs to run once all documents are processed. */
       jobs_to_trigger?: {
@@ -153,9 +3621,68 @@ export interface components {
           model_name?: string;
         };
       }[];
+    };
+    InsertOutput: unknown;
+    BulkInsertInput: {
       documents?: ({
         _id?: unknown;
       } & { [key: string]: unknown })[];
+      /** Return immediately after storing data in a spot where it can be ingested in the background. Best for large datasets. */
+      ingest_in_background?: boolean;
+      /** Whether to include insert date as a field 'insert_date_'. */
+      insert_date?: boolean;
+      /** Whether to overwrite document if it exists. */
+      overwrite?: boolean;
+      /** Whether the api should check the documents for vector datatype to update the schema. */
+      update_schema?: boolean;
+      /** Whether to return before all documents have finished updating. */
+      wait_for_update?: boolean;
+      encoders?: {
+        /** The model url to use */
+        model_url?: string;
+        /** The model name to use. */
+        model_name?:
+          | "image_text"
+          | "text_image"
+          | "all-mpnet-base-v2"
+          | "sentence-transformers";
+        /** Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
+        body?: string;
+        /** The document field to encode. */
+        field: string;
+        /** Add 'alias' to a created vector field name. Output format is {field}_{alias}_vector_. */
+        alias?: string;
+      }[];
+      /** Before insertion, fields of documents will be transformed according to this array of rules. If transformation fails, the output field will not be generated. */
+      field_transformers?: {
+        /** Field to transform. to transform a nested field, use a.b */
+        field: string;
+        /** If specified, place result in this field. To place in a nested field, use format a.b */
+        output_field?: string;
+        /** Whether to strip html tags from field. */
+        remove_html?: boolean;
+        /** Whether transform a text field into an array of text by splitting sentences. */
+        split_sentences?: boolean;
+        /** If specified, documents with the vector fields will be clustered according to the clustering alias */
+        assign_to_cluster?: {
+          /** The alias of the clustering. */
+          alias?: string;
+        };
+      }[];
+      /** A list of jobs to run once all documents are processed. */
+      jobs_to_trigger?: {
+        /** Specify this to run an encoding job after documents are processed. Supports chunk field encoding, encoding many fields, and storing results in a new field specified by alias. */
+        encode?: {
+          /** Chunk field to encode. Will produce a field with _chunkvector_ suffix. */
+          chunk_field?: string;
+          /** Regular fields to encode. Will produce a field with _vector suffix. */
+          fields?: string[];
+          /** If provided, this string will be added to the output field name. */
+          alias?: string;
+          /** Model name to use for encoding. */
+          model_name?: string;
+        };
+      }[];
     };
     BulkInsertOutput: {
       /** Number of successfully processed documents. */
@@ -172,12 +3699,15 @@ export interface components {
         };
       }[];
     };
-    BlobAccessURLsInput: unknown;
-    BlobAccessURLsOutput: {
-      /** Used to upload a blob of documents. */
-      upload_blob_url: string;
-      /** Used to download a blob of products. Used in the ParseBlob endpoint */
-      download_blob_url: string;
+    GetFileUploadUrlsForDatasetInput: {
+      /** files we be accessible under a url that will be returned in the output. */
+      files: string[];
+    };
+    GetFileUploadUrlsForDatasetOutput: {
+      files: {
+        upload_url: string;
+        url: string;
+      }[];
     };
     ParseBlobInput: {
       /** Used to download the blob of documents. */
@@ -198,20 +3728,637 @@ export interface components {
       /** Failed documents. */
       failed_documents?: unknown[];
     };
-    GetDocumentInput: {
-      /** Retrieve document with matching _id. */
-      document_id: string;
-      /** Whether to return vectors. */
-      include_vector?: boolean;
+    CopyForeignDatasetInput: {
+      filters?: unknown[];
+      items?: Partial<{
+        /** Match where document[field] is in value list. */
+        match?: {
+          /** If matching on text, match even if there are extra words / case insensitivity */
+          fuzzy?: boolean;
+          /** Field to match on. */
+          field?: string;
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match where document._id is in value list. */
+        matchIds?: {
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+        range?: {
+          /** Field to match on. */
+          field?: string;
+          greaterThan?: unknown;
+          lessThan?: unknown;
+        };
+        /**
+         * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+         *
+         * Possible matching patterns:
+         *
+         * * - documents where the field has any value
+         * ? - documents where a single character from the field matches the provided values
+         *
+         * Example:
+         *
+         * {
+         *   wildcard: {
+         *      field: "title",
+         *      value: [ "Avenger*" ]
+         *   }
+         * }
+         */
+        wildcard?: {
+          /** Field to match on. */
+          field?: string;
+          /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+          value: string | string[];
+        };
+        /** hybrid search query that must reach a certain value to filter */
+        search?: {
+          /**
+           * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+           *
+           *     "tele" matches "Television", "This television is an excellent product…"
+           *
+           *     Example: "tele"
+           */
+          query?: string;
+          /** Configuration for traditional search query. */
+          queryConfig?: {
+            /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+            weight?: number;
+            /**
+             * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+             *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+             */
+            sentenceWeight?: number;
+          };
+          /**
+           * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+           *
+           *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+           *
+           *     It can be an object or a list of objects.
+           *
+           *
+           *
+           *     Example payloads:
+           *
+           *     {"field":"animaltype_vector_","query":"kitten"}
+           *
+           *     [
+           *
+           *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+           *
+           *     ]
+           */
+          vectorSearchQuery?:
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }[];
+          /**
+           * A list of fields to search using the "query" parameter.
+           *
+           *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+           *
+           *     Default behaviour is to search all fields.
+           *
+           *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+           */
+          fieldsToSearch?: (
+            | string
+            | {
+                /** Field name to search. */
+                field?: string;
+                /** Multiply the relevance contribution of a specific field when using traditional search. */
+                weight?: number;
+                /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                chunkField?: string;
+              }
+          )[];
+          /**
+           * Only return documents with a _relevance above this threshold.
+           *
+           *     Example: 0.3
+           */
+          minimumRelevance: number;
+        };
+        /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+        fieldExists?: {
+          /** Field that must exist. */
+          field?: string;
+        };
+        /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+        selfreference?: {
+          /** First field in comparison. */
+          a: string;
+          /** Second field in comparison. */
+          b: string;
+          /** Operator used to compare a and b. */
+          operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+        };
+        /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+        wordCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum word count. */
+          greaterThan?: number;
+          /** Maximum word count. */
+          lessThan?: number;
+        };
+        /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+        characterCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum character count. */
+          greaterThan?: number;
+          /** Maximum character count. */
+          lessThan?: number;
+        };
+        /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+        or?: (
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"]
+        )[];
+        /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+        not?:
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"];
+        /** Filter based on data within a _chunk_ field. */
+        chunk?: {
+          /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+          path: string;
+          filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+        };
+      }> &
+        Partial<{
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }>;
+      /** Dataset name to copy into */
+      dataset_id: string;
+      /** project name you want to copy the dataset into */
+      project: string;
+      /** api key of the project you want to copy the dataset into */
+      api_key: string;
+      /** Dataset to copy from */
+      source_dataset_id: string;
+      /** Source project name of whom the dataset belongs to */
+      source_project: string;
+      /** Api key to access the source project name */
+      source_api_key: string;
     };
+    CopyForeignDatasetOutput: unknown;
+    CreateProjectReadKeyInput: {
+      /** Username for read only key */
+      read_username: string | number;
+    };
+    CreateProjectReadKeyOutput: unknown;
+    DeleteDatasetInput: { [key: string]: unknown };
+    DeleteDatasetOutput: {
+      /** Completion status. */
+      status: string;
+      /** Response message for completion state. */
+      message: string;
+    };
+    CreateDatasetInput: {
+      id?: string;
+      schema?: {
+        [key: string]:
+          | (
+              | "binary"
+              | "bool"
+              | "date"
+              | "numeric"
+              | "text"
+              | "dict"
+              | "chunks"
+              | "base64"
+              | "boolean"
+            )
+          | {
+              chunkvector?: number;
+              vector?: number;
+            }
+          | number;
+      };
+      /** If true, creating a dataset that already exists will not error. If false, it will error. */
+      upsert?: boolean;
+    };
+    CreateDatasetOutput: unknown;
+    GetSchemaInput: unknown;
+    GetSchemaOutput: {
+      [key: string]:
+        | (
+            | "binary"
+            | "bool"
+            | "date"
+            | "numeric"
+            | "text"
+            | "dict"
+            | "chunks"
+            | "base64"
+            | "boolean"
+          )
+        | {
+            chunkvector?: number;
+            vector?: number;
+          }
+        | number;
+    };
+    ListDatasetsInput: unknown;
+    ListDatasetsOutput: {
+      datasets: string[];
+      count: number;
+    };
+    CombineDatasetsInput: {
+      dataset_ids: string[];
+      dataset_to_copy_metadata_from?: string;
+      new_dataset_id: string;
+      rename_fields?: { [key: string]: string };
+      include_fields?: string[];
+      remove_fields?: string[];
+      filters?: unknown[];
+      items?: Partial<{
+        /** Match where document[field] is in value list. */
+        match?: {
+          /** If matching on text, match even if there are extra words / case insensitivity */
+          fuzzy?: boolean;
+          /** Field to match on. */
+          field?: string;
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match where document._id is in value list. */
+        matchIds?: {
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+        range?: {
+          /** Field to match on. */
+          field?: string;
+          greaterThan?: unknown;
+          lessThan?: unknown;
+        };
+        /**
+         * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+         *
+         * Possible matching patterns:
+         *
+         * * - documents where the field has any value
+         * ? - documents where a single character from the field matches the provided values
+         *
+         * Example:
+         *
+         * {
+         *   wildcard: {
+         *      field: "title",
+         *      value: [ "Avenger*" ]
+         *   }
+         * }
+         */
+        wildcard?: {
+          /** Field to match on. */
+          field?: string;
+          /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+          value: string | string[];
+        };
+        /** hybrid search query that must reach a certain value to filter */
+        search?: {
+          /**
+           * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+           *
+           *     "tele" matches "Television", "This television is an excellent product…"
+           *
+           *     Example: "tele"
+           */
+          query?: string;
+          /** Configuration for traditional search query. */
+          queryConfig?: {
+            /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+            weight?: number;
+            /**
+             * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+             *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+             */
+            sentenceWeight?: number;
+          };
+          /**
+           * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+           *
+           *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+           *
+           *     It can be an object or a list of objects.
+           *
+           *
+           *
+           *     Example payloads:
+           *
+           *     {"field":"animaltype_vector_","query":"kitten"}
+           *
+           *     [
+           *
+           *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+           *
+           *     ]
+           */
+          vectorSearchQuery?:
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }[];
+          /**
+           * A list of fields to search using the "query" parameter.
+           *
+           *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+           *
+           *     Default behaviour is to search all fields.
+           *
+           *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+           */
+          fieldsToSearch?: (
+            | string
+            | {
+                /** Field name to search. */
+                field?: string;
+                /** Multiply the relevance contribution of a specific field when using traditional search. */
+                weight?: number;
+                /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                chunkField?: string;
+              }
+          )[];
+          /**
+           * Only return documents with a _relevance above this threshold.
+           *
+           *     Example: 0.3
+           */
+          minimumRelevance: number;
+        };
+        /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+        fieldExists?: {
+          /** Field that must exist. */
+          field?: string;
+        };
+        /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+        selfreference?: {
+          /** First field in comparison. */
+          a: string;
+          /** Second field in comparison. */
+          b: string;
+          /** Operator used to compare a and b. */
+          operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+        };
+        /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+        wordCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum word count. */
+          greaterThan?: number;
+          /** Maximum word count. */
+          lessThan?: number;
+        };
+        /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+        characterCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum character count. */
+          greaterThan?: number;
+          /** Maximum character count. */
+          lessThan?: number;
+        };
+        /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+        or?: (
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"]
+        )[];
+        /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+        not?:
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"];
+        /** Filter based on data within a _chunk_ field. */
+        chunk?: {
+          /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+          path: string;
+          filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+        };
+      }> &
+        Partial<{
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }>;
+    };
+    CombineDatasetsOutput: {
+      job_id: string;
+    };
+    GetCombineJobStatusInput: unknown;
+    GetCombineJobStatusOutput: {
+      job_message: string;
+      job_status: "Completed" | "InProgress";
+    };
+    SearchDatasetsInput: unknown;
+    SearchDatasetsOutput: {
+      datasets: string[];
+      count: number;
+    };
+    GetFieldHealthInput: unknown;
+    GetFieldHealthOutput: {
+      [key: string]: {
+        exists: number;
+        missing: number;
+      };
+    };
+    GetDatasetStatsInput: unknown;
+    GetDatasetStatsOutput: { [key: string]: unknown };
+    GetDatasetUsageInput: unknown;
+    GetDatasetUsageOutput: {
+      insert_date_: number;
+      frequency: number;
+    }[];
+    GetVectorMappingsInput: unknown;
+    GetVectorMappingsOutput: { [key: string]: unknown };
+    GetDatasetDetailsInput: {
+      /** Whether to return schema */
+      include_schema?: boolean;
+      /** Whether to return stats */
+      include_stats?: boolean;
+      /** Whether to return metadata */
+      include_metadata?: boolean;
+      /** Whether to return schema stats */
+      include_schema_stats?: boolean;
+      /** Whether to return vector health */
+      include_vector_health?: boolean;
+      /** Whether to return active jobs */
+      include_active_jobs?: boolean;
+      /** Whether to retrieve the datasets dashboard settings. */
+      include_settings?: boolean;
+    };
+    GetDatasetDetailsOutput: {
+      schema?: unknown;
+      stats?: unknown;
+      metadata?: unknown;
+      schema_stats?: unknown;
+      vector_health?: unknown;
+      active_jobs?: unknown;
+      settings?: unknown;
+    };
+    GetDocumentInput: unknown;
     GetDocumentOutput: {
       document: { [key: string]: unknown };
     };
     DeleteDocumentInput: {
       /** Delete document with matching _id. */
-      document_id: string;
+      id: string;
     };
     DeleteDocumentOutput: unknown;
+    UpsertDatasetSettingsInput: {
+      settings: { [key: string]: unknown };
+    };
+    UpsertDatasetSettingsOutput: unknown;
+    UpsertDatasetMetadataInput: {
+      /** Edit and add metadata about a dataset. Notably description, data source, etc */
+      metadata: { [key: string]: unknown };
+    };
+    UpsertDatasetMetadataOutput: unknown;
+    GetDatasetMetadataInput: unknown;
+    GetDatasetMetadataOutput: {
+      results: { [key: string]: unknown };
+    };
+    GetDatasetSettingsInput: unknown;
+    GetDatasetSettingsOutput: {
+      results: { [key: string]: unknown };
+    };
     UpdateInput: {
       /** _id of document to update. */
       id: unknown;
@@ -219,10 +4366,32 @@ export interface components {
       updates: {
         _id?: unknown;
       } & { [key: string]: unknown };
+      /** Return immediately after storing data in a spot where it can be ingested in the background. Best for large datasets. */
+      ingest_in_background?: boolean;
       /** Whether to include insert date as a field 'insert_date_'. */
       insert_date?: boolean;
+      /** Whether to overwrite document if it exists. */
+      overwrite?: boolean;
+      /** Whether the api should check the documents for vector datatype to update the schema. */
+      update_schema?: boolean;
       /** Whether to return before all documents have finished updating. */
       wait_for_update?: boolean;
+      encoders?: {
+        /** The model url to use */
+        model_url?: string;
+        /** The model name to use. */
+        model_name?:
+          | "image_text"
+          | "text_image"
+          | "all-mpnet-base-v2"
+          | "sentence-transformers";
+        /** Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
+        body?: string;
+        /** The document field to encode. */
+        field: string;
+        /** Add 'alias' to a created vector field name. Output format is {field}_{alias}_vector_. */
+        alias?: string;
+      }[];
       /** Before insertion, fields of documents will be transformed according to this array of rules. If transformation fails, the output field will not be generated. */
       field_transformers?: {
         /** Field to transform. to transform a nested field, use a.b */
@@ -233,6 +4402,25 @@ export interface components {
         remove_html?: boolean;
         /** Whether transform a text field into an array of text by splitting sentences. */
         split_sentences?: boolean;
+        /** If specified, documents with the vector fields will be clustered according to the clustering alias */
+        assign_to_cluster?: {
+          /** The alias of the clustering. */
+          alias?: string;
+        };
+      }[];
+      /** A list of jobs to run once all documents are processed. */
+      jobs_to_trigger?: {
+        /** Specify this to run an encoding job after documents are processed. Supports chunk field encoding, encoding many fields, and storing results in a new field specified by alias. */
+        encode?: {
+          /** Chunk field to encode. Will produce a field with _chunkvector_ suffix. */
+          chunk_field?: string;
+          /** Regular fields to encode. Will produce a field with _vector suffix. */
+          fields?: string[];
+          /** If provided, this string will be added to the output field name. */
+          alias?: string;
+          /** Model name to use for encoding. */
+          model_name?: string;
+        };
       }[];
     };
     UpdateOutput: {
@@ -241,15 +4429,44 @@ export interface components {
       /** Response message for completion state. */
       message: string;
     };
+    DeleteDocumentFieldsInput: {
+      /** _id of document to delete fields of. */
+      id: string;
+      /** List of fields to delete in a document */
+      fields: string[];
+    };
+    DeleteDocumentFieldsOutput: unknown;
     BulkUpdateInput: {
       /** List of updates to apply to documents. Each update item must contain an _id. */
       updates: ({
         _id?: unknown;
       } & { [key: string]: unknown })[];
+      /** Return immediately after storing data in a spot where it can be ingested in the background. Best for large datasets. */
+      ingest_in_background?: boolean;
       /** Whether to include insert date as a field 'insert_date_'. */
       insert_date?: boolean;
+      /** Whether to overwrite document if it exists. */
+      overwrite?: boolean;
+      /** Whether the api should check the documents for vector datatype to update the schema. */
+      update_schema?: boolean;
       /** Whether to return before all documents have finished updating. */
       wait_for_update?: boolean;
+      encoders?: {
+        /** The model url to use */
+        model_url?: string;
+        /** The model name to use. */
+        model_name?:
+          | "image_text"
+          | "text_image"
+          | "all-mpnet-base-v2"
+          | "sentence-transformers";
+        /** Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
+        body?: string;
+        /** The document field to encode. */
+        field: string;
+        /** Add 'alias' to a created vector field name. Output format is {field}_{alias}_vector_. */
+        alias?: string;
+      }[];
       /** Before insertion, fields of documents will be transformed according to this array of rules. If transformation fails, the output field will not be generated. */
       field_transformers?: {
         /** Field to transform. to transform a nested field, use a.b */
@@ -260,6 +4477,25 @@ export interface components {
         remove_html?: boolean;
         /** Whether transform a text field into an array of text by splitting sentences. */
         split_sentences?: boolean;
+        /** If specified, documents with the vector fields will be clustered according to the clustering alias */
+        assign_to_cluster?: {
+          /** The alias of the clustering. */
+          alias?: string;
+        };
+      }[];
+      /** A list of jobs to run once all documents are processed. */
+      jobs_to_trigger?: {
+        /** Specify this to run an encoding job after documents are processed. Supports chunk field encoding, encoding many fields, and storing results in a new field specified by alias. */
+        encode?: {
+          /** Chunk field to encode. Will produce a field with _chunkvector_ suffix. */
+          chunk_field?: string;
+          /** Regular fields to encode. Will produce a field with _vector suffix. */
+          fields?: string[];
+          /** If provided, this string will be added to the output field name. */
+          alias?: string;
+          /** Model name to use for encoding. */
+          model_name?: string;
+        };
       }[];
     };
     BulkUpdateOutput: {
@@ -277,166 +4513,242 @@ export interface components {
         };
       }[];
     };
-    filterListItem: {
-      /** Match where document[key] is in value list. */
-      match?: {
-        /** Field to match on. */
-        key: string;
-        /** Can be either a single item or a list of items to match on. */
-        value: string | boolean | number | unknown[];
-      };
-      /** Match documents where greaterThan < document[key] < lessThan. Supports numbers and date strings. */
-      range?: {
-        /** Field to match on. */
-        key: string;
-        greaterThan?: unknown;
-        lessThan?: unknown;
-      };
-      /**
-       * Documents where the key field either contains the value as a substring, or matches a provided matching pattern.
-       *
-       * Possible matching patterns:
-       *
-       * * - documents where the key field has any value
-       * ? - documents where a single character from the key field matches the provided values
-       *
-       * Example:
-       *
-       * {
-       *   wildcard: {
-       *      key: "title",
-       *      value: [ "Avenger*" ]
-       *   }
-       * }
-       */
-      wildcard?: {
-        /** Field to match on. */
-        key: string;
-        /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
-        value: string | string[];
-      };
-      /** Match documents where field specified by 'key' exists in the document. for nested fields, use syntax: a.b.c */
-      fieldExists?: {
-        /** Field that must exist. */
-        key: string;
-      };
-      /** Match documents where document[a] <=/>=/</>/==/!= document[b]. */
-      selfreference?: {
-        /** First field in comparison. */
-        a: string;
-        /** Second field in comparison. */
-        b: string;
-        /** Operator used to compare a and b. */
-        operation: "<=" | ">=" | "<" | ">" | "==" | "!=";
-      };
-      /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
-      or?: (
-        | components["schemas"]["filterListItem"][]
-        | components["schemas"]["filterListItem"]
-      )[];
-      /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
-      not?:
-        | components["schemas"]["filterListItem"][]
-        | components["schemas"]["filterListItem"];
-      /** Filter based on data within a _chunk_ field. */
-      chunk?: {
-        /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
-        path: string;
-        filters: components["schemas"]["filterListItem"][];
-      };
-    };
     UpdateWhereInput: {
+      filters?: unknown[];
+      items?: Partial<{
+        /** Match where document[field] is in value list. */
+        match?: {
+          /** If matching on text, match even if there are extra words / case insensitivity */
+          fuzzy?: boolean;
+          /** Field to match on. */
+          field?: string;
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match where document._id is in value list. */
+        matchIds?: {
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+        range?: {
+          /** Field to match on. */
+          field?: string;
+          greaterThan?: unknown;
+          lessThan?: unknown;
+        };
+        /**
+         * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+         *
+         * Possible matching patterns:
+         *
+         * * - documents where the field has any value
+         * ? - documents where a single character from the field matches the provided values
+         *
+         * Example:
+         *
+         * {
+         *   wildcard: {
+         *      field: "title",
+         *      value: [ "Avenger*" ]
+         *   }
+         * }
+         */
+        wildcard?: {
+          /** Field to match on. */
+          field?: string;
+          /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+          value: string | string[];
+        };
+        /** hybrid search query that must reach a certain value to filter */
+        search?: {
+          /**
+           * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+           *
+           *     "tele" matches "Television", "This television is an excellent product…"
+           *
+           *     Example: "tele"
+           */
+          query?: string;
+          /** Configuration for traditional search query. */
+          queryConfig?: {
+            /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+            weight?: number;
+            /**
+             * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+             *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+             */
+            sentenceWeight?: number;
+          };
+          /**
+           * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+           *
+           *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+           *
+           *     It can be an object or a list of objects.
+           *
+           *
+           *
+           *     Example payloads:
+           *
+           *     {"field":"animaltype_vector_","query":"kitten"}
+           *
+           *     [
+           *
+           *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+           *
+           *     ]
+           */
+          vectorSearchQuery?:
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }[];
+          /**
+           * A list of fields to search using the "query" parameter.
+           *
+           *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+           *
+           *     Default behaviour is to search all fields.
+           *
+           *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+           */
+          fieldsToSearch?: (
+            | string
+            | {
+                /** Field name to search. */
+                field?: string;
+                /** Multiply the relevance contribution of a specific field when using traditional search. */
+                weight?: number;
+                /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                chunkField?: string;
+              }
+          )[];
+          /**
+           * Only return documents with a _relevance above this threshold.
+           *
+           *     Example: 0.3
+           */
+          minimumRelevance: number;
+        };
+        /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+        fieldExists?: {
+          /** Field that must exist. */
+          field?: string;
+        };
+        /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+        selfreference?: {
+          /** First field in comparison. */
+          a: string;
+          /** Second field in comparison. */
+          b: string;
+          /** Operator used to compare a and b. */
+          operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+        };
+        /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+        wordCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum word count. */
+          greaterThan?: number;
+          /** Maximum word count. */
+          lessThan?: number;
+        };
+        /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+        characterCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum character count. */
+          greaterThan?: number;
+          /** Maximum character count. */
+          lessThan?: number;
+        };
+        /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+        or?: (
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"]
+        )[];
+        /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+        not?:
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"];
+        /** Filter based on data within a _chunk_ field. */
+        chunk?: {
+          /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+          path: string;
+          filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+        };
+      }> &
+        Partial<{
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }>;
       /** Updates to make to the documents. It should be specified in a format of {"field_name": "value"}. e.g. {"item.status" : "Sold Out"} */
       updates: { [key: string]: unknown };
-      /**
-       * Only Include results that match on this list of filters.
-       *
-       *     "match" property of filters requires "key" to control which field to match on, and an array of items in "value" to dictate exact match values.
-       *
-       *     "range" property of filters requires "key" to control which field to match on, and "greaterThan" and/or "lessThan", which must be a number or a date string.
-       *
-       *     "wildcard" property of filters requires "key" to control which field to match on, and an array of items in "value" to control wildcard match pattern. It may include * to match any string of characters, and ? To match one character.
-       *
-       *     "or" property of filters requires either: a list of ( subfilters / list of subfilters) etc. [{"match":...},[{"match":...},{"range":...}]].At least one of the subfilters must evaluate to true. If a subfilter is an array, it performs an AND over the sub-sub-filters. For example, [filter1,[filter2,filter3]] is equivalent to filter1 OR (filter2 AND filter3).
-       *
-       *     Example:
-       *     [
-       *
-       *       {
-       *
-       *         "match":{
-       *
-       *           "key":"name",
-       *
-       *           "value":["television"]
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "wildcard":{
-       *
-       *           "key":"name",
-       *
-       *           "value":["television*"]
-       *
-       *         }
-       *
-       *       },
-       *
-       *
-       *
-       *       {
-       *
-       *         "range":{
-       *
-       *           "key":"price",
-       *
-       *           "greaterThan":5.5,
-       *
-       *           "lessThan":20
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "range":{
-       *
-       *           "key":"postcode",
-       *
-       *           "greaterThan":2000
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "match":{
-       *
-       *           "key":"likes_dogs",
-       *
-       *           "value":[true]
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "or": [ {"match":{"key":"name","value":["dog"]}},[{"match":{"key":"name","value":["cat"]}},{"wildcard":{"key":"color","value"["orange"]}] ]
-       *
-       *       },
-       *
-       *
-       *
-       *     ]
-       */
-      filters?: components["schemas"]["filterListItem"][];
     };
     UpdateWhereOutput: {
       /** Completion status. */
@@ -444,96 +4756,628 @@ export interface components {
       /** Response message for completion state. */
       message: string;
     };
-    DeleteWhereInput: {
+    ListFacetsInput: {
+      /** Fields to include in the facets, if [] then all */
+      fields?: string[];
+      date_interval?:
+        | "monthly"
+        | "daily"
+        | "yearly"
+        | "hourly"
+        | "minutely"
+        | "weekly";
+      /** Size of facet page */
+      page_size?: number;
+      /** Whether to sort results by ascending or descending frequency */
+      asc?: boolean;
+    };
+    ListFacetsOutput: {
+      results: {
+        [key: string]:
+          | ({
+              avg: number;
+              max: number;
+              min: number;
+              sum: number;
+              date?: ({
+                value: unknown;
+                frequency: number;
+              } & { [key: string]: unknown })[];
+            } & { [key: string]: unknown })
+          | ({
+              value: unknown;
+              frequency: number;
+            } & { [key: string]: unknown })[];
+      };
+    };
+    GetWhereInput: {
+      filters?: unknown[];
+      items?: Partial<{
+        /** Match where document[field] is in value list. */
+        match?: {
+          /** If matching on text, match even if there are extra words / case insensitivity */
+          fuzzy?: boolean;
+          /** Field to match on. */
+          field?: string;
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match where document._id is in value list. */
+        matchIds?: {
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+        range?: {
+          /** Field to match on. */
+          field?: string;
+          greaterThan?: unknown;
+          lessThan?: unknown;
+        };
+        /**
+         * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+         *
+         * Possible matching patterns:
+         *
+         * * - documents where the field has any value
+         * ? - documents where a single character from the field matches the provided values
+         *
+         * Example:
+         *
+         * {
+         *   wildcard: {
+         *      field: "title",
+         *      value: [ "Avenger*" ]
+         *   }
+         * }
+         */
+        wildcard?: {
+          /** Field to match on. */
+          field?: string;
+          /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+          value: string | string[];
+        };
+        /** hybrid search query that must reach a certain value to filter */
+        search?: {
+          /**
+           * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+           *
+           *     "tele" matches "Television", "This television is an excellent product…"
+           *
+           *     Example: "tele"
+           */
+          query?: string;
+          /** Configuration for traditional search query. */
+          queryConfig?: {
+            /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+            weight?: number;
+            /**
+             * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+             *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+             */
+            sentenceWeight?: number;
+          };
+          /**
+           * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+           *
+           *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+           *
+           *     It can be an object or a list of objects.
+           *
+           *
+           *
+           *     Example payloads:
+           *
+           *     {"field":"animaltype_vector_","query":"kitten"}
+           *
+           *     [
+           *
+           *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+           *
+           *     ]
+           */
+          vectorSearchQuery?:
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }[];
+          /**
+           * A list of fields to search using the "query" parameter.
+           *
+           *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+           *
+           *     Default behaviour is to search all fields.
+           *
+           *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+           */
+          fieldsToSearch?: (
+            | string
+            | {
+                /** Field name to search. */
+                field?: string;
+                /** Multiply the relevance contribution of a specific field when using traditional search. */
+                weight?: number;
+                /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                chunkField?: string;
+              }
+          )[];
+          /**
+           * Only return documents with a _relevance above this threshold.
+           *
+           *     Example: 0.3
+           */
+          minimumRelevance: number;
+        };
+        /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+        fieldExists?: {
+          /** Field that must exist. */
+          field?: string;
+        };
+        /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+        selfreference?: {
+          /** First field in comparison. */
+          a: string;
+          /** Second field in comparison. */
+          b: string;
+          /** Operator used to compare a and b. */
+          operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+        };
+        /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+        wordCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum word count. */
+          greaterThan?: number;
+          /** Maximum word count. */
+          lessThan?: number;
+        };
+        /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+        characterCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum character count. */
+          greaterThan?: number;
+          /** Maximum character count. */
+          lessThan?: number;
+        };
+        /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+        or?: (
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"]
+        )[];
+        /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+        not?:
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"];
+        /** Filter based on data within a _chunk_ field. */
+        chunk?: {
+          /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+          path: string;
+          filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+        };
+      }> &
+        Partial<{
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }>;
+      /** Fields to include in the search results, empty array/list means all fields. */
+      select_fields?: string[];
+      /** Size of each page of results. */
+      page_size?: number;
+      /** Size of each page of results. */
+      page?: number;
+      /** Fields to sort by. For each field, sort by descending or ascending. If you are using descending by datetime, it will get the most recent ones. */
+      sort?: (string | { [key: string]: "asc" | "desc" })[];
+      /** Include vectors in the search results. */
+      include_vector?: boolean;
+      /** (NOT IMPLEMENTED - not functional) If true, retrieves documents randomly. */
+      is_random?: boolean;
+      /** (NOT IMPLEMENTED - not functional)Random Seed for retrieving random documents. */
+      random_state?: number;
+      /** Retrieve items after these sort values in the sort order. */
+      after_id?: unknown[];
+    };
+    GetWhereOutput: {
+      count: number;
       /**
-       * Only Include results that match on this list of filters.
+       * List of documents. List items are affected by page, pageSize, query, filters. Items order is affected by vectorSeachQuery, sort, textSort.
        *
-       *     "match" property of filters requires "key" to control which field to match on, and an array of items in "value" to dictate exact match values.
-       *
-       *     "range" property of filters requires "key" to control which field to match on, and "greaterThan" and/or "lessThan", which must be a number or a date string.
-       *
-       *     "wildcard" property of filters requires "key" to control which field to match on, and an array of items in "value" to control wildcard match pattern. It may include * to match any string of characters, and ? To match one character.
-       *
-       *     "or" property of filters requires either: a list of ( subfilters / list of subfilters) etc. [{"match":...},[{"match":...},{"range":...}]].At least one of the subfilters must evaluate to true. If a subfilter is an array, it performs an AND over the sub-sub-filters. For example, [filter1,[filter2,filter3]] is equivalent to filter1 OR (filter2 AND filter3).
-       *
-       *     Example:
-       *     [
-       *
-       *       {
-       *
-       *         "match":{
-       *
-       *           "key":"name",
-       *
-       *           "value":["television"]
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "wildcard":{
-       *
-       *           "key":"name",
-       *
-       *           "value":["television*"]
-       *
-       *         }
-       *
-       *       },
-       *
-       *
-       *
-       *       {
-       *
-       *         "range":{
-       *
-       *           "key":"price",
-       *
-       *           "greaterThan":5.5,
-       *
-       *           "lessThan":20
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "range":{
-       *
-       *           "key":"postcode",
-       *
-       *           "greaterThan":2000
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "match":{
-       *
-       *           "key":"likes_dogs",
-       *
-       *           "value":[true]
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "or": [ {"match":{"key":"name","value":["dog"]}},[{"match":{"key":"name","value":["cat"]}},{"wildcard":{"key":"color","value"["orange"]}] ]
-       *
-       *       },
-       *
-       *
-       *
-       *     ]
+       *     Example: [{"_id":"abcd","animal":"cat","price":10}, {"_id":"abcd","price":13}]
        */
-      filters: components["schemas"]["filterListItem"][];
+      documents: {
+        /** Measures how closely a document matches on query and vectorSearchQuery. */
+        _relevance?: number;
+        _chunk_results?: {
+          [key: string]: {
+            results: {
+              _relevance?: number;
+            }[];
+            _relevance: number;
+          };
+        };
+      }[];
+      /** Used in future requests to retrieve items after these values in the sort order. */
+      after_id: unknown[];
+    };
+    PaginateDocumentsInput: {
+      filters?: unknown[];
+      items?: Partial<{
+        /** Match where document[field] is in value list. */
+        match?: {
+          /** If matching on text, match even if there are extra words / case insensitivity */
+          fuzzy?: boolean;
+          /** Field to match on. */
+          field?: string;
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match where document._id is in value list. */
+        matchIds?: {
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+        range?: {
+          /** Field to match on. */
+          field?: string;
+          greaterThan?: unknown;
+          lessThan?: unknown;
+        };
+        /**
+         * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+         *
+         * Possible matching patterns:
+         *
+         * * - documents where the field has any value
+         * ? - documents where a single character from the field matches the provided values
+         *
+         * Example:
+         *
+         * {
+         *   wildcard: {
+         *      field: "title",
+         *      value: [ "Avenger*" ]
+         *   }
+         * }
+         */
+        wildcard?: {
+          /** Field to match on. */
+          field?: string;
+          /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+          value: string | string[];
+        };
+        /** hybrid search query that must reach a certain value to filter */
+        search?: {
+          /**
+           * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+           *
+           *     "tele" matches "Television", "This television is an excellent product…"
+           *
+           *     Example: "tele"
+           */
+          query?: string;
+          /** Configuration for traditional search query. */
+          queryConfig?: {
+            /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+            weight?: number;
+            /**
+             * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+             *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+             */
+            sentenceWeight?: number;
+          };
+          /**
+           * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+           *
+           *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+           *
+           *     It can be an object or a list of objects.
+           *
+           *
+           *
+           *     Example payloads:
+           *
+           *     {"field":"animaltype_vector_","query":"kitten"}
+           *
+           *     [
+           *
+           *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+           *
+           *     ]
+           */
+          vectorSearchQuery?:
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }[];
+          /**
+           * A list of fields to search using the "query" parameter.
+           *
+           *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+           *
+           *     Default behaviour is to search all fields.
+           *
+           *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+           */
+          fieldsToSearch?: (
+            | string
+            | {
+                /** Field name to search. */
+                field?: string;
+                /** Multiply the relevance contribution of a specific field when using traditional search. */
+                weight?: number;
+                /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                chunkField?: string;
+              }
+          )[];
+          /**
+           * Only return documents with a _relevance above this threshold.
+           *
+           *     Example: 0.3
+           */
+          minimumRelevance: number;
+        };
+        /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+        fieldExists?: {
+          /** Field that must exist. */
+          field?: string;
+        };
+        /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+        selfreference?: {
+          /** First field in comparison. */
+          a: string;
+          /** Second field in comparison. */
+          b: string;
+          /** Operator used to compare a and b. */
+          operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+        };
+        /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+        wordCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum word count. */
+          greaterThan?: number;
+          /** Maximum word count. */
+          lessThan?: number;
+        };
+        /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+        characterCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum character count. */
+          greaterThan?: number;
+          /** Maximum character count. */
+          lessThan?: number;
+        };
+        /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+        or?: (
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"]
+        )[];
+        /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+        not?:
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"];
+        /** Filter based on data within a _chunk_ field. */
+        chunk?: {
+          /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+          path: string;
+          filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+        };
+      }> &
+        Partial<{
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }>;
+      /** Fields to include in the search results, empty array/list means all fields. */
+      select_fields?: string[];
+      /** Size of each page of results. */
+      page_size?: number;
+      /** Size of each page of results. */
+      page?: number;
+      /** Fields to sort by. For each field, sort by descending or ascending. If you are using descending by datetime, it will get the most recent ones. */
+      sort?: (string | { [key: string]: "asc" | "desc" })[];
+      /** Include vectors in the search results. */
+      include_vector?: boolean;
+      /** (NOT IMPLEMENTED - not functional) If true, retrieves documents randomly. */
+      is_random?: boolean;
+      /** (NOT IMPLEMENTED - not functional)Random Seed for retrieving random documents. */
+      random_state?: number;
+      /** Retrieve items after these sort values in the sort order. */
+      after_id?: unknown[];
+    };
+    PaginateDocumentsOutput: {
+      count: number;
+      /**
+       * List of documents. List items are affected by page, pageSize, query, filters. Items order is affected by vectorSeachQuery, sort, textSort.
+       *
+       *     Example: [{"_id":"abcd","animal":"cat","price":10}, {"_id":"abcd","price":13}]
+       */
+      documents: {
+        /** Measures how closely a document matches on query and vectorSearchQuery. */
+        _relevance?: number;
+        _chunk_results?: {
+          [key: string]: {
+            results: {
+              _relevance?: number;
+            }[];
+            _relevance: number;
+          };
+        };
+      }[];
+      /** Used in future requests to retrieve items after these values in the sort order. */
+      after_id: unknown[];
+    };
+    BulkGetDocumentsInput: {
+      /** IDs of documents to retrieve */
+      ids: string[];
+      /** Fields to include in the search results, empty array/list means all fields. */
+      select_fields?: string[];
+      /** Include vectors in the search results */
+      include_vector?: boolean;
+    };
+    BulkGetDocumentsOutput: {
+      /** A list of documents. Document is a JSON-like data that we store our metadata and vectors with. For specifying id of the document use the field '_id', for specifying vector field use the suffix of '_vector_' */
+      documents: unknown[];
+    };
+    BulkDeleteDocumentsInput: {
+      /** IDs of documents to delete */
+      ids: string[];
+    };
+    BulkDeleteDocumentsOutput: unknown;
+    ListDocumentsInput: unknown;
+    ListDocumentsOutput: {
+      count: number;
+      /**
+       * List of documents. List items are affected by page, pageSize, query, filters. Items order is affected by vectorSeachQuery, sort, textSort.
+       *
+       *     Example: [{"_id":"abcd","animal":"cat","price":10}, {"_id":"abcd","price":13}]
+       */
+      documents: {
+        /** Measures how closely a document matches on query and vectorSearchQuery. */
+        _relevance?: number;
+        _chunk_results?: {
+          [key: string]: {
+            results: {
+              _relevance?: number;
+            }[];
+            _relevance: number;
+          };
+        };
+      }[];
+      /** Used in future requests to retrieve items after these values in the sort order. */
+      after_id: unknown[];
+    };
+    DeleteWhereInput: { [key: string]: unknown } & {
+      filters: unknown;
     };
     DeleteWhereOutput: {
       /** Completion status. */
@@ -542,118 +5386,578 @@ export interface components {
       message: string;
     };
     /**
-     * Control which fields aggregate data will be generated for. Aggregate data will appear in the "aggregations" property of the response body.
+     * Control which fields aggregate data will be generated for. Aggregate data will appear in the "aggregates" property of the response body.
      *
-     *     Each list element can be a string like "name" or a dictionary like {"key":"name","resultsSize":11}
+     *     Each list element can be a string like "name" or a dictionary like {"field":"name","resultsSize":11}
      *
      *     Default: []
      *
-     *     Example: ["name","price","likes_cats",{"key":"color","resultsSize":20}]
+     *     Example: ["name","price","likes_cats",{"field":"color","resultsSize":20}]
      */
     fieldsToAggregate: (
       | string
       | {
           /** Field to aggregate. */
-          key: string;
+          field?: string;
           /** Controls which field the aggregate output will be placed into. */
-          outputKey?: string;
+          outputField?: string;
           /** Number of top aggregate results to return. */
           resultsSize?: number;
+          /** Sort aggregation results by count ascending or descending. */
+          sort?: "asc" | "desc";
+          page?: number;
           fieldsToAggregate?: components["schemas"]["fieldsToAggregate"];
+          /** Whether to retrieve min, max, avg and sum stats for the field as well */
+          getStats?: boolean;
+          dateAggregate?: {
+            date_interval?:
+              | "monthly"
+              | "daily"
+              | "yearly"
+              | "hourly"
+              | "minutely"
+              | "weekly";
+          };
+          /** Retrieve documents for each aggregated category. use 'pageSize' to control the number of documents to retrieve, and 'includeFields' to only return certain fields. */
+          getDocuments?: {
+            pageSize?: number;
+            includeFields?: string[];
+          };
           chunkAggregate?: {
             chunkFieldName: string;
-            filters?: components["schemas"]["filterListItem"][];
+            filters?: components["schemas"]["simpleSearchAndFlatFilterItem"][];
           };
         }
     )[];
-    vectorSearchQuery: {
-      /** Vector name to search on. For example, title_vector_ */
-      field: string;
-      /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
-      query?: string;
-      /** Model name to generate the vector with. */
-      model?: string;
-      /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
-      model_url?: string;
-      /** Increases or decreases the impact of this vector fields match on documents relevance score. */
-      weight?: number;
-      chunkConfig?: {
-        chunkField: string;
-        page?: number;
-        pageSize?: number;
-      };
-    };
-    relevanceBoosterItem: {
-      /** Match where document[key] is in value list. */
+    /**
+     * Control which fields aggregate stats data will be generated for. This includes, min value, max value, average value, and document counts per interval within the dataset.
+     *
+     *     Aggregate data will appear in the "aggregateStats" property of the response body.
+     *
+     *     Each list item can be:
+     *
+     *      a string stating which field to aggregate stats on
+     *
+     *     An object containing "field" to pick a field, and "interval" to control the range of each bucket when counting documents:
+     *
+     *     For example, if we had products {"price":50},{"price:"150"},{price:"180"},{"field":"price","interval":100}  would split results into 2 buckets.
+     *
+     *     Default: []
+     *     Example: ["postcode",{"field":"price","interval":10}]
+     */
+    fieldsToAggregateStats: (
+      | string
+      | {
+          /** Field to return stats for in aggregateStats. */
+          field?: string;
+          /** Interval gap when building a histogram. An interval of 2 will count documents in range 0-2,2-4,4-6... */
+          interval?: number;
+          /** Controls which field the aggregate output will be placed into. */
+          outputField?: string;
+        }
+    )[];
+    simpleSearchFilterItem: {
+      /** Match where document[field] is in value list. */
       match?: {
+        /** If matching on text, match even if there are extra words / case insensitivity */
+        fuzzy?: boolean;
         /** Field to match on. */
-        key: string;
+        field?: string;
         /** Can be either a single item or a list of items to match on. */
         value: string | boolean | number | unknown[];
       };
-      /** Match documents where greaterThan < document[key] < lessThan. Supports numbers and date strings. */
+      /** Match where document._id is in value list. */
+      matchIds?: {
+        /** Can be either a single item or a list of items to match on. */
+        value: string | boolean | number | unknown[];
+      };
+      /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
       range?: {
         /** Field to match on. */
-        key: string;
+        field?: string;
         greaterThan?: unknown;
         lessThan?: unknown;
       };
       /**
-       * Documents where the key field either contains the value as a substring, or matches a provided matching pattern.
+       * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
        *
        * Possible matching patterns:
        *
-       * * - documents where the key field has any value
-       * ? - documents where a single character from the key field matches the provided values
+       * * - documents where the field has any value
+       * ? - documents where a single character from the field matches the provided values
        *
        * Example:
        *
        * {
        *   wildcard: {
-       *      key: "title",
+       *      field: "title",
        *      value: [ "Avenger*" ]
        *   }
        * }
        */
       wildcard?: {
         /** Field to match on. */
-        key: string;
+        field?: string;
         /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
         value: string | string[];
       };
-      /** Match documents where field specified by 'key' exists in the document. for nested fields, use syntax: a.b.c */
+      /** hybrid search query that must reach a certain value to filter */
+      search?: {
+        /**
+         * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+         *
+         *     "tele" matches "Television", "This television is an excellent product…"
+         *
+         *     Example: "tele"
+         */
+        query?: string;
+        /** Configuration for traditional search query. */
+        queryConfig?: {
+          /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+          weight?: number;
+          /**
+           * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+           *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+           */
+          sentenceWeight?: number;
+        };
+        /**
+         * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+         *
+         *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+         *
+         *     It can be an object or a list of objects.
+         *
+         *
+         *
+         *     Example payloads:
+         *
+         *     {"field":"animaltype_vector_","query":"kitten"}
+         *
+         *     [
+         *
+         *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+         *
+         *     ]
+         */
+        vectorSearchQuery?:
+          | {
+              /** Vector name to search on. For example, title_vector_ */
+              field: string;
+              /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+              query?: string;
+              /** Model name to generate the vector with. */
+              model?: string;
+              /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+              model_url?: string;
+              /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+              weight?: number;
+              /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+              vector?: number[];
+              chunkConfig?: {
+                chunkField: string;
+                page?: number;
+                pageSize?: number;
+              };
+            }
+          | {
+              /** Vector name to search on. For example, title_vector_ */
+              field: string;
+              /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+              query?: string;
+              /** Model name to generate the vector with. */
+              model?: string;
+              /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+              model_url?: string;
+              /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+              weight?: number;
+              /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+              vector?: number[];
+              chunkConfig?: {
+                chunkField: string;
+                page?: number;
+                pageSize?: number;
+              };
+            }[];
+        /**
+         * A list of fields to search using the "query" parameter.
+         *
+         *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+         *
+         *     Default behaviour is to search all fields.
+         *
+         *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+         */
+        fieldsToSearch?: (
+          | string
+          | {
+              /** Field name to search. */
+              field?: string;
+              /** Multiply the relevance contribution of a specific field when using traditional search. */
+              weight?: number;
+              /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+              chunkField?: string;
+            }
+        )[];
+        /**
+         * Only return documents with a _relevance above this threshold.
+         *
+         *     Example: 0.3
+         */
+        minimumRelevance: number;
+      };
+      /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
       fieldExists?: {
         /** Field that must exist. */
-        key: string;
+        field?: string;
       };
-      /** Match documents where document[a] <=/>=/</>/==/!= document[b]. */
+      /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
       selfreference?: {
         /** First field in comparison. */
         a: string;
         /** Second field in comparison. */
         b: string;
         /** Operator used to compare a and b. */
-        operation: "<=" | ">=" | "<" | ">" | "==" | "!=";
+        operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+      };
+      /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+      wordCount?: {
+        /** Field to match on. */
+        field: string;
+        /** Minimum word count. */
+        greaterThan?: number;
+        /** Maximum word count. */
+        lessThan?: number;
+      };
+      /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+      characterCount?: {
+        /** Field to match on. */
+        field: string;
+        /** Minimum character count. */
+        greaterThan?: number;
+        /** Maximum character count. */
+        lessThan?: number;
       };
       /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
       or?: (
-        | components["schemas"]["filterListItem"][]
-        | components["schemas"]["filterListItem"]
+        | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+        | components["schemas"]["simpleSearchAndFlatFilterItem"]
       )[];
       /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
       not?:
-        | components["schemas"]["filterListItem"][]
-        | components["schemas"]["filterListItem"];
+        | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+        | components["schemas"]["simpleSearchAndFlatFilterItem"];
       /** Filter based on data within a _chunk_ field. */
       chunk?: {
         /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
         path: string;
-        filters: components["schemas"]["filterListItem"][];
+        filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
       };
+    };
+    flatFilterItem: {
+      strict?: "must" | "should" | "must_or";
+      condition?: string;
+      field?: string;
+      filter_type?:
+        | "text_match"
+        | "word_match"
+        | "term"
+        | "terms"
+        | "text"
+        | "texts"
+        | "match"
+        | "contains"
+        | "substring"
+        | "class"
+        | "category"
+        | "exact_match"
+        | "classes"
+        | "categories"
+        | "exists"
+        | "traditional"
+        | "fuzzy"
+        | "regexp"
+        | "ids"
+        | "date"
+        | "numeric"
+        | "search"
+        | "or"
+        | "word_count"
+        | "character_count";
+      condition_value?: unknown;
+      fuzzy?: number;
+      join?: boolean;
+    };
+    relevanceBoosterItem: {
+      strict?: "must" | "should" | "must_or";
+      condition?: string;
+      field?: string;
+      filter_type?:
+        | "text_match"
+        | "word_match"
+        | "term"
+        | "terms"
+        | "text"
+        | "texts"
+        | "match"
+        | "contains"
+        | "substring"
+        | "class"
+        | "category"
+        | "exact_match"
+        | "classes"
+        | "categories"
+        | "exists"
+        | "traditional"
+        | "fuzzy"
+        | "regexp"
+        | "ids"
+        | "date"
+        | "numeric"
+        | "search"
+        | "or"
+        | "word_count"
+        | "character_count";
+      condition_value?: unknown;
+      fuzzy?: number;
+      join?: boolean;
       /** Multiplies the relevance contribution of this condition. */
       weight?: number;
     };
     SimpleSearchPostInput: {
+      filters?: unknown[];
+      items?: Partial<{
+        /** Match where document[field] is in value list. */
+        match?: {
+          /** If matching on text, match even if there are extra words / case insensitivity */
+          fuzzy?: boolean;
+          /** Field to match on. */
+          field?: string;
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match where document._id is in value list. */
+        matchIds?: {
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+        range?: {
+          /** Field to match on. */
+          field?: string;
+          greaterThan?: unknown;
+          lessThan?: unknown;
+        };
+        /**
+         * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+         *
+         * Possible matching patterns:
+         *
+         * * - documents where the field has any value
+         * ? - documents where a single character from the field matches the provided values
+         *
+         * Example:
+         *
+         * {
+         *   wildcard: {
+         *      field: "title",
+         *      value: [ "Avenger*" ]
+         *   }
+         * }
+         */
+        wildcard?: {
+          /** Field to match on. */
+          field?: string;
+          /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+          value: string | string[];
+        };
+        /** hybrid search query that must reach a certain value to filter */
+        search?: {
+          /**
+           * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+           *
+           *     "tele" matches "Television", "This television is an excellent product…"
+           *
+           *     Example: "tele"
+           */
+          query?: string;
+          /** Configuration for traditional search query. */
+          queryConfig?: {
+            /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+            weight?: number;
+            /**
+             * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+             *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+             */
+            sentenceWeight?: number;
+          };
+          /**
+           * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+           *
+           *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+           *
+           *     It can be an object or a list of objects.
+           *
+           *
+           *
+           *     Example payloads:
+           *
+           *     {"field":"animaltype_vector_","query":"kitten"}
+           *
+           *     [
+           *
+           *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+           *
+           *     ]
+           */
+          vectorSearchQuery?:
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }[];
+          /**
+           * A list of fields to search using the "query" parameter.
+           *
+           *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+           *
+           *     Default behaviour is to search all fields.
+           *
+           *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+           */
+          fieldsToSearch?: (
+            | string
+            | {
+                /** Field name to search. */
+                field?: string;
+                /** Multiply the relevance contribution of a specific field when using traditional search. */
+                weight?: number;
+                /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                chunkField?: string;
+              }
+          )[];
+          /**
+           * Only return documents with a _relevance above this threshold.
+           *
+           *     Example: 0.3
+           */
+          minimumRelevance: number;
+        };
+        /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+        fieldExists?: {
+          /** Field that must exist. */
+          field?: string;
+        };
+        /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+        selfreference?: {
+          /** First field in comparison. */
+          a: string;
+          /** Second field in comparison. */
+          b: string;
+          /** Operator used to compare a and b. */
+          operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+        };
+        /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+        wordCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum word count. */
+          greaterThan?: number;
+          /** Maximum word count. */
+          lessThan?: number;
+        };
+        /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+        characterCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum character count. */
+          greaterThan?: number;
+          /** Maximum character count. */
+          lessThan?: number;
+        };
+        /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+        or?: (
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"]
+        )[];
+        /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+        not?:
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"];
+        /** Filter based on data within a _chunk_ field. */
+        chunk?: {
+          /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+          path: string;
+          filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+        };
+      }> &
+        Partial<{
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }>;
       /**
        * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
        *
@@ -664,8 +5968,13 @@ export interface components {
       query?: string;
       /** Configuration for traditional search query. */
       queryConfig?: {
-        /** Increases or decreases the impact of traditional search when calculating a documents _relevance. new_traditional_relevance = traditional_relevance*queryConfig.weight */
+        /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
         weight?: number;
+        /**
+         * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+         *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+         */
+        sentenceWeight?: number;
       };
       /**
        * Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -687,26 +5996,74 @@ export interface components {
        *     ]
        */
       vectorSearchQuery?:
-        | components["schemas"]["vectorSearchQuery"]
-        | components["schemas"]["vectorSearchQuery"][];
+        | {
+            /** Vector name to search on. For example, title_vector_ */
+            field: string;
+            /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+            query?: string;
+            /** Model name to generate the vector with. */
+            model?: string;
+            /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+            model_url?: string;
+            /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+            weight?: number;
+            /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+            vector?: number[];
+            chunkConfig?: {
+              chunkField: string;
+              page?: number;
+              pageSize?: number;
+            };
+          }
+        | {
+            /** Vector name to search on. For example, title_vector_ */
+            field: string;
+            /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+            query?: string;
+            /** Model name to generate the vector with. */
+            model?: string;
+            /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+            model_url?: string;
+            /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+            weight?: number;
+            /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+            vector?: number[];
+            chunkConfig?: {
+              chunkField: string;
+              page?: number;
+              pageSize?: number;
+            };
+          }[];
       /**
        * A list of fields to search using the "query" parameter.
        *
-       *     Each item can be field name as a string, or an object with 'key' as field name and optional parameters such as field weight.
+       *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
        *
        *     Default behaviour is to search all fields.
        *
-       *     Example: ["name",{"key":"favourite_color","weight":0.2}]
+       *     Example: ["name",{"field":"favourite_color","weight":0.2}]
        */
       fieldsToSearch?: (
         | string
         | {
             /** Field name to search. */
-            key: string;
+            field?: string;
             /** Multiply the relevance contribution of a specific field when using traditional search. */
             weight?: number;
+            /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+            chunkField?: string;
           }
       )[];
+      /**
+       * Only return documents with a _relevance above this threshold.
+       *
+       *     Example: 0.3
+       */
+      minimumRelevance?: number;
+      instantAnswerQuery?: {
+        query: string;
+        field: string;
+      };
       /**
        * Page of results to return.
        *     Returns results from position page*pageSize to (page+1)*pageSize
@@ -726,11 +6083,17 @@ export interface components {
        */
       pageSize?: number;
       /**
-       * Only return documents with a _relevance above this threshold.
+       * Add _relevance field to each document containing the documents relevance based on the search criteria.
        *
-       *     Example: 0.3
+       *     Example: true
        */
-      minimumRelevance?: number;
+      includeRelevance?: boolean;
+      /**
+       * Add _dataset field to each document containing the documents parent dataset. Useful when searching multiple datasets at once.
+       *
+       *     Example: false
+       */
+      includeDataset?: boolean;
       /**
        * Use the datasets schema to remove parameters that are unsafe before making a request.
        *
@@ -774,129 +6137,55 @@ export interface components {
        */
       textSort?: { [key: string]: "asc" | "desc" };
       fieldsToAggregate?: components["schemas"]["fieldsToAggregate"];
-      /**
-       * Control which fields aggregate stats data will be generated for. This includes, min value, max value, average value, and document counts per interval within the dataset.
-       *
-       *     Aggregate data will appear in the "aggregateStats" property of the response body.
-       *
-       *     Each list item can be:
-       *
-       *      a string stating which field to aggregate stats on
-       *
-       *     An object containing "key" to pick a field, and "interval" to control the range of each bucket when counting documents:
-       *
-       *     For example, if we had products {"price":50},{"price:"150"},{price:"180"},{"key":"price","interval":100}  would split results into 2 buckets.
-       *
-       *     Default: []
-       *     Example: ["postcode",{"key":"price","interval":10}]
-       */
-      fieldsToAggregateStats?: (
-        | string
-        | {
-            /** Field to return stats for in aggregateStats. */
-            key: string;
-            /** Interval gap when building a histogram. An interval of 2 will count documents in range 0-2,2-4,4-6... */
-            interval?: number;
-          }
-      )[];
-      /**
-       * Only Include results that match on this list of filters.
-       *
-       *     "match" property of filters requires "key" to control which field to match on, and an array of items in "value" to dictate exact match values.
-       *
-       *     "range" property of filters requires "key" to control which field to match on, and "greaterThan" and/or "lessThan", which must be a number or a date string.
-       *
-       *     "wildcard" property of filters requires "key" to control which field to match on, and an array of items in "value" to control wildcard match pattern. It may include * to match any string of characters, and ? To match one character.
-       *
-       *     "or" property of filters requires either: a list of ( subfilters / list of subfilters) etc. [{"match":...},[{"match":...},{"range":...}]].At least one of the subfilters must evaluate to true. If a subfilter is an array, it performs an AND over the sub-sub-filters. For example, [filter1,[filter2,filter3]] is equivalent to filter1 OR (filter2 AND filter3).
-       *
-       *     Example:
-       *     [
-       *
-       *       {
-       *
-       *         "match":{
-       *
-       *           "key":"name",
-       *
-       *           "value":["television"]
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "wildcard":{
-       *
-       *           "key":"name",
-       *
-       *           "value":["television*"]
-       *
-       *         }
-       *
-       *       },
-       *
-       *
-       *
-       *       {
-       *
-       *         "range":{
-       *
-       *           "key":"price",
-       *
-       *           "greaterThan":5.5,
-       *
-       *           "lessThan":20
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "range":{
-       *
-       *           "key":"postcode",
-       *
-       *           "greaterThan":2000
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "match":{
-       *
-       *           "key":"likes_dogs",
-       *
-       *           "value":[true]
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "or": [ {"match":{"key":"name","value":["dog"]}},[{"match":{"key":"name","value":["cat"]}},{"wildcard":{"key":"color","value"["orange"]}] ]
-       *
-       *       },
-       *
-       *
-       *
-       *     ]
-       */
-      filters?: components["schemas"]["filterListItem"][];
+      fieldsToAggregateStats?: components["schemas"]["fieldsToAggregateStats"];
       /** Add relevance to documents if they match conditions in this list. configure 'weight' on each condition to modify the relevance contribution. */
       relevanceBoosters?: components["schemas"]["relevanceBoosterItem"][];
+      /** Used in future requests to retrieve items after these values in the sort order. */
+      afterId?: unknown[];
     };
     /** Aggregate output. Recursive aggregate output is returned here. */
     outputAggregations: {
       [key: string]: {
         /** Most common field values and their counts. */
         results: { [key: string]: number };
-        aggregates: components["schemas"]["outputAggregations"];
+        aggregates: {
+          [key: string]: components["schemas"]["outputAggregations"];
+        };
+        aggregateStats?: {
+          /** Maximum value of field. */
+          max: number;
+          /** Minimum value of field. */
+          min: number;
+          /** Average value of field. */
+          avg: number;
+          /** Sum of all field values. */
+          sum: number;
+        };
+        dateAggregate?: {
+          value: number;
+          frequency: number;
+        }[];
+        /** Documents retrieved by the 'getDocuments' parameter. */
+        documents?: unknown[];
+      };
+    };
+    /**
+     * Dictionary of field stats.
+     *
+     *     Fields to summarise is specified in "fieldsToAggregateStats" of request body.
+     *
+     *     Example: {"price":{"min":0.5,"max":2000,"avg":100,sum:"40230032","results":{"0":202,"100":43,"200":16}}}
+     */
+    aggregateStats: {
+      [key: string]: {
+        /** Maximum value of field. */
+        max: number;
+        /** Minimum value of field. */
+        min: number;
+        /** Average value of field. */
+        avg: number;
+        /** Sum of all field values. */
+        sum: number;
       };
     };
     SimpleSearchPostOutput: {
@@ -907,7 +6196,7 @@ export interface components {
        */
       results: {
         /** Measures how closely a document matches on query and vectorSearchQuery. */
-        _relevance: number;
+        _relevance?: number;
         _chunk_results?: {
           [key: string]: {
             results: {
@@ -917,6 +6206,11 @@ export interface components {
           };
         };
       }[];
+      instantAnswerResults?: {
+        answer?: string;
+        status?: string;
+        message?: string;
+      };
       /**
        * Total number of documents matched in the dataset.
        *
@@ -924,33 +6218,246 @@ export interface components {
        */
       resultsSize: number;
       aggregates: components["schemas"]["outputAggregations"];
-      /**
-       * Dictionary of most common field values specified in "fieldsToAggregate".
-       *
-       *     Example: {"color":{"red":15,"blue":7,"green":1},"name":{"roger":10000,"bill":500,"jo":200}}
-       */
-      aggregations: { [key: string]: { [key: string]: number } };
-      /**
-       * Dictionary of field stats.
-       *
-       *     Fields to summarise is specified in "fieldsToAggregateStats" of request body.
-       *
-       *     Example: {"price":{"min":0.5,"max":2000,"avg":100,sum:"40230032","results":{"0":202,"100":43,"200":16}}}
-       */
-      aggregateStats: {
-        [key: string]: {
-          /** Maximum value of field. */
-          max: number;
-          /** Minimum value of field. */
-          min: number;
-          /** Average value of field. */
-          avg: number;
-          /** Sum of all field values. */
-          sum: number;
-        };
-      };
+      aggregateStats: components["schemas"]["aggregateStats"];
+      /** Used in future requests to retrieve items after these values in the sort order. */
+      afterId: unknown[];
+    } & {
+      aggregations: unknown;
     };
     FastSearchInput: {
+      filters?: unknown[];
+      items?: Partial<{
+        /** Match where document[field] is in value list. */
+        match?: {
+          /** If matching on text, match even if there are extra words / case insensitivity */
+          fuzzy?: boolean;
+          /** Field to match on. */
+          field?: string;
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match where document._id is in value list. */
+        matchIds?: {
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+        range?: {
+          /** Field to match on. */
+          field?: string;
+          greaterThan?: unknown;
+          lessThan?: unknown;
+        };
+        /**
+         * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+         *
+         * Possible matching patterns:
+         *
+         * * - documents where the field has any value
+         * ? - documents where a single character from the field matches the provided values
+         *
+         * Example:
+         *
+         * {
+         *   wildcard: {
+         *      field: "title",
+         *      value: [ "Avenger*" ]
+         *   }
+         * }
+         */
+        wildcard?: {
+          /** Field to match on. */
+          field?: string;
+          /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+          value: string | string[];
+        };
+        /** hybrid search query that must reach a certain value to filter */
+        search?: {
+          /**
+           * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+           *
+           *     "tele" matches "Television", "This television is an excellent product…"
+           *
+           *     Example: "tele"
+           */
+          query?: string;
+          /** Configuration for traditional search query. */
+          queryConfig?: {
+            /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+            weight?: number;
+            /**
+             * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+             *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+             */
+            sentenceWeight?: number;
+          };
+          /**
+           * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+           *
+           *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+           *
+           *     It can be an object or a list of objects.
+           *
+           *
+           *
+           *     Example payloads:
+           *
+           *     {"field":"animaltype_vector_","query":"kitten"}
+           *
+           *     [
+           *
+           *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+           *
+           *     ]
+           */
+          vectorSearchQuery?:
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }[];
+          /**
+           * A list of fields to search using the "query" parameter.
+           *
+           *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+           *
+           *     Default behaviour is to search all fields.
+           *
+           *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+           */
+          fieldsToSearch?: (
+            | string
+            | {
+                /** Field name to search. */
+                field?: string;
+                /** Multiply the relevance contribution of a specific field when using traditional search. */
+                weight?: number;
+                /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                chunkField?: string;
+              }
+          )[];
+          /**
+           * Only return documents with a _relevance above this threshold.
+           *
+           *     Example: 0.3
+           */
+          minimumRelevance: number;
+        };
+        /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+        fieldExists?: {
+          /** Field that must exist. */
+          field?: string;
+        };
+        /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+        selfreference?: {
+          /** First field in comparison. */
+          a: string;
+          /** Second field in comparison. */
+          b: string;
+          /** Operator used to compare a and b. */
+          operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+        };
+        /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+        wordCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum word count. */
+          greaterThan?: number;
+          /** Maximum word count. */
+          lessThan?: number;
+        };
+        /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+        characterCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum character count. */
+          greaterThan?: number;
+          /** Maximum character count. */
+          lessThan?: number;
+        };
+        /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+        or?: (
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"]
+        )[];
+        /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+        not?:
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"];
+        /** Filter based on data within a _chunk_ field. */
+        chunk?: {
+          /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+          path: string;
+          filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+        };
+      }> &
+        Partial<{
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }>;
       /**
        * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
        *
@@ -961,8 +6468,13 @@ export interface components {
       query?: string;
       /** Configuration for traditional search query. */
       queryConfig?: {
-        /** Increases or decreases the impact of traditional search when calculating a documents _relevance. new_traditional_relevance = traditional_relevance*queryConfig.weight */
+        /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
         weight?: number;
+        /**
+         * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+         *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+         */
+        sentenceWeight?: number;
       };
       /**
        * Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -984,26 +6496,74 @@ export interface components {
        *     ]
        */
       vectorSearchQuery?:
-        | components["schemas"]["vectorSearchQuery"]
-        | components["schemas"]["vectorSearchQuery"][];
+        | {
+            /** Vector name to search on. For example, title_vector_ */
+            field: string;
+            /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+            query?: string;
+            /** Model name to generate the vector with. */
+            model?: string;
+            /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+            model_url?: string;
+            /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+            weight?: number;
+            /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+            vector?: number[];
+            chunkConfig?: {
+              chunkField: string;
+              page?: number;
+              pageSize?: number;
+            };
+          }
+        | {
+            /** Vector name to search on. For example, title_vector_ */
+            field: string;
+            /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+            query?: string;
+            /** Model name to generate the vector with. */
+            model?: string;
+            /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+            model_url?: string;
+            /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+            weight?: number;
+            /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+            vector?: number[];
+            chunkConfig?: {
+              chunkField: string;
+              page?: number;
+              pageSize?: number;
+            };
+          }[];
       /**
        * A list of fields to search using the "query" parameter.
        *
-       *     Each item can be field name as a string, or an object with 'key' as field name and optional parameters such as field weight.
+       *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
        *
        *     Default behaviour is to search all fields.
        *
-       *     Example: ["name",{"key":"favourite_color","weight":0.2}]
+       *     Example: ["name",{"field":"favourite_color","weight":0.2}]
        */
       fieldsToSearch?: (
         | string
         | {
             /** Field name to search. */
-            key: string;
+            field?: string;
             /** Multiply the relevance contribution of a specific field when using traditional search. */
             weight?: number;
+            /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+            chunkField?: string;
           }
       )[];
+      /**
+       * Only return documents with a _relevance above this threshold.
+       *
+       *     Example: 0.3
+       */
+      minimumRelevance?: number;
+      instantAnswerQuery?: {
+        query: string;
+        field: string;
+      };
       /**
        * Page of results to return.
        *     Returns results from position page*pageSize to (page+1)*pageSize
@@ -1023,11 +6583,17 @@ export interface components {
        */
       pageSize?: number;
       /**
-       * Only return documents with a _relevance above this threshold.
+       * Add _relevance field to each document containing the documents relevance based on the search criteria.
        *
-       *     Example: 0.3
+       *     Example: true
        */
-      minimumRelevance?: number;
+      includeRelevance?: boolean;
+      /**
+       * Add _dataset field to each document containing the documents parent dataset. Useful when searching multiple datasets at once.
+       *
+       *     Example: false
+       */
+      includeDataset?: boolean;
       /**
        * Use the datasets schema to remove parameters that are unsafe before making a request.
        *
@@ -1071,122 +6637,11 @@ export interface components {
        */
       textSort?: { [key: string]: "asc" | "desc" };
       fieldsToAggregate?: components["schemas"]["fieldsToAggregate"];
-      /**
-       * Control which fields aggregate stats data will be generated for. This includes, min value, max value, average value, and document counts per interval within the dataset.
-       *
-       *     Aggregate data will appear in the "aggregateStats" property of the response body.
-       *
-       *     Each list item can be:
-       *
-       *      a string stating which field to aggregate stats on
-       *
-       *     An object containing "key" to pick a field, and "interval" to control the range of each bucket when counting documents:
-       *
-       *     For example, if we had products {"price":50},{"price:"150"},{price:"180"},{"key":"price","interval":100}  would split results into 2 buckets.
-       *
-       *     Default: []
-       *     Example: ["postcode",{"key":"price","interval":10}]
-       */
-      fieldsToAggregateStats?: (
-        | string
-        | {
-            /** Field to return stats for in aggregateStats. */
-            key: string;
-            /** Interval gap when building a histogram. An interval of 2 will count documents in range 0-2,2-4,4-6... */
-            interval?: number;
-          }
-      )[];
-      /**
-       * Only Include results that match on this list of filters.
-       *
-       *     "match" property of filters requires "key" to control which field to match on, and an array of items in "value" to dictate exact match values.
-       *
-       *     "range" property of filters requires "key" to control which field to match on, and "greaterThan" and/or "lessThan", which must be a number or a date string.
-       *
-       *     "wildcard" property of filters requires "key" to control which field to match on, and an array of items in "value" to control wildcard match pattern. It may include * to match any string of characters, and ? To match one character.
-       *
-       *     "or" property of filters requires either: a list of ( subfilters / list of subfilters) etc. [{"match":...},[{"match":...},{"range":...}]].At least one of the subfilters must evaluate to true. If a subfilter is an array, it performs an AND over the sub-sub-filters. For example, [filter1,[filter2,filter3]] is equivalent to filter1 OR (filter2 AND filter3).
-       *
-       *     Example:
-       *     [
-       *
-       *       {
-       *
-       *         "match":{
-       *
-       *           "key":"name",
-       *
-       *           "value":["television"]
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "wildcard":{
-       *
-       *           "key":"name",
-       *
-       *           "value":["television*"]
-       *
-       *         }
-       *
-       *       },
-       *
-       *
-       *
-       *       {
-       *
-       *         "range":{
-       *
-       *           "key":"price",
-       *
-       *           "greaterThan":5.5,
-       *
-       *           "lessThan":20
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "range":{
-       *
-       *           "key":"postcode",
-       *
-       *           "greaterThan":2000
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "match":{
-       *
-       *           "key":"likes_dogs",
-       *
-       *           "value":[true]
-       *
-       *         }
-       *
-       *       },
-       *
-       *       {
-       *
-       *         "or": [ {"match":{"key":"name","value":["dog"]}},[{"match":{"key":"name","value":["cat"]}},{"wildcard":{"key":"color","value"["orange"]}] ]
-       *
-       *       },
-       *
-       *
-       *
-       *     ]
-       */
-      filters?: components["schemas"]["filterListItem"][];
+      fieldsToAggregateStats?: components["schemas"]["fieldsToAggregateStats"];
       /** Add relevance to documents if they match conditions in this list. configure 'weight' on each condition to modify the relevance contribution. */
       relevanceBoosters?: components["schemas"]["relevanceBoosterItem"][];
+      /** Used in future requests to retrieve items after these values in the sort order. */
+      afterId?: unknown[];
     };
     FastSearchOutput: {
       /**
@@ -1196,7 +6651,7 @@ export interface components {
        */
       results: {
         /** Measures how closely a document matches on query and vectorSearchQuery. */
-        _relevance: number;
+        _relevance?: number;
         _chunk_results?: {
           [key: string]: {
             results: {
@@ -1206,6 +6661,11 @@ export interface components {
           };
         };
       }[];
+      instantAnswerResults?: {
+        answer?: string;
+        status?: string;
+        message?: string;
+      };
       /**
        * Total number of documents matched in the dataset.
        *
@@ -1213,36 +6673,1289 @@ export interface components {
        */
       resultsSize: number;
       aggregates: components["schemas"]["outputAggregations"];
+      aggregateStats: components["schemas"]["aggregateStats"];
+      /** Used in future requests to retrieve items after these values in the sort order. */
+      afterId: unknown[];
+    } & {
+      aggregations: unknown;
+    };
+    RecommendInput: {
       /**
-       * Dictionary of most common field values specified in "fieldsToAggregate".
-       *
-       *     Example: {"color":{"red":15,"blue":7,"green":1},"name":{"roger":10000,"bill":500,"jo":200}}
+       * This takes a list of objects. Each object must specify the id of the document to generate recommendations for, and the vector field that will be compared.
+       *     Weight can be changed to increase or decrease how much a document contributes to the recommendation. A negative weight will make a document less likely to be recommended.
        */
-      aggregations: { [key: string]: { [key: string]: number } };
+      documentsToRecommend: {
+        /** The vector field used for recommendation. */
+        field: string;
+        /** The id of the document used for recommendation. */
+        id: string;
+        /** Influences how much a document affects recommendation results. A negative weight causes documents like this to show up less. */
+        weight?: number;
+      }[];
       /**
-       * Dictionary of field stats.
+       * Set to true to return all vector fields. includeFields / excludeFields has priority over this rule.
        *
-       *     Fields to summarise is specified in "fieldsToAggregateStats" of request body.
-       *
-       *     Example: {"price":{"min":0.5,"max":2000,"avg":100,sum:"40230032","results":{"0":202,"100":43,"200":16}}}
+       *     Example: true / false
        */
-      aggregateStats: {
-        [key: string]: {
-          /** Maximum value of field. */
-          max: number;
-          /** Minimum value of field. */
-          min: number;
-          /** Average value of field. */
-          avg: number;
-          /** Sum of all field values. */
-          sum: number;
+      includeVectors?: boolean;
+    };
+    RecommendOutput: {
+      /**
+       * List of documents. List items are affected by page, pageSize, query, filters. Items order is affected by vectorSeachQuery, sort, textSort.
+       *
+       *     Example: [{"_id":"abcd","animal":"cat","price":10}, {"_id":"abcd","price":13}]
+       */
+      results: {
+        /** Measures how closely a document matches on query and vectorSearchQuery. */
+        _relevance?: number;
+        _chunk_results?: {
+          [key: string]: {
+            results: {
+              _relevance?: number;
+            }[];
+            _relevance: number;
+          };
         };
+      }[];
+    };
+    CloneDatasetInput: {
+      new_dataset_id: string;
+      rename_fields?: { [key: string]: string };
+      remove_fields?: string[];
+      filters?: unknown[];
+      items?: Partial<{
+        /** Match where document[field] is in value list. */
+        match?: {
+          /** If matching on text, match even if there are extra words / case insensitivity */
+          fuzzy?: boolean;
+          /** Field to match on. */
+          field?: string;
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match where document._id is in value list. */
+        matchIds?: {
+          /** Can be either a single item or a list of items to match on. */
+          value: string | boolean | number | unknown[];
+        };
+        /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+        range?: {
+          /** Field to match on. */
+          field?: string;
+          greaterThan?: unknown;
+          lessThan?: unknown;
+        };
+        /**
+         * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+         *
+         * Possible matching patterns:
+         *
+         * * - documents where the field has any value
+         * ? - documents where a single character from the field matches the provided values
+         *
+         * Example:
+         *
+         * {
+         *   wildcard: {
+         *      field: "title",
+         *      value: [ "Avenger*" ]
+         *   }
+         * }
+         */
+        wildcard?: {
+          /** Field to match on. */
+          field?: string;
+          /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+          value: string | string[];
+        };
+        /** hybrid search query that must reach a certain value to filter */
+        search?: {
+          /**
+           * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+           *
+           *     "tele" matches "Television", "This television is an excellent product…"
+           *
+           *     Example: "tele"
+           */
+          query?: string;
+          /** Configuration for traditional search query. */
+          queryConfig?: {
+            /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+            weight?: number;
+            /**
+             * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+             *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+             */
+            sentenceWeight?: number;
+          };
+          /**
+           * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+           *
+           *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+           *
+           *     It can be an object or a list of objects.
+           *
+           *
+           *
+           *     Example payloads:
+           *
+           *     {"field":"animaltype_vector_","query":"kitten"}
+           *
+           *     [
+           *
+           *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+           *
+           *     ]
+           */
+          vectorSearchQuery?:
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }
+            | {
+                /** Vector name to search on. For example, title_vector_ */
+                field: string;
+                /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                query?: string;
+                /** Model name to generate the vector with. */
+                model?: string;
+                /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                model_url?: string;
+                /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                weight?: number;
+                /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                vector?: number[];
+                chunkConfig?: {
+                  chunkField: string;
+                  page?: number;
+                  pageSize?: number;
+                };
+              }[];
+          /**
+           * A list of fields to search using the "query" parameter.
+           *
+           *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+           *
+           *     Default behaviour is to search all fields.
+           *
+           *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+           */
+          fieldsToSearch?: (
+            | string
+            | {
+                /** Field name to search. */
+                field?: string;
+                /** Multiply the relevance contribution of a specific field when using traditional search. */
+                weight?: number;
+                /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                chunkField?: string;
+              }
+          )[];
+          /**
+           * Only return documents with a _relevance above this threshold.
+           *
+           *     Example: 0.3
+           */
+          minimumRelevance: number;
+        };
+        /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+        fieldExists?: {
+          /** Field that must exist. */
+          field?: string;
+        };
+        /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+        selfreference?: {
+          /** First field in comparison. */
+          a: string;
+          /** Second field in comparison. */
+          b: string;
+          /** Operator used to compare a and b. */
+          operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+        };
+        /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+        wordCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum word count. */
+          greaterThan?: number;
+          /** Maximum word count. */
+          lessThan?: number;
+        };
+        /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+        characterCount?: {
+          /** Field to match on. */
+          field: string;
+          /** Minimum character count. */
+          greaterThan?: number;
+          /** Maximum character count. */
+          lessThan?: number;
+        };
+        /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+        or?: (
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"]
+        )[];
+        /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+        not?:
+          | components["schemas"]["simpleSearchAndFlatFilterItem"][]
+          | components["schemas"]["simpleSearchAndFlatFilterItem"];
+        /** Filter based on data within a _chunk_ field. */
+        chunk?: {
+          /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+          path: string;
+          filters: components["schemas"]["simpleSearchAndFlatFilterItem"][];
+        };
+      }> &
+        Partial<{
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }>;
+    };
+    CloneDatasetOutput: {
+      job_id: string;
+    };
+    PredictKNNRegressionInput: {
+      /** The unique name of dataset. */
+      dataset_id: string;
+      /** An array of floats that represents data. */
+      vector: number[];
+      /** The vector field to search in. */
+      vector_field: string;
+      /** The field to perform regression on. */
+      target_field: string;
+      /** The number of results for KNN. */
+      k?: number;
+      /** The weighting for each prediction. Can either be a boolean or an array of weights. */
+      weighting?: boolean | unknown[];
+      /** The value used to fill in the document when the data is missing. */
+      impute_value?: number;
+      /** How to predict using the vectors. Can be either "most_frequent" or "sum_scores". */
+      predict_operation?: "mean" | "sum" | "weighted_mean";
+      /** Whether to include search results. */
+      include_search_results?: boolean;
+    };
+    PredictKNNRegressionOutput: {
+      results: number;
+      search_results?: unknown[];
+    };
+    PredictKNNFromResultsInput: {
+      /** The field in "results" to use for prediction. */
+      field: string;
+      /** A list of documents */
+      results: unknown[];
+      /** The weighting for each prediction. Can either be a boolean or an array of weights. */
+      weighting?: boolean | unknown[];
+      /** The value used to fill in the document when the data is missing. */
+      impute_value?: number | string;
+      /** How to predict using the vectors. Can be either "most_frequent" or "sum_scores". */
+      predict_operation?: "most_frequent" | "score_sum";
+    };
+    PredictKNNFromResultsOutput: {
+      results?: string | number;
+    };
+    BiasEvaluationInput: {
+      /** Two keywords to compare. */
+      query_list: unknown[];
+      /** A list of words to compare the keywords against. */
+      word_list: unknown[];
+      /**
+       * To encode a field 'description' with a sentence-transformers model, use:
+       *   ```
+       *   {field:'description',model_name:'sentence-transformers',model_url:'sentence-t5-base'}
+       *   ```
+       */
+      encoder?: {
+        /** The model url to use */
+        model_url?: string;
+        /** The model name to use. */
+        model_name?:
+          | "image_text"
+          | "text_image"
+          | "all-mpnet-base-v2"
+          | "sentence-transformers";
+        /** Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
+        body?: string;
+        /** The document field to encode. */
+        field: string;
+        /** Add 'alias' to a created vector field name. Output format is {field}_{alias}_vector_. */
+        alias?: string;
       };
     };
+    BiasEvaluationOutput: {
+      results?: { [key: string]: unknown };
+    };
+    VectorizeInput: {
+      /** The model url to use */
+      model_url?: string;
+      /** The model name to use. */
+      model_name?:
+        | "image_text"
+        | "text_image"
+        | "all-mpnet-base-v2"
+        | "sentence-transformers";
+      /** Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
+      body?: string;
+      /** The document field to encode. */
+      field: string;
+      /** Add 'alias' to a created vector field name. Output format is {field}_{alias}_vector_. */
+      alias?: string;
+      /** The documents that will be inserted */
+      documents: ({
+        _id?: unknown;
+      } & { [key: string]: unknown })[];
+    };
+    VectorizeOutput: {
+      /** The documents that will be vectorized */
+      results: ({
+        _id?: unknown;
+      } & { [key: string]: unknown })[];
+      errors: unknown[];
+    };
+    VectorizeAndInsertInput: {
+      /** The model url to use */
+      model_url?: string;
+      /** The model name to use. */
+      model_name?:
+        | "image_text"
+        | "text_image"
+        | "all-mpnet-base-v2"
+        | "sentence-transformers";
+      /** Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
+      body?: string;
+      /** The document field to encode. */
+      field: string;
+      /** Add 'alias' to a created vector field name. Output format is {field}_{alias}_vector_. */
+      alias?: string;
+      /** The documents that will be inserted */
+      documents: ({
+        _id?: unknown;
+      } & { [key: string]: unknown })[];
+    };
+    VectorizeAndInsertOutput: {
+      /** Number of successfully processed documents. */
+      inserted: number;
+      /** Information about documents that were not processed successfully. */
+      failed_documents: {
+        /** _id field of unprocessed document. */
+        _id?: unknown;
+        error?: {
+          /** http status code of individual document insertion operation. */
+          status?: number;
+          /** body response of individual document insertion operation. */
+          body?: string;
+        };
+      }[];
+    };
+    /**
+     * To encode a field 'description' with a sentence-transformers model, use:
+     *   ```
+     *   {field:'description',model_name:'sentence-transformers',model_url:'sentence-t5-base'}
+     *   ```
+     */
+    VectorizeFieldInput: {
+      /** The model url to use */
+      model_url?: string;
+      /** The model name to use. */
+      model_name?:
+        | "image_text"
+        | "text_image"
+        | "all-mpnet-base-v2"
+        | "sentence-transformers";
+      /** Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
+      body?: string;
+      /** The document field to encode. */
+      field: string;
+      /** Add 'alias' to a created vector field name. Output format is {field}_{alias}_vector_. */
+      alias?: string;
+    };
+    VectorizeFieldOutput: {
+      /** Number of successfully processed documents. */
+      inserted: number;
+      /** Information about documents that were not processed successfully. */
+      failed_documents: {
+        /** _id field of unprocessed document. */
+        _id?: unknown;
+        error?: {
+          /** http status code of individual document insertion operation. */
+          status?: number;
+          /** body response of individual document insertion operation. */
+          body?: string;
+        };
+      }[];
+    };
+    TriggerWorkflowInput: {
+      params: { [key: string]: unknown };
+      notebook_path: string;
+      instance_type?: string;
+    };
+    TriggerWorkflowOutput: {
+      job_id: string;
+    };
+    ListWorkflowsInput: unknown;
+    ListWorkflowsOutput: {
+      results: {
+        job_status:
+          | "InProgress"
+          | "Completed"
+          | "Failed"
+          | "Stopping"
+          | "Stopped";
+        job_message: string;
+        creation_time: string;
+        notebook_path?: string;
+        params?: { [key: string]: unknown };
+        _id?: string;
+        metadata?: { [key: string]: unknown };
+      }[];
+    };
+    GetWorkflowStatusInput: unknown;
+    GetWorkflowStatusOutput: {
+      job_status:
+        | "InProgress"
+        | "Completed"
+        | "Failed"
+        | "Stopping"
+        | "Stopped";
+      job_message: string;
+      creation_time: string;
+      notebook_path?: string;
+      params?: { [key: string]: unknown };
+      _id?: string;
+      metadata?: { [key: string]: unknown };
+    };
+    UpsertWorkflowMetadataInput: {
+      /** Edit and add metadata for the workflow. */
+      metadata: { [key: string]: unknown };
+    };
+    UpsertWorkflowMetadataOutput: unknown;
   };
 }
 
 export interface operations {
+  /** Create a private deployable. */
+  CreateDeployable: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateDeployableOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateDeployableInput"];
+      };
+    };
+  };
+  /** Get a deployable. */
+  GetDeployable: {
+    parameters: {
+      path: {
+        /** ID of deployable */
+        deployable_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetDeployableOutput"];
+        };
+      };
+    };
+  };
+  /** Update a deployable */
+  UpdateDeployable: {
+    parameters: {
+      path: {
+        /** ID of deployable */
+        deployable_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpdateDeployableOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateDeployableInput"];
+      };
+    };
+  };
+  DeleteDeployable: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteDeployableOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteDeployableInput"];
+      };
+    };
+  };
+  /** Share a private deployable. */
+  CreateDeployableKey: {
+    parameters: {
+      path: {
+        /** ID of deployable */
+        deployable_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateDeployableKeyOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateDeployableKeyInput"];
+      };
+    };
+  };
+  /** Unshare a shared deployable, making it private. */
+  DeleteDeployableKey: {
+    parameters: {
+      path: {
+        /** ID of deployable */
+        deployable_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteDeployableKeyOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteDeployableKeyInput"];
+      };
+    };
+  };
+  /** List all deployables. */
+  ListDeployables: {
+    parameters: {
+      query: {
+        /** Unique name of the dataset */
+        dataset_id?: string;
+        /** Page of the results */
+        page?: number;
+        /** Size of each page of results */
+        page_size?: number;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListDeployablesOutput"];
+        };
+      };
+    };
+  };
+  /** Update metadata of a Project */
+  UpdateProject: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpdateProjectOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateProjectInput"];
+      };
+    };
+  };
+  /** List all projects and their metadata */
+  ListProjects: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListProjectsOutput"];
+        };
+      };
+    };
+  };
+  CreateUser: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateUserOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateUserInput"];
+      };
+    };
+  };
+  ListUsers: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListUsersOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListUsersInput"];
+      };
+    };
+  };
+  IsUserAuthorized: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["IsUserAuthorizedOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["IsUserAuthorizedInput"];
+      };
+    };
+  };
+  /** Get user_id, key_id and permissions from an auth header. */
+  GetAuthHeaderInfo: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetAuthHeaderInfoOutput"];
+        };
+      };
+    };
+  };
+  /** Invite a user to a project using either their email or their user_id */
+  CreateProjectInvite: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateProjectInviteOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateProjectInviteInput"];
+      };
+    };
+  };
+  ListProjectInvites: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListProjectInvitesOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListProjectInvitesInput"];
+      };
+    };
+  };
+  AcceptProjectInvite: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["AcceptProjectInviteOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AcceptProjectInviteInput"];
+      };
+    };
+  };
+  GetUser: {
+    parameters: {
+      path: {
+        /** ID of user */
+        user_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetUserOutput"];
+        };
+      };
+    };
+  };
+  UpdateUser: {
+    parameters: {
+      path: {
+        /** ID of user */
+        user_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpdateUserOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateUserInput"];
+      };
+    };
+  };
+  /** Deletes a User from ONLY your project. If they have permissions for other projects, they will still have acces to them. */
+  DeleteUser: {
+    parameters: {
+      path: {
+        /** ID of user */
+        user_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteUserOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteUserInput"];
+      };
+    };
+  };
+  CreateUserKey: {
+    parameters: {
+      path: {
+        /** ID of user */
+        user_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateUserKeyOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateUserKeyInput"];
+      };
+    };
+  };
+  ListUserKeys: {
+    parameters: {
+      path: {
+        /** ID of user */
+        user_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListUserKeysOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListUserKeysInput"];
+      };
+    };
+  };
+  DeleteUserKey: {
+    parameters: {
+      path: {
+        /** ID of user */
+        user_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteUserKeyOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteUserKeyInput"];
+      };
+    };
+  };
+  /** Insert your own cluster centroids for it to be used in approximate search settings and cluster aggregations. */
+  InsertClusterCentroids: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["InsertClusterCentroidsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["InsertClusterCentroidsInput"];
+      };
+    };
+  };
+  /** Update your own cluster centroids for it to be used in approximate search settings and cluster aggregations. Will merge rather than replace centroids. */
+  UpdateClusterCentroids: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpdateClusterCentroidsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateClusterCentroidsInput"];
+      };
+    };
+  };
+  /** For each centroid in a list of centroids, find the closest centroids in another set of centroids. */
+  CompareClusterCentroids: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CompareClusterCentroidsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CompareClusterCentroidsInput"];
+      };
+    };
+  };
+  /**
+   * Aggregation/Groupby of a collection using an aggregation query.
+   * The aggregation query is a json body that follows the schema of:
+   *
+   *     {
+   *         "groupby" : [
+   *             {"name": <alias>, "field": <field in the collection>, "agg": "category"},
+   *             {"name": <alias>, "field": <another groupby field in the collection>, "agg": "numeric"}
+   *         ],
+   *         "metrics" : [
+   *             {"name": <alias>, "field": <numeric field in the collection>, "agg": "avg"}
+   *             {"name": <alias>, "field": <another numeric field in the collection>, "agg": "max"}
+   *             {"name": <alias>, "fields": [<numeric field in the collection>, <another numeric field in the collection>], "agg": "correlation"}
+   *         ]
+   *     }
+   *     For example, one can use the following aggregations to group score based on region and player name.
+   *     {
+   *         "groupby" : [
+   *             {"name": "region", "field": "player_region", "agg": "category"},
+   *             {"name": "player_name", "field": "name", "agg": "category"}
+   *         ],
+   *         "metrics" : [
+   *             {"name": "average_score", "field": "final_score", "agg": "avg"},
+   *             {"name": "max_score", "field": "final_score", "agg": "max"},
+   *             {'name':'total_score','field':"final_score", 'agg':'sum'},
+   *             {'name':'average_deaths','field':"final_deaths", 'agg':'avg'},
+   *             {'name':'highest_deaths','field':"final_deaths", 'agg':'max'},
+   *             {'name':'score_death_correlation', 'fields':['final_deaths', 'final_score'], 'agg': 'correlation'},
+   *         ]
+   *     }
+   * - "groupby" is the fields you want to split the data into. These are the available groupby types:
+   *     - category" : groupby a field that is a category
+   *     - numeric: groupby a field that is a numeric
+   * - "metrics" is the fields you want to metrics you want to calculate in each of those, every aggregation includes a frequency metric. These are the available metric types:
+   *     - For single fields: "avg"/"average"/"mean", "cardinality", "count", "kurtosis", "max", "min", "percentiles", "kurtosis", "std_deviation", "std_deviation_bounds", "sum", "sum_of_squares", "variance"
+   *     - For multiple fields (the attribute "fields" must be used instead of "field"): "correlation", "covariance", "kurtosis", "mean", "skewness", "variance"
+   *
+   * The response returned has the following in descending order.
+   *
+   * IF you want to return documents, specify a "group_size" parameter and a "select_fields" parameter if you want to limit the specific fields chosen.
+   * This looks as such:
+   *
+   *     {
+   *       'groupby':[
+   *         {'name':'Manufacturer','field':'manufacturer','agg':'category',
+   *         'group_size': 10, 'select_fields': ["name"]},
+   *       ],
+   *       'metrics':[
+   *         {'name':'Price Average','field':'price','agg':'avg'},
+   *       ],
+   *     }
+   *
+   *     {"title": {"title": "books", "frequency": 200, "documents": [{...}, {...}]}, {"title": "books", "frequency": 100, "documents": [{...}, {...}]}}
+   *
+   * For array-aggregations, you can add "agg": "array" into the aggregation query.
+   */
+  Aggregate: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["AggregateOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AggregateInput"];
+      };
+    };
+  };
+  /** Takes an aggregation query and gets the aggregate of each cluster in a collection. This helps you interpret each cluster and what is in them. */
+  AggregateClusters: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["AggregateClustersOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AggregateClustersInput"];
+      };
+    };
+  };
+  /** Takes a high level aggregation of every field and every cluster in a collection. This helps you interpret each cluster and what is in them. */
+  ListClusterFacets: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListClusterFacetsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListClusterFacetsInput"];
+      };
+    };
+  };
+  /** List documents with vector fields closest to centroids. */
+  ListClosestToCentroids: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListClosestToCentroidsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListClosestToCentroidsInput"];
+      };
+    };
+  };
+  /** List documents with vector fields furthest from centroids. */
+  ListFurthestFromCentroids: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListFurthestFromCentroidsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListFurthestFromCentroidsInput"];
+      };
+    };
+  };
+  /** List centroids, optionally filtering by their ids. */
+  ListCentroids: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListCentroidsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListCentroidsInput"];
+      };
+    };
+  };
+  /** Delete a centroid by ID */
+  DeleteCentroid: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+        /** ID of centroid */
+        centroid_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteCentroidOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteCentroidInput"];
+      };
+    };
+  };
+  RealtimeClustering: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["RealtimeClusteringOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RealtimeClusteringInput"];
+      };
+    };
+  };
+  MergeClusters: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["MergeClustersOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["MergeClustersInput"];
+      };
+    };
+  };
+  CreateClusterSummaries: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateClusterSummariesOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateClusterSummariesInput"];
+      };
+    };
+  };
+  ListClusterSummaries: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListClusterSummariesOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListClusterSummariesInput"];
+      };
+    };
+  };
+  DeleteClusterSummaries: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteClusterSummariesOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteClusterSummariesInput"];
+      };
+    };
+  };
   /**
    * When inserting the document you can specify your own id for a document by using the field name **"\_id"**.
    *
@@ -1275,9 +7988,18 @@ export interface operations {
     };
   };
   /**
-   * When inserting documents you can specify your own id for a document by using the field name **"\_id"**.
-   * For specifying your own vector use the suffix (ends with)  **"\_vector\_"** for the field name.
-   * e.g. "product\_description\_vector\_"
+   * Insert one or more documents.
+   *
+   * This method is the same as [`/insert`](/reference/insert) but provides support for more than one document to be inserted at a time.
+   *
+   * For each insertion, if an `_id` is provided and a document with that ID already exists, all existing field values will be deleted and the new ones will be stored. If no `_id` field is provided, one will automatically be added to the document.
+   *
+   * This method will entirely replace the documents. If you would like to only partially update a document, use [`/update_where`](/reference/updatewhere).
+   *
+   * If the document with the provided `_id` doesn't exist, one will be automatically created.
+   * If the provided dataset doesn't exist, one will be automatically created.
+   *
+   * Limit the payload of documents to a maximum 100MB for optimal performance.
    */
   BulkInsert: {
     parameters: {
@@ -1300,12 +8022,8 @@ export interface operations {
       };
     };
   };
-  /**
-   * Generate an upload and download url for temporary storing of large files.
-   *
-   *     Used in conjunction with parse_blob to upload large datasets.
-   */
-  BlobAccessURLs: {
+  /** specify a list of file paths. For each file path, a url upload_url is returned. files can be POSTed on upload_url to upload them. They can then be accessed on url. Upon dataset deletion, these files will be deleted. */
+  GetFileUploadUrlsForDataset: {
     parameters: {
       path: {
         /** ID of dataset */
@@ -1316,13 +8034,13 @@ export interface operations {
       /** successful operation */
       200: {
         content: {
-          "application/json": components["schemas"]["BlobAccessURLsOutput"];
+          "application/json": components["schemas"]["GetFileUploadUrlsForDatasetOutput"];
         };
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["BlobAccessURLsInput"];
+        "application/json": components["schemas"]["GetFileUploadUrlsForDatasetInput"];
       };
     };
   };
@@ -1348,8 +8066,42 @@ export interface operations {
       };
     };
   };
-  /** Get a document by its _id. this is a POST endpoint, and supports extra options such as include_vector. An example body for this endpoint is {document_id:"abcd"} */
-  GetDocument: {
+  /** Copy a dataset from another users projects into your project. This is considered a project job. */
+  CopyForeignDataset: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CopyForeignDatasetOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CopyForeignDatasetInput"];
+      };
+    };
+  };
+  /** Creates a read only key for your project. Make sure to save the api key somewhere safe. When doing a search the admin username should still be used. */
+  CreateProjectReadKey: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateProjectReadKeyOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateProjectReadKeyInput"];
+      };
+    };
+  };
+  /** Delete a dataset. */
+  DeleteDataset: {
     parameters: {
       path: {
         /** ID of dataset */
@@ -1360,17 +8112,291 @@ export interface operations {
       /** successful operation */
       200: {
         content: {
-          "application/json": components["schemas"]["GetDocumentOutput"];
+          "application/json": components["schemas"]["DeleteDatasetOutput"];
         };
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["GetDocumentInput"];
+        "application/json": components["schemas"]["DeleteDatasetInput"];
       };
     };
   };
-  /** Delete a document by its _id. this is a POST endpoint. An example body for this endpoint is {document_id:"abcd"} */
+  /**
+   * A dataset can store documents to be **searched, retrieved, filtered and aggregated** (similar to Collections in MongoDB, Tables in SQL, Indexes in ElasticSearch).
+   *
+   * A powerful and core feature of VecDB is that you can store both your metadata and vectors in the same document.
+   * When specifying the schema of a dataset and inserting your own vector use the suffix (ends with) **"\_vector\_"** for the field name, and specify the length of the vector in dataset_schema.
+   *
+   * For example:
+   *
+   *     {
+   *         "product_image_vector_": 1024,
+   *         "product_text_description_vector_" : 128
+   *     }
+   *
+   * These are the field types supported in our datasets: **["text", "numeric", "date", "dict", "chunks", "vector", "chunkvector"]**.
+   *
+   * For example:
+   *
+   *     {
+   *         "product_text_description" : "text",
+   *         "price" : "numeric",
+   *         "created_date" : "date",
+   *         "product_texts_chunk_": "chunks",
+   *         "product_text_chunkvector_" : 1024
+   *     }
+   *
+   * You don't have to specify the schema of every single field when creating a dataset, as VecDB will automatically detect the appropriate data type for each field (vectors will be automatically identified by its **"\_vector\_"** suffix). Infact you also don't always have to use this endpoint to create a dataset as **\/datasets/bulk_insert** will infer and create the dataset and schema as you insert new documents.
+   *
+   * Note:
+   *  * A dataset name/id can only contain undercase letters, dash, underscore and numbers.
+   *  * "\_id" is reserved as the key and id of a document.
+   *  * Once a schema is set for a dataset it cannot be altered. If it has to be altered, utlise the copy dataset endpoint.
+   *
+   * For more information about vectors check out the 'Vectorizing' section, **\/services/search/vector** or out blog at [https://relevance.ai/blog](https://relevance.ai/blog).
+   * For more information about chunks and chunk vectors check out **\/services/search/chunk**.
+   */
+  CreateDataset: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateDatasetOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateDatasetInput"];
+      };
+    };
+  };
+  GetSchema: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetSchemaOutput"];
+        };
+      };
+    };
+  };
+  /** List all datasets in a project that you are authorized to read/write. */
+  ListDatasets: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListDatasetsOutput"];
+        };
+      };
+    };
+  };
+  CombineDatasets: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CombineDatasetsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CombineDatasetsInput"];
+      };
+    };
+  };
+  GetCombineJobStatus: {
+    parameters: {
+      path: {
+        /** ID of job */
+        job_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetCombineJobStatusOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GetCombineJobStatusInput"];
+      };
+    };
+  };
+  /** Search all datasets in a project that you are authorized to read/write. */
+  SearchDatasets: {
+    parameters: {
+      query: {
+        /** Any string that belongs to part of a dataset name. */
+        query?: string;
+        /** DEPRECATED  - this wont work Sort by created at date. By default shows the newest datasets. Set asc=False to get oldest dataset. */
+        sort_by_created_date?: boolean;
+        /** DEPRECATED - this wont work Whether to sort results by ascending or descending order */
+        asc?: boolean;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["SearchDatasetsOutput"];
+        };
+      };
+    };
+  };
+  /** Gives you a summary of the health of your vectors, e.g. how many documents with vectors are missing, how many documents with zero vectors */
+  GetFieldHealth: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetFieldHealthOutput"];
+        };
+      };
+    };
+  };
+  /** View the usage statistics of a dataset. */
+  GetDatasetStats: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetDatasetStatsOutput"];
+        };
+      };
+    };
+  };
+  /** View api call usage statistics for a dataset. */
+  GetDatasetUsage: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetDatasetUsageOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GetDatasetUsageInput"];
+      };
+    };
+  };
+  /** DEPRECATED !!!! Retrieve the mapping of vectors generated through fields, dictionary, array, etc */
+  GetVectorMappings: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetVectorMappingsOutput"];
+        };
+      };
+    };
+  };
+  /**
+   * Returns a page of datasets and in detail the dataset's associated information that you are authorized to read/write. The information includes:
+   *
+   * | Information      | Description |
+   * | ----------- | ----------- |
+   * | schema      | Data schema of a dataset. (returns same data as **\/dataset/{dataset_id}/schema**) |
+   * | metadata   | Metadata of a dataset. (returns same data as **\/dataset/{dataset_id}/metadata**) |
+   * | stats   | Statistics of number of documents and size of a dataset. (returns same data as **\/dataset/{dataset_id}/monitor/stats**) |
+   * | vector_health   | Number of zero vectors stored. (returns same data as **\/dataset/{dataset_id}/monitor/health**) |
+   * | schema_stats   | Fields and number of documents missing/not missing for that field. (returns same data as **\/dataset/{dataset_id}/monitor/stats**) |
+   * | active_jobs   | All active jobs/tasks on the dataset. (returns same data as **\/dataset/{dataset_id}/tasks/list**) |
+   */
+  GetDatasetDetails: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetDatasetDetailsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GetDatasetDetailsInput"];
+      };
+    };
+  };
+  /**
+   * Retrieve a document by its `_id`.
+   *
+   * This is the most performant method to get a document or check if it exists, faster than filtering a dataset for by an `_id`.
+   */
+  GetDocument: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+      query: {
+        /** Retrieve document with matching _id. */
+        id?: string;
+        /** Include vectors in the search results */
+        include_vector?: boolean;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetDocumentOutput"];
+        };
+      };
+    };
+  };
+  /**
+   * Delete a document by its `_id` and remove it from the dataset.
+   *
+   * Support for deleting many documents at once is available through [`/bulk_delete`](/reference/bulk_delete_api_datasets__dataset_id__documents_bulk_delete_post).
+   */
   DeleteDocument: {
     parameters: {
       path: {
@@ -1392,7 +8418,93 @@ export interface operations {
       };
     };
   };
-  /** Edit by providing a key value pair of fields you are adding or changing. */
+  /** Retreives settings for dataset. */
+  GetDatasetSettings: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetDatasetSettingsOutput"];
+        };
+      };
+    };
+  };
+  /** Add and overwrite settings about a dataset. Notably description, data source, etc. */
+  UpsertDatasetSettings: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpsertDatasetSettingsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpsertDatasetSettingsInput"];
+      };
+    };
+  };
+  /** Retreives metadata about a dataset. Notably description, data source, etc */
+  GetDatasetMetadata: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetDatasetMetadataOutput"];
+        };
+      };
+    };
+  };
+  /** Retreives metadata about a dataset. Notably description, data source, etc */
+  UpsertDatasetMetadata: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpsertDatasetMetadataOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpsertDatasetMetadataInput"];
+      };
+    };
+  };
+  /**
+   * Update an existing document by providing its `_id` and an object containing the new field values.
+   *
+   * This method supports a partial update so you may add new fields or update existing ones. It will not overwrite the entire existing document.
+   *
+   * If the provided `_id` has no matching document in the dataset, a new document will be created. Likewise, if the provided `dataset_id` does not match a dataset in your project a new one will be created.
+   *
+   * Support for updating many documents at once with a filter condition is available through [`/update_where`](/reference/updatewhere).
+   */
   Update: {
     parameters: {
       path: {
@@ -1411,6 +8523,28 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["UpdateInput"];
+      };
+    };
+  };
+  /** Delete fields in a document in a dataset by its id. */
+  DeleteDocumentFields: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteDocumentFieldsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteDocumentFieldsInput"];
       };
     };
   };
@@ -1442,7 +8576,13 @@ export interface operations {
       };
     };
   };
-  /** Updates documents by filters. The updates to make to the documents that is returned by a filter. The updates should be specified in a format of {"field_name": "value"}. e.g. {"item.status" : "Sold Out"} */
+  /**
+   * Update fields in all existing documents that match a filter condition.
+   *
+   * This method supports a partial update so you may add new fields or update only those you need. Other fields will remain unaffected.
+   *
+   * If the provided `dataset_id` does not match a dataset in your project, a new one will be created.
+   */
   UpdateWhere: {
     parameters: {
       path: {
@@ -1461,6 +8601,406 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["UpdateWhereInput"];
+      };
+    };
+  };
+  /** Takes a high level aggregation of every field, return their unique values and frequencies. This is used to help create the filter bar for search. */
+  ListFacets: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListFacetsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListFacetsInput"];
+      };
+    };
+  };
+  /**
+   * Retrieve documents with filters.
+   * afterId is provided to retrieve even more documents. Loop through it to retrieve all documents in the database.
+   * Filter is used to retrieve documents that match the conditions set in a filter query.
+   */
+  GetWhere: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetWhereOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GetWhereInput"];
+      };
+    };
+  };
+  /**
+   * Retrieve documents with filters.
+   * afterId is provided to retrieve even more documents. Loop through it to retrieve all documents in the database.
+   * Filter is used to retrieve documents that match the conditions set in a filter query.
+   */
+  PaginateDocuments: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["PaginateDocumentsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PaginateDocumentsInput"];
+      };
+    };
+  };
+  /** Retrieve documents by their IDs ("_id" field). This will retrieve the documents faster than a filter applied on the "_id" field. For single id lookup version of this request use /datasets/{dataset_id}/documents/get. */
+  BulkGetDocuments: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["BulkGetDocumentsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["BulkGetDocumentsInput"];
+      };
+    };
+  };
+  /** Delete a list of documents by their IDs. For deleting a single document refer to /datasets/{dataset_id}/documents/delete or deleting documents by filters refer to /datasets/{dataset_id}/documents/delete_where. */
+  BulkDeleteDocuments: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["BulkDeleteDocumentsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["BulkDeleteDocumentsInput"];
+      };
+    };
+  };
+  /**
+   * Retrieve documents with filters.
+   * afterId is provided to retrieve even more documents. Loop through it to retrieve all documents in the database.
+   * Filter is used to retrieve documents that match the conditions set in a filter query.
+   */
+  ListDocuments: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+      query: {
+        filters?: unknown[];
+        items?: Partial<{
+          /** Match where document[field] is in value list. */
+          match?: {
+            /** If matching on text, match even if there are extra words / case insensitivity */
+            fuzzy?: boolean;
+            /** Field to match on. */
+            key?: string;
+            /** Field to match on. */
+            field?: string;
+            /** Can be either a single item or a list of items to match on. */
+            value: string | boolean | number | unknown[];
+          };
+          /** Match where document._id is in value list. */
+          matchIds?: {
+            /** Can be either a single item or a list of items to match on. */
+            value: string | boolean | number | unknown[];
+          };
+          /** Match documents where greaterThan < document[field] < lessThan. Supports numbers and date strings. */
+          range?: {
+            /** Field to match on. */
+            key?: string;
+            /** Field to match on. */
+            field?: string;
+            greaterThan?: unknown;
+            lessThan?: unknown;
+          };
+          /**
+           * Match documents where the field either contains the value as a substring, or matches a provided matching pattern.
+           *
+           * Possible matching patterns:
+           *
+           * * - documents where the field has any value
+           * ? - documents where a single character from the field matches the provided values
+           *
+           * Example:
+           *
+           * {
+           *   wildcard: {
+           *      field: "title",
+           *      value: [ "Avenger*" ]
+           *   }
+           * }
+           */
+          wildcard?: {
+            /** Field to match on. */
+            key?: string;
+            /** Field to match on. */
+            field?: string;
+            /** single string or array of valid wildcard strings to match on, for example ['tele*'] */
+            value: string | string[];
+          };
+          /** hybrid search query that must reach a certain value to filter */
+          search?: {
+            /**
+             * Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
+             *
+             *     "tele" matches "Television", "This television is an excellent product…"
+             *
+             *     Example: "tele"
+             */
+            query?: string;
+            /** Configuration for traditional search query. */
+            queryConfig?: {
+              /** Increases or decreases the impact of all traditional search matching when calculating a documents _relevance. */
+              weight?: number;
+              /**
+               * Increases or decreases the impact of sentence matching when calculating a documents _relevance.
+               *         For example, with query "A fox jumped", with high sentence weight, 'A fox jumped over the' would match before 'jumped a fox over fox'
+               */
+              sentenceWeight?: number;
+            };
+            /**
+             * Prioritise the result list of documents based on semantic similarity to "query" provided here.
+             *
+             *     For example if field "animaltype_vector_" contains encoded vector values for "cat", lion, "dog","bird", and "query" is set to "kitten", documents with "cat", "lion" will be returned first in the results list.
+             *
+             *     It can be an object or a list of objects.
+             *
+             *
+             *
+             *     Example payloads:
+             *
+             *     {"field":"animaltype_vector_","query":"kitten"}
+             *
+             *     [
+             *
+             *     {"field":"animaltype_vector_","query":"kitten","weight":1","model":"text"}, {"field":"animaltype_vector_","query":"https://www.dogimage.com/dogimage.png","model":"image","weight":2}
+             *
+             *     ]
+             */
+            vectorSearchQuery?:
+              | {
+                  /** Vector name to search on. For example, title_vector_ */
+                  field: string;
+                  /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                  query?: string;
+                  /** Model name to generate the vector with. */
+                  model?: string;
+                  /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                  model_url?: string;
+                  /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                  weight?: number;
+                  /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                  vector?: number[];
+                  chunkConfig?: {
+                    chunkField: string;
+                    page?: number;
+                    pageSize?: number;
+                  };
+                }
+              | {
+                  /** Vector name to search on. For example, title_vector_ */
+                  field: string;
+                  /** Query to transform to a vector and then search with. Default to query in the root body if not provided. */
+                  query?: string;
+                  /** Model name to generate the vector with. */
+                  model?: string;
+                  /** Model url to use for encoding. If model and model_url are both set, model_url will override it. */
+                  model_url?: string;
+                  /** Increases or decreases the impact of this vector fields match on documents relevance score. */
+                  weight?: number;
+                  /** Instead of generating a vector by vectorising the query, use the vector provided here for vector search. */
+                  vector?: number[];
+                  chunkConfig?: {
+                    chunkField: string;
+                    page?: number;
+                    pageSize?: number;
+                  };
+                }[];
+            /**
+             * A list of fields to search using the "query" parameter.
+             *
+             *     Each item can be field name as a string, or an object with 'field' as field name and optional parameters such as field weight.
+             *
+             *     Default behaviour is to search all fields.
+             *
+             *     Example: ["name",{"field":"favourite_color","weight":0.2}]
+             */
+            fieldsToSearch?: (
+              | string
+              | {
+                  /** Field name to search. */
+                  key?: string;
+                  /** Field name to search. */
+                  field?: string;
+                  /** Multiply the relevance contribution of a specific field when using traditional search. */
+                  weight?: number;
+                  /** Enabled text search on chunk fields. Scoring will take the max similarity of any subitem within the chunk. */
+                  chunkField?: string;
+                }
+            )[];
+            /**
+             * Only return documents with a _relevance above this threshold.
+             *
+             *     Example: 0.3
+             */
+            minimumRelevance: number;
+          };
+          /** Match documents where field specified by 'field' exists in the document. for nested fields, use syntax: a.b.c */
+          fieldExists?: {
+            /** Field that must exist. */
+            key?: string;
+            /** Field that must exist. */
+            field?: string;
+          };
+          /** Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
+          selfreference?: {
+            /** First field in comparison. */
+            a: string;
+            /** Second field in comparison. */
+            b: string;
+            /** Operator used to compare a and b. */
+            operation: "<=" | ">=" | "<" | ">" | "==" | "!=" | "stringEquals";
+          };
+          /** Match documents where greaterThan < wordCount(document[field]) < lessThan. */
+          wordCount?: {
+            /** Field to match on. */
+            field: string;
+            /** Minimum word count. */
+            greaterThan?: number;
+            /** Maximum word count. */
+            lessThan?: number;
+          };
+          /** Match documents where greaterThan < characterCount(document[field]) < lessThan. */
+          characterCount?: {
+            /** Field to match on. */
+            field: string;
+            /** Minimum character count. */
+            greaterThan?: number;
+            /** Maximum character count. */
+            lessThan?: number;
+          };
+          /** Used to perform a logical OR of filters. each element of the OR list can itself be a list  to perform a nested AND. {or:[[A,B],C]} is equivalent to (A AND B) OR C */
+          or?: (
+            | definitions["simpleSearchAndFlatFilterItem"][]
+            | definitions["simpleSearchAndFlatFilterItem"]
+          )[];
+          /** Used to perform NOT filter. Can be a single filter or a list of filters to perform a !(AND). {not:[A,B]} is equivalent to !(A AND B) */
+          not?:
+            | definitions["simpleSearchAndFlatFilterItem"][]
+            | definitions["simpleSearchAndFlatFilterItem"];
+          /** Filter based on data within a _chunk_ field. */
+          chunk?: {
+            /** The path of the chunk field to filter on. For example: description_sentences_chunk_ */
+            path: string;
+            filters: definitions["simpleSearchAndFlatFilterItem"][];
+          };
+        }> &
+          Partial<{
+            strict?: "must" | "should" | "must_or";
+            condition?: string;
+            field?: string;
+            filter_type?:
+              | "text_match"
+              | "word_match"
+              | "term"
+              | "terms"
+              | "text"
+              | "texts"
+              | "match"
+              | "contains"
+              | "substring"
+              | "class"
+              | "category"
+              | "exact_match"
+              | "classes"
+              | "categories"
+              | "exists"
+              | "traditional"
+              | "fuzzy"
+              | "regexp"
+              | "ids"
+              | "date"
+              | "numeric"
+              | "search"
+              | "or"
+              | "word_count"
+              | "character_count";
+            condition_value?: unknown;
+            fuzzy?: number;
+            join?: boolean;
+          }>;
+        /** Fields to include in the search results, empty array/list means all fields. */
+        select_fields?: string[];
+        /** Size of each page of results. */
+        page_size?: number;
+        /** Size of each page of results. */
+        page?: number;
+        /** Fields to sort by. For each field, sort by descending or ascending. If you are using descending by datetime, it will get the most recent ones. */
+        sort?: (string | { [key: string]: "asc" | "desc" })[];
+        /** Include vectors in the search results. */
+        include_vector?: boolean;
+        /** (NOT IMPLEMENTED - not functional) If true, retrieves documents randomly. */
+        is_random?: boolean;
+        /** (NOT IMPLEMENTED - not functional)Random Seed for retrieving random documents. */
+        random_state?: number;
+        /** Retrieve items after these sort values in the sort order. */
+        after_id?: unknown[];
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListDocumentsOutput"];
+        };
       };
     };
   };
@@ -1527,6 +9067,272 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["FastSearchInput"];
+      };
+    };
+  };
+  /** Recommend documents similar to specific documents. Specify which vector field must be used for recommendation using  the documentsToRecommend property. */
+  Recommend: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["RecommendOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RecommendInput"];
+      };
+    };
+  };
+  CloneDataset: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CloneDatasetOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CloneDatasetInput"];
+      };
+    };
+  };
+  /** Predict using KNN regression. */
+  PredictKNNRegression: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["PredictKNNRegressionOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PredictKNNRegressionInput"];
+      };
+    };
+  };
+  /** Predict using KNN regression from search results. */
+  PredictKNNFromResults: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["PredictKNNFromResultsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PredictKNNFromResultsInput"];
+      };
+    };
+  };
+  BiasEvaluation: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["BiasEvaluationOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["BiasEvaluationInput"];
+      };
+    };
+  };
+  Vectorize: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["VectorizeOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["VectorizeInput"];
+      };
+    };
+  };
+  VectorizeAndInsert: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["VectorizeAndInsertOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["VectorizeAndInsertInput"];
+      };
+    };
+  };
+  VectorizeField: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["VectorizeFieldOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["VectorizeFieldInput"];
+      };
+    };
+  };
+  TriggerWorkflow: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["TriggerWorkflowOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TriggerWorkflowInput"];
+      };
+    };
+  };
+  ListWorkflows: {
+    parameters: {
+      query: {
+        /** Only retrieve workflows of this status */
+        job_status?:
+          | "InProgress"
+          | "Completed"
+          | "Failed"
+          | "Stopping"
+          | "Stopped";
+        /** Currently limited to exact_match, ids, exists, regexp filter_type */
+        filters?: {
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }[];
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListWorkflowsOutput"];
+        };
+      };
+    };
+  };
+  GetWorkflowStatus: {
+    parameters: {
+      path: {
+        /** ID of workflow */
+        workflow_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetWorkflowStatusOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GetWorkflowStatusInput"];
+      };
+    };
+  };
+  /** Update metadata for a workflow run */
+  UpsertWorkflowMetadata: {
+    parameters: {
+      path: {
+        /** ID of workflow */
+        workflow_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpsertWorkflowMetadataOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpsertWorkflowMetadataInput"];
       };
     };
   };
