@@ -12,7 +12,7 @@
     "build": "tsc -p tsconfig.json && tsc -p tsconfig.es.json && tsc -p tsconfig.types.json",
     "generate": "ts-node ./src/shared/generate.ts",
     "test": "jest",
-    "prepare": "npm run test && npm run build"
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
