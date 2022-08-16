@@ -690,6 +690,20 @@ export interface components {
     ListProjectInvitesOutput: {
       results: {
         _id: string;
+        user_id: string;
+        permissions?: {
+          items: {
+            [key: string]: {
+              resources?: {
+                datasets?: { [key: string]: boolean };
+                deployables?: { [key: string]: boolean };
+                users?: { [key: string]: boolean };
+                workflows?: { [key: string]: boolean };
+              };
+              actions?: { [key: string]: boolean };
+            };
+          };
+        };
         email?: string;
         project?: string;
       }[];
