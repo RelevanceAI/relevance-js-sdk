@@ -63,6 +63,12 @@ export interface paths {
   "/auth/invite/accept": {
     post: operations["AcceptProjectInvite"];
   };
+  "/auth/invite/delete": {
+    post: operations["DeleteProjectInvite"];
+  };
+  "/auth/invite/resend": {
+    post: operations["ResendProjectInvite"];
+  };
   "/auth/users/{user_id}": {
     get: operations["GetUser"];
   };
@@ -225,6 +231,10 @@ export interface paths {
   "/datasets/{dataset_id}/get_file_upload_urls": {
     /** specify a list of file paths. For each file path, a url upload_url is returned. files can be POSTed on upload_url to upload them. They can then be accessed on url. Upon dataset deletion, these files will be deleted. */
     post: operations["GetFileUploadUrlsForDataset"];
+  };
+  "/datasets/{dataset_id}/list_file_uploads": {
+    /** Return up to 1000 files uploaded for a dataset. */
+    get: operations["ListFileUploadsForDataset"];
   };
   "/datasets/{dataset_id}/parse_blob": {
     /** Bulk insert a large number of documents by downloading a file using "download url". This bypasses the need to directly send documents to the api, as happens in BulkInsert. */
@@ -632,6 +642,7 @@ export interface components {
         type: "user" | "machine";
         _id: string;
         email?: string;
+        creator_user_id?: string;
       }[];
     };
     IsUserAuthorizedInput: {
@@ -712,6 +723,27 @@ export interface components {
       invite_code: string;
     };
     AcceptProjectInviteOutput: { [key: string]: unknown };
+    DeleteProjectInviteInput: {
+      invite_code: string;
+    };
+    DeleteProjectInviteOutput: { [key: string]: unknown };
+    ResendProjectInviteInput: {
+      invite_code: string;
+      permissions?: {
+        items: {
+          [key: string]: {
+            resources?: {
+              datasets?: { [key: string]: boolean };
+              deployables?: { [key: string]: boolean };
+              users?: { [key: string]: boolean };
+              workflows?: { [key: string]: boolean };
+            };
+            actions?: { [key: string]: boolean };
+          };
+        };
+      };
+    };
+    ResendProjectInviteOutput: { [key: string]: unknown };
     GetUserInput: { [key: string]: unknown };
     GetUserOutput: {
       name?: string;
@@ -735,6 +767,7 @@ export interface components {
       type: "user" | "machine";
       _id: string;
       email?: string;
+      creator_user_id?: string;
     };
     UpdateUserInput: {
       name?: string;
@@ -2316,6 +2349,33 @@ export interface components {
         minimum_cluster_size_filter_type?: "or" | "and";
         cluster_page?: number;
         cluster_page_size?: number;
+        sort_metrics?: {
+          field?: string;
+          fields?: string[];
+          agg?:
+            | "avg"
+            | "average"
+            | "cardinality"
+            | "max"
+            | "mean"
+            | "min"
+            | "sum"
+            | "percentiles"
+            | "sum_of_squares"
+            | "variance"
+            | "std_deviation"
+            | "std_deviation_bounds"
+            | "kurtosis"
+            | "covariance"
+            | "skewness"
+            | "character_count"
+            | "count"
+            | "correlation"
+            | "missing";
+          name?: string;
+        }[];
+        /** @description Whether to sort results by ascending or descending order. */
+        asc?: boolean;
       };
     };
     AggregateClustersOutput: {
@@ -2938,6 +2998,33 @@ export interface components {
         minimum_cluster_size_filter_type?: "or" | "and";
         cluster_page?: number;
         cluster_page_size?: number;
+        sort_metrics?: {
+          field?: string;
+          fields?: string[];
+          agg?:
+            | "avg"
+            | "average"
+            | "cardinality"
+            | "max"
+            | "mean"
+            | "min"
+            | "sum"
+            | "percentiles"
+            | "sum_of_squares"
+            | "variance"
+            | "std_deviation"
+            | "std_deviation_bounds"
+            | "kurtosis"
+            | "covariance"
+            | "skewness"
+            | "character_count"
+            | "count"
+            | "correlation"
+            | "missing";
+          name?: string;
+        }[];
+        /** @description Whether to sort results by ascending or descending order. */
+        asc?: boolean;
       };
       /** @description Fields to include in the facets, if [] then all */
       facet_fields?: string[];
@@ -3266,6 +3353,33 @@ export interface components {
         minimum_cluster_size_filter_type?: "or" | "and";
         cluster_page?: number;
         cluster_page_size?: number;
+        sort_metrics?: {
+          field?: string;
+          fields?: string[];
+          agg?:
+            | "avg"
+            | "average"
+            | "cardinality"
+            | "max"
+            | "mean"
+            | "min"
+            | "sum"
+            | "percentiles"
+            | "sum_of_squares"
+            | "variance"
+            | "std_deviation"
+            | "std_deviation_bounds"
+            | "kurtosis"
+            | "covariance"
+            | "skewness"
+            | "character_count"
+            | "count"
+            | "correlation"
+            | "missing";
+          name?: string;
+        }[];
+        /** @description Whether to sort results by ascending or descending order. */
+        asc?: boolean;
       };
       /** @description Whether to include relevance scores for each item in each cluster. */
       include_relevance?: boolean;
@@ -3570,6 +3684,33 @@ export interface components {
         minimum_cluster_size_filter_type?: "or" | "and";
         cluster_page?: number;
         cluster_page_size?: number;
+        sort_metrics?: {
+          field?: string;
+          fields?: string[];
+          agg?:
+            | "avg"
+            | "average"
+            | "cardinality"
+            | "max"
+            | "mean"
+            | "min"
+            | "sum"
+            | "percentiles"
+            | "sum_of_squares"
+            | "variance"
+            | "std_deviation"
+            | "std_deviation_bounds"
+            | "kurtosis"
+            | "covariance"
+            | "skewness"
+            | "character_count"
+            | "count"
+            | "correlation"
+            | "missing";
+          name?: string;
+        }[];
+        /** @description Whether to sort results by ascending or descending order. */
+        asc?: boolean;
       };
       /** @description Whether to include relevance scores for each item in each cluster. */
       include_relevance?: boolean;
@@ -4029,10 +4170,17 @@ export interface components {
     GetFileUploadUrlsForDatasetInput: {
       /** @description files we be accessible under a url that will be returned in the output. */
       files: string[];
+      include_file_path_in_url?: boolean;
     };
     GetFileUploadUrlsForDatasetOutput: {
       files: {
         upload_url: string;
+        url: string;
+      }[];
+    };
+    ListFileUploadsForDatasetInput: unknown;
+    ListFileUploadsForDatasetOutput: {
+      files: {
         url: string;
       }[];
     };
@@ -8053,6 +8201,38 @@ export interface operations {
       };
     };
   };
+  DeleteProjectInvite: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteProjectInviteOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteProjectInviteInput"];
+      };
+    };
+  };
+  ResendProjectInvite: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ResendProjectInviteOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ResendProjectInviteInput"];
+      };
+    };
+  };
   GetUser: {
     parameters: {
       path: {
@@ -8642,6 +8822,23 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["GetFileUploadUrlsForDatasetInput"];
+      };
+    };
+  };
+  /** Return up to 1000 files uploaded for a dataset. */
+  ListFileUploadsForDataset: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListFileUploadsForDatasetOutput"];
+        };
       };
     };
   };

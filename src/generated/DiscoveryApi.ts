@@ -33,6 +33,10 @@ export type CreateProjectInviteOutput = operations['CreateProjectInvite']['respo
 export type ListProjectInvitesOutput = operations['ListProjectInvites']['responses']['200']['content']['application/json']
   export type AcceptProjectInviteInput = operations['AcceptProjectInvite']['requestBody']['content']['application/json']
 export type AcceptProjectInviteOutput = operations['AcceptProjectInvite']['responses']['200']['content']['application/json']
+  export type DeleteProjectInviteInput = operations['DeleteProjectInvite']['requestBody']['content']['application/json']
+export type DeleteProjectInviteOutput = operations['DeleteProjectInvite']['responses']['200']['content']['application/json']
+  export type ResendProjectInviteInput = operations['ResendProjectInvite']['requestBody']['content']['application/json']
+export type ResendProjectInviteOutput = operations['ResendProjectInvite']['responses']['200']['content']['application/json']
   export type GetUserInput = {}
 export type GetUserOutput = operations['GetUser']['responses']['200']['content']['application/json']
   export type UpdateUserInput = operations['UpdateUser']['requestBody']['content']['application/json']
@@ -81,6 +85,8 @@ export type InsertOutput = operations['Insert']['responses']['200']['content']['
 export type BulkInsertOutput = operations['BulkInsert']['responses']['200']['content']['application/json']
   export type GetFileUploadUrlsForDatasetInput = operations['GetFileUploadUrlsForDataset']['requestBody']['content']['application/json']
 export type GetFileUploadUrlsForDatasetOutput = operations['GetFileUploadUrlsForDataset']['responses']['200']['content']['application/json']
+  export type ListFileUploadsForDatasetInput = {}
+export type ListFileUploadsForDatasetOutput = operations['ListFileUploadsForDataset']['responses']['200']['content']['application/json']
   export type ParseBlobInput = operations['ParseBlob']['requestBody']['content']['application/json']
 export type ParseBlobOutput = operations['ParseBlob']['responses']['200']['content']['application/json']
   export type CopyForeignDatasetInput = operations['CopyForeignDataset']['requestBody']['content']['application/json']
@@ -353,6 +359,28 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
+  public async DeleteProjectInvite(
+    input: CommandInput<DeleteProjectInviteInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteProjectInviteOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/auth/invite/delete',
+      options
+    });
+  }
+  public async ResendProjectInvite(
+    input: CommandInput<ResendProjectInviteInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ResendProjectInviteOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/auth/invite/resend',
+      options
+    });
+  }
   public async GetUser(
     input: CommandInput<GetUserInput>,
     options?: _GenericMethodOptions
@@ -614,6 +642,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/datasets/{dataset_id}/get_file_upload_urls',
+      options
+    });
+  }
+  public async ListFileUploadsForDataset(
+    input: CommandInput<ListFileUploadsForDatasetInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListFileUploadsForDatasetOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/list_file_uploads',
       options
     });
   }
