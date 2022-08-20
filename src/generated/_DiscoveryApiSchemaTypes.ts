@@ -1141,8 +1141,7 @@ export interface components {
         join?: boolean;
       }>;
     AggregateInput: {
-      filters?: unknown[];
-      items?: Partial<{
+      filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
           /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -1393,7 +1392,7 @@ export interface components {
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
-        }>;
+        }>)[];
       /** @description Aggregation query to aggregate data */
       aggregation_query?: {
         groupby?: {
@@ -1739,8 +1738,7 @@ export interface components {
       results?: unknown[];
     };
     AggregateClustersInput: {
-      filters?: unknown[];
-      items?: Partial<{
+      filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
           /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -1991,7 +1989,7 @@ export interface components {
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
-        }>;
+        }>)[];
       /** @description Aggregation query to aggregate data */
       aggregation_query?: {
         groupby?: {
@@ -2377,10 +2375,12 @@ export interface components {
         /** @description Whether to sort results by ascending or descending order. */
         asc?: boolean;
       };
+      /** @description For each frequency in results, also return expected_frequency as cluster_size*(count(groupbyattribute)/count(dataset)). Useful for knowing if an attribute is occurring more or less than expected. */
+      include_expected_frequency?: boolean;
     };
     AggregateClustersOutput: {
       results: { [key: string]: unknown[] };
-      info: {
+      cluster_stats?: {
         [key: string]: {
           percentage: number;
           count: number;
@@ -2388,8 +2388,7 @@ export interface components {
       };
     };
     ListClusterFacetsInput: {
-      filters?: unknown[];
-      items?: Partial<{
+      filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
           /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -2640,7 +2639,7 @@ export interface components {
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
-        }>;
+        }>)[];
       /** @description Aggregation query to aggregate data */
       aggregation_query?: {
         groupby?: {
@@ -3067,8 +3066,7 @@ export interface components {
       /** @description Alias is used to name a cluster. */
       alias?: string;
       dataset_id?: string;
-      filters?: unknown[];
-      items?: Partial<{
+      filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
           /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -3319,7 +3317,7 @@ export interface components {
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
-        }>;
+        }>)[];
       /** @description List of cluster IDs to retrieve */
       cluster_ids?: unknown[];
       /** @description Field to cluster on */
@@ -3398,8 +3396,7 @@ export interface components {
       /** @description Alias is used to name a cluster. */
       alias?: string;
       dataset_id?: string;
-      filters?: unknown[];
-      items?: Partial<{
+      filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
           /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -3650,7 +3647,7 @@ export interface components {
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
-        }>;
+        }>)[];
       /** @description List of cluster IDs to retrieve */
       cluster_ids?: unknown[];
       /** @description Field to cluster on */
@@ -4204,8 +4201,7 @@ export interface components {
       failed_documents?: unknown[];
     };
     CopyForeignDatasetInput: {
-      filters?: unknown[];
-      items?: Partial<{
+      filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
           /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -4456,7 +4452,7 @@ export interface components {
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
-        }>;
+        }>)[];
       /** @description Dataset name to copy into */
       dataset_id: string;
       /** @description project name you want to copy the dataset into */
@@ -4543,8 +4539,7 @@ export interface components {
       rename_fields?: { [key: string]: string };
       include_fields?: string[];
       remove_fields?: string[];
-      filters?: unknown[];
-      items?: Partial<{
+      filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
           /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -4795,7 +4790,7 @@ export interface components {
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
-        }>;
+        }>)[];
     };
     CombineDatasetsOutput: {
       job_id: string;
@@ -5065,8 +5060,7 @@ export interface components {
       }[];
     };
     UpdateWhereInput: {
-      filters?: unknown[];
-      items?: Partial<{
+      filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
           /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -5317,7 +5311,7 @@ export interface components {
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
-        }>;
+        }>)[];
       /** @description Updates to make to the documents. It should be specified in a format of {"field_name": "value"}. e.g. {"item.status" : "Sold Out"} */
       updates: { [key: string]: unknown };
     };
@@ -5366,8 +5360,7 @@ export interface components {
       };
     };
     GetWhereInput: {
-      filters?: unknown[];
-      items?: Partial<{
+      filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
           /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -5618,7 +5611,7 @@ export interface components {
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
-        }>;
+        }>)[];
       /** @description Fields to include in the search results, empty array/list means all fields. */
       select_fields?: string[];
       /** @description Size of each page of results. */
@@ -5659,8 +5652,7 @@ export interface components {
       after_id: unknown[];
     };
     PaginateDocumentsInput: {
-      filters?: unknown[];
-      items?: Partial<{
+      filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
           /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -5911,7 +5903,7 @@ export interface components {
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
-        }>;
+        }>)[];
       /** @description Fields to include in the search results, empty array/list means all fields. */
       select_fields?: string[];
       /** @description Size of each page of results. */
@@ -6370,8 +6362,7 @@ export interface components {
       weight?: number;
     };
     SimpleSearchPostInput: {
-      filters?: unknown[];
-      items?: Partial<{
+      filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
           /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -6622,7 +6613,7 @@ export interface components {
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
-        }>;
+        }>)[];
       /**
        * @description Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
        *
@@ -6910,8 +6901,7 @@ export interface components {
       aggregations: unknown;
     };
     FastSearchInput: {
-      filters?: unknown[];
-      items?: Partial<{
+      filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
           /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -7162,7 +7152,7 @@ export interface components {
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
-        }>;
+        }>)[];
       /**
        * @description Search for documents that contain this query string in your dataset. Use fieldsToSearch parameter to restrict which fields are searched.
        *
@@ -7449,8 +7439,7 @@ export interface components {
       rename_fields?: { [key: string]: string };
       /** @default */
       remove_fields?: string[];
-      filters?: unknown[];
-      items?: Partial<{
+      filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
           /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -7701,7 +7690,7 @@ export interface components {
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
-        }>;
+        }>)[];
     };
     CloneDatasetOutput: {
       job_id: string;
@@ -9532,8 +9521,7 @@ export interface operations {
         dataset_id: string;
       };
       query: {
-        filters?: unknown[];
-        items?: Partial<{
+        filters?: (Partial<{
           /** @description Match where document[field] is in value list. */
           match?: {
             /** @description If matching on text, match even if there are extra words / case insensitivity */
@@ -9794,7 +9782,7 @@ export interface operations {
             condition_value?: unknown;
             fuzzy?: number;
             join?: boolean;
-          }>;
+          }>)[];
         /** Fields to include in the search results, empty array/list means all fields. */
         select_fields?: string[];
         /** Size of each page of results. */
