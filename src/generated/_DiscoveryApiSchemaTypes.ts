@@ -600,7 +600,10 @@ export interface components {
       };
     };
     CreateUserInput: {
-      name?: string;
+      first_name?: string;
+      last_name?: string;
+      role?: string;
+      company?: string;
       referral_code?: string;
       permissions?: components["schemas"]["permissions"];
       /** @description The name of the project. This will contain all your datasets. */
@@ -621,7 +624,10 @@ export interface components {
     };
     ListUsersOutput: {
       results: {
-        name?: string;
+        first_name?: string;
+        last_name?: string;
+        role?: string;
+        company?: string;
         permissions: {
           projects: {
             [key: string]: {
@@ -671,7 +677,10 @@ export interface components {
       };
     };
     GetAuthHeaderInfoOutput: {
-      name?: string;
+      first_name?: string;
+      last_name?: string;
+      role?: string;
+      company?: string;
       user_id: string;
       key_id: string;
       permissions: components["schemas"]["fullUserPermissions"];
@@ -746,7 +755,10 @@ export interface components {
     ResendProjectInviteOutput: { [key: string]: unknown };
     GetUserInput: { [key: string]: unknown };
     GetUserOutput: {
-      name?: string;
+      first_name?: string;
+      last_name?: string;
+      role?: string;
+      company?: string;
       permissions: {
         projects: {
           [key: string]: {
@@ -770,7 +782,10 @@ export interface components {
       creator_user_id?: string;
     };
     UpdateUserInput: {
-      name?: string;
+      first_name?: string;
+      last_name?: string;
+      role?: string;
+      company?: string;
       permissions?: components["schemas"]["permissions"];
       /** @description The id token for a signed in account. This attaches the sign in account to the user. */
       id_token?: string;
