@@ -600,6 +600,8 @@ export interface components {
       };
     };
     CreateUserInput: {
+      profile_picture_url?: string;
+      onboarded?: boolean;
       first_name?: string;
       last_name?: string;
       role?: string;
@@ -624,6 +626,8 @@ export interface components {
     };
     ListUsersOutput: {
       results: {
+        profile_picture_url?: string;
+        onboarded?: boolean;
         first_name?: string;
         last_name?: string;
         role?: string;
@@ -677,6 +681,8 @@ export interface components {
       };
     };
     GetAuthHeaderInfoOutput: {
+      profile_picture_url?: string;
+      onboarded?: boolean;
       first_name?: string;
       last_name?: string;
       role?: string;
@@ -755,6 +761,8 @@ export interface components {
     ResendProjectInviteOutput: { [key: string]: unknown };
     GetUserInput: { [key: string]: unknown };
     GetUserOutput: {
+      profile_picture_url?: string;
+      onboarded?: boolean;
       first_name?: string;
       last_name?: string;
       role?: string;
@@ -782,6 +790,8 @@ export interface components {
       creator_user_id?: string;
     };
     UpdateUserInput: {
+      profile_picture_url?: string;
+      onboarded?: boolean;
       first_name?: string;
       last_name?: string;
       role?: string;
