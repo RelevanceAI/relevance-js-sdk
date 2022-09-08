@@ -17,6 +17,8 @@ export type DeleteDeployableKeyOutput = operations['DeleteDeployableKey']['respo
 export type ListDeployablesOutput = operations['ListDeployables']['responses']['200']['content']['application/json']
   export type UpdateProjectInput = operations['UpdateProject']['requestBody']['content']['application/json']
 export type UpdateProjectOutput = operations['UpdateProject']['responses']['200']['content']['application/json']
+  export type TransferProjectToOrganizationInput = operations['TransferProjectToOrganization']['requestBody']['content']['application/json']
+export type TransferProjectToOrganizationOutput = operations['TransferProjectToOrganization']['responses']['200']['content']['application/json']
   export type ListProjectsInput = {}
 export type ListProjectsOutput = operations['ListProjects']['responses']['200']['content']['application/json']
   export type CreateUserInput = operations['CreateUser']['requestBody']['content']['application/json']
@@ -67,6 +69,8 @@ export type ListClosestToCentroidsOutput = operations['ListClosestToCentroids'][
 export type ListFurthestFromCentroidsOutput = operations['ListFurthestFromCentroids']['responses']['200']['content']['application/json']
   export type ListCentroidsInput = operations['ListCentroids']['requestBody']['content']['application/json']
 export type ListCentroidsOutput = operations['ListCentroids']['responses']['200']['content']['application/json']
+  export type ListCentroidConfigsInput = {}
+export type ListCentroidConfigsOutput = operations['ListCentroidConfigs']['responses']['200']['content']['application/json']
   export type DeleteCentroidInput = operations['DeleteCentroid']['requestBody']['content']['application/json']
 export type DeleteCentroidOutput = operations['DeleteCentroid']['responses']['200']['content']['application/json']
   export type RealtimeClusteringInput = operations['RealtimeClustering']['requestBody']['content']['application/json']
@@ -79,6 +83,24 @@ export type CreateClusterSummariesOutput = operations['CreateClusterSummaries'][
 export type ListClusterSummariesOutput = operations['ListClusterSummaries']['responses']['200']['content']['application/json']
   export type DeleteClusterSummariesInput = operations['DeleteClusterSummaries']['requestBody']['content']['application/json']
 export type DeleteClusterSummariesOutput = operations['DeleteClusterSummaries']['responses']['200']['content']['application/json']
+  export type CreateOrganizationInput = operations['CreateOrganization']['requestBody']['content']['application/json']
+export type CreateOrganizationOutput = operations['CreateOrganization']['responses']['200']['content']['application/json']
+  export type UpdateOrganizationInput = operations['UpdateOrganization']['requestBody']['content']['application/json']
+export type UpdateOrganizationOutput = operations['UpdateOrganization']['responses']['200']['content']['application/json']
+  export type UpdateOrganizationAdminInput = operations['UpdateOrganizationAdmin']['requestBody']['content']['application/json']
+export type UpdateOrganizationAdminOutput = operations['UpdateOrganizationAdmin']['responses']['200']['content']['application/json']
+  export type ListOrganizationsInput = {}
+export type ListOrganizationsOutput = operations['ListOrganizations']['responses']['200']['content']['application/json']
+  export type DeleteOrganizationInput = operations['DeleteOrganization']['requestBody']['content']['application/json']
+export type DeleteOrganizationOutput = operations['DeleteOrganization']['responses']['200']['content']['application/json']
+  export type GetOrganizationInput = {}
+export type GetOrganizationOutput = operations['GetOrganization']['responses']['200']['content']['application/json']
+  export type GetOrganizationUsageInput = {}
+export type GetOrganizationUsageOutput = operations['GetOrganizationUsage']['responses']['200']['content']['application/json']
+  export type ListUsersInOrganizationInput = {}
+export type ListUsersInOrganizationOutput = operations['ListUsersInOrganization']['responses']['200']['content']['application/json']
+  export type ListProjectsInOrganizationInput = {}
+export type ListProjectsInOrganizationOutput = operations['ListProjectsInOrganization']['responses']['200']['content']['application/json']
   export type InsertInput = operations['Insert']['requestBody']['content']['application/json']
 export type InsertOutput = operations['Insert']['responses']['200']['content']['application/json']
   export type BulkInsertInput = operations['BulkInsert']['requestBody']['content']['application/json']
@@ -177,8 +199,22 @@ export type TriggerWorkflowOutput = operations['TriggerWorkflow']['responses']['
 export type ListWorkflowsOutput = operations['ListWorkflows']['responses']['200']['content']['application/json']
   export type GetWorkflowStatusInput = operations['GetWorkflowStatus']['requestBody']['content']['application/json']
 export type GetWorkflowStatusOutput = operations['GetWorkflowStatus']['responses']['200']['content']['application/json']
+  export type DeleteWorkflowStatusInput = operations['DeleteWorkflowStatus']['requestBody']['content']['application/json']
+export type DeleteWorkflowStatusOutput = operations['DeleteWorkflowStatus']['responses']['200']['content']['application/json']
   export type UpsertWorkflowMetadataInput = operations['UpsertWorkflowMetadata']['requestBody']['content']['application/json']
 export type UpsertWorkflowMetadataOutput = operations['UpsertWorkflowMetadata']['responses']['200']['content']['application/json']
+  export type DeleteFieldChildrenInput = operations['DeleteFieldChildren']['requestBody']['content']['application/json']
+export type DeleteFieldChildrenOutput = operations['DeleteFieldChildren']['responses']['200']['content']['application/json']
+  export type ListFieldChildrensInput = operations['ListFieldChildrens']['requestBody']['content']['application/json']
+export type ListFieldChildrensOutput = operations['ListFieldChildrens']['responses']['200']['content']['application/json']
+  export type UpdateFieldChildrenInput = operations['UpdateFieldChildren']['requestBody']['content']['application/json']
+export type UpdateFieldChildrenOutput = operations['UpdateFieldChildren']['responses']['200']['content']['application/json']
+  export type DeleteFavouriteWorkflowInput = operations['DeleteFavouriteWorkflow']['requestBody']['content']['application/json']
+export type DeleteFavouriteWorkflowOutput = operations['DeleteFavouriteWorkflow']['responses']['200']['content']['application/json']
+  export type ListFavouriteWorkflowsInput = operations['ListFavouriteWorkflows']['requestBody']['content']['application/json']
+export type ListFavouriteWorkflowsOutput = operations['ListFavouriteWorkflows']['responses']['200']['content']['application/json']
+  export type UpdateFavouriteWorkflowInput = operations['UpdateFavouriteWorkflow']['requestBody']['content']['application/json']
+export type UpdateFavouriteWorkflowOutput = operations['UpdateFavouriteWorkflow']['responses']['200']['content']['application/json']
 export class DiscoveryApiClient  extends _GenericClient {
   constructor(config:_ClientInput){
     super({...config,service_name:'DiscoveryApi'});
@@ -268,6 +304,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/projects/update',
+      options
+    });
+  }
+  public async TransferProjectToOrganization(
+    input: CommandInput<TransferProjectToOrganizationInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<TransferProjectToOrganizationOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/projects/transfer_to_organization',
       options
     });
   }
@@ -546,6 +593,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
+  public async ListCentroidConfigs(
+    input: CommandInput<ListCentroidConfigsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListCentroidConfigsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/cluster/centroids/configs/list',
+      options
+    });
+  }
   public async DeleteCentroid(
     input: CommandInput<DeleteCentroidInput>,
     options?: _GenericMethodOptions
@@ -609,6 +667,105 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/datasets/{dataset_id}/cluster/centroids/summaries/bulk_delete',
+      options
+    });
+  }
+  public async CreateOrganization(
+    input: CommandInput<CreateOrganizationInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateOrganizationOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/organizations/create',
+      options
+    });
+  }
+  public async UpdateOrganization(
+    input: CommandInput<UpdateOrganizationInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateOrganizationOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/organizations/{organization_id}/update',
+      options
+    });
+  }
+  public async UpdateOrganizationAdmin(
+    input: CommandInput<UpdateOrganizationAdminInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateOrganizationAdminOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/admin/organizations/{organization_id}/update',
+      options
+    });
+  }
+  public async ListOrganizations(
+    input: CommandInput<ListOrganizationsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListOrganizationsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/organizations/list',
+      options
+    });
+  }
+  public async DeleteOrganization(
+    input: CommandInput<DeleteOrganizationInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteOrganizationOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/organizations/{organization_id}/delete',
+      options
+    });
+  }
+  public async GetOrganization(
+    input: CommandInput<GetOrganizationInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetOrganizationOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/organizations/{organization_id}/get',
+      options
+    });
+  }
+  public async GetOrganizationUsage(
+    input: CommandInput<GetOrganizationUsageInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetOrganizationUsageOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/organizations/{organization_id}/usage/get',
+      options
+    });
+  }
+  public async ListUsersInOrganization(
+    input: CommandInput<ListUsersInOrganizationInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListUsersInOrganizationOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/organizations/{organization_id}/users/list',
+      options
+    });
+  }
+  public async ListProjectsInOrganization(
+    input: CommandInput<ListProjectsInOrganizationInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListProjectsInOrganizationOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/organizations/{organization_id}/projects/list',
       options
     });
   }
@@ -1151,6 +1308,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
+  public async DeleteWorkflowStatus(
+    input: CommandInput<DeleteWorkflowStatusInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteWorkflowStatusOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/{workflow_id}/delete',
+      options
+    });
+  }
   public async UpsertWorkflowMetadata(
     input: CommandInput<UpsertWorkflowMetadataInput>,
     options?: _GenericMethodOptions
@@ -1159,6 +1327,72 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/workflows/{workflow_id}/metadata',
+      options
+    });
+  }
+  public async DeleteFieldChildren(
+    input: CommandInput<DeleteFieldChildrenInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteFieldChildrenOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/field_children/{fieldchildren_id}/delete',
+      options
+    });
+  }
+  public async ListFieldChildrens(
+    input: CommandInput<ListFieldChildrensInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListFieldChildrensOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/field_children/{fieldchildren_id}/list',
+      options
+    });
+  }
+  public async UpdateFieldChildren(
+    input: CommandInput<UpdateFieldChildrenInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateFieldChildrenOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/field_children/{fieldchildren_id}/update',
+      options
+    });
+  }
+  public async DeleteFavouriteWorkflow(
+    input: CommandInput<DeleteFavouriteWorkflowInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteFavouriteWorkflowOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/favourites/{favouriteworkflow_id}/delete',
+      options
+    });
+  }
+  public async ListFavouriteWorkflows(
+    input: CommandInput<ListFavouriteWorkflowsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListFavouriteWorkflowsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/favourites/{favouriteworkflow_id}/list',
+      options
+    });
+  }
+  public async UpdateFavouriteWorkflow(
+    input: CommandInput<UpdateFavouriteWorkflowInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateFavouriteWorkflowOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/favourites/{favouriteworkflow_id}/update',
       options
     });
   }}

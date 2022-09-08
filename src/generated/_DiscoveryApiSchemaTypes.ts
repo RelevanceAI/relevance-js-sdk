@@ -36,6 +36,10 @@ export interface paths {
     /** Update metadata of a Project */
     post: operations["UpdateProject"];
   };
+  "/projects/transfer_to_organization": {
+    /** Tie a project to an organization. This requires admin privileges over project and organization. */
+    post: operations["TransferProjectToOrganization"];
+  };
   "/projects/list": {
     /** List all projects and their metadata */
     get: operations["ListProjects"];
@@ -179,6 +183,10 @@ export interface paths {
     /** List centroids, optionally filtering by their ids. */
     post: operations["ListCentroids"];
   };
+  "/datasets/{dataset_id}/cluster/centroids/configs/list": {
+    /** List centroids configs for a dataset. */
+    get: operations["ListCentroidConfigs"];
+  };
   "/datasets/{dataset_id}/cluster/centroids/{centroid_id}/delete": {
     /** Delete a centroid by ID */
     post: operations["DeleteCentroid"];
@@ -197,6 +205,34 @@ export interface paths {
   };
   "/datasets/{dataset_id}/cluster/centroids/summaries/bulk_delete": {
     post: operations["DeleteClusterSummaries"];
+  };
+  "/organizations/create": {
+    post: operations["CreateOrganization"];
+  };
+  "/organizations/{organization_id}/update": {
+    post: operations["UpdateOrganization"];
+  };
+  "/admin/organizations/{organization_id}/update": {
+    post: operations["UpdateOrganizationAdmin"];
+  };
+  "/organizations/list": {
+    /** List all organizations and their metadata */
+    get: operations["ListOrganizations"];
+  };
+  "/organizations/{organization_id}/delete": {
+    post: operations["DeleteOrganization"];
+  };
+  "/organizations/{organization_id}/get": {
+    get: operations["GetOrganization"];
+  };
+  "/organizations/{organization_id}/usage/get": {
+    get: operations["GetOrganizationUsage"];
+  };
+  "/organizations/{organization_id}/users/list": {
+    get: operations["ListUsersInOrganization"];
+  };
+  "/organizations/{organization_id}/projects/list": {
+    get: operations["ListProjectsInOrganization"];
   };
   "/datasets/{dataset_id}/documents/insert": {
     /**
@@ -486,9 +522,30 @@ export interface paths {
   "/workflows/{workflow_id}/get": {
     post: operations["GetWorkflowStatus"];
   };
+  "/workflows/{workflow_id}/delete": {
+    post: operations["DeleteWorkflowStatus"];
+  };
   "/workflows/{workflow_id}/metadata": {
     /** Update metadata for a workflow run */
     post: operations["UpsertWorkflowMetadata"];
+  };
+  "/datasets/{dataset_id}/field_children/{fieldchildren_id}/delete": {
+    post: operations["DeleteFieldChildren"];
+  };
+  "/datasets/{dataset_id}/field_children/{fieldchildren_id}/list": {
+    post: operations["ListFieldChildrens"];
+  };
+  "/datasets/{dataset_id}/field_children/{fieldchildren_id}/update": {
+    post: operations["UpdateFieldChildren"];
+  };
+  "/workflows/favourites/{favouriteworkflow_id}/delete": {
+    post: operations["DeleteFavouriteWorkflow"];
+  };
+  "/workflows/favourites/{favouriteworkflow_id}/list": {
+    post: operations["ListFavouriteWorkflows"];
+  };
+  "/workflows/favourites/{favouriteworkflow_id}/update": {
+    post: operations["UpdateFavouriteWorkflow"];
   };
 }
 
@@ -575,6 +632,11 @@ export interface components {
       status: string;
       message: string;
     };
+    TransferProjectToOrganizationInput: {
+      /** @description The ID of the organization. */
+      organization_id: string;
+    };
+    TransferProjectToOrganizationOutput: unknown;
     ListProjectsInput: unknown;
     ListProjectsOutput: {
       projects: {
@@ -606,8 +668,11 @@ export interface components {
       last_name?: string;
       role?: string;
       company?: string;
-      referral_code?: string;
       permissions?: components["schemas"]["permissions"];
+      organization_permissions?: {
+        [key: string]: components["schemas"]["permissions"];
+      };
+      referral_code?: string;
       /** @description The name of the project. This will contain all your datasets. */
       project?: string;
       /** @description The id token for a signed in account. This attaches the sign in account to the user. */
@@ -648,6 +713,21 @@ export interface components {
               };
             };
           };
+          organizations?: {
+            [key: string]: {
+              items: {
+                [key: string]: {
+                  resources?: {
+                    datasets?: { [key: string]: boolean };
+                    deployables?: { [key: string]: boolean };
+                    users?: { [key: string]: boolean };
+                    workflows?: { [key: string]: boolean };
+                  };
+                  actions?: { [key: string]: boolean };
+                };
+              };
+            };
+          };
         };
         type: "user" | "machine";
         _id: string;
@@ -657,6 +737,9 @@ export interface components {
     };
     IsUserAuthorizedInput: {
       permissions?: components["schemas"]["permissions"];
+      organization_permissions?: {
+        [key: string]: components["schemas"]["permissions"];
+      };
     };
     IsUserAuthorizedOutput: {
       valid: boolean;
@@ -665,6 +748,21 @@ export interface components {
     GetAuthHeaderInfoInput: unknown;
     fullUserPermissions: {
       projects: {
+        [key: string]: {
+          items: {
+            [key: string]: {
+              resources?: {
+                datasets?: { [key: string]: boolean };
+                deployables?: { [key: string]: boolean };
+                users?: { [key: string]: boolean };
+                workflows?: { [key: string]: boolean };
+              };
+              actions?: { [key: string]: boolean };
+            };
+          };
+        };
+      };
+      organizations?: {
         [key: string]: {
           items: {
             [key: string]: {
@@ -692,22 +790,13 @@ export interface components {
       permissions: components["schemas"]["fullUserPermissions"];
       email?: string;
     };
-    CreateProjectInviteInput: (unknown | unknown) & {
+    CreateProjectInviteInput: {
+      permissions?: components["schemas"]["permissions"];
+      organization_permissions?: {
+        [key: string]: components["schemas"]["permissions"];
+      };
       email?: string;
       user_id?: string;
-      permissions?: {
-        items: {
-          [key: string]: {
-            resources?: {
-              datasets?: { [key: string]: boolean };
-              deployables?: { [key: string]: boolean };
-              users?: { [key: string]: boolean };
-              workflows?: { [key: string]: boolean };
-            };
-            actions?: { [key: string]: boolean };
-          };
-        };
-      };
     };
     CreateProjectInviteOutput: {
       invite_code: string;
@@ -743,7 +832,6 @@ export interface components {
     };
     DeleteProjectInviteOutput: { [key: string]: unknown };
     ResendProjectInviteInput: {
-      invite_code: string;
       permissions?: {
         items: {
           [key: string]: {
@@ -757,6 +845,10 @@ export interface components {
           };
         };
       };
+      organization_permissions?: {
+        [key: string]: components["schemas"]["permissions"];
+      };
+      invite_code: string;
     };
     ResendProjectInviteOutput: { [key: string]: unknown };
     GetUserInput: { [key: string]: unknown };
@@ -769,6 +861,21 @@ export interface components {
       company?: string;
       permissions: {
         projects: {
+          [key: string]: {
+            items: {
+              [key: string]: {
+                resources?: {
+                  datasets?: { [key: string]: boolean };
+                  deployables?: { [key: string]: boolean };
+                  users?: { [key: string]: boolean };
+                  workflows?: { [key: string]: boolean };
+                };
+                actions?: { [key: string]: boolean };
+              };
+            };
+          };
+        };
+        organizations?: {
           [key: string]: {
             items: {
               [key: string]: {
@@ -797,6 +904,9 @@ export interface components {
       role?: string;
       company?: string;
       permissions?: components["schemas"]["permissions"];
+      organization_permissions?: {
+        [key: string]: components["schemas"]["permissions"];
+      };
       /** @description The id token for a signed in account. This attaches the sign in account to the user. */
       id_token?: string;
     };
@@ -3779,6 +3889,16 @@ export interface components {
         };
       }[];
     };
+    ListCentroidConfigsInput: unknown;
+    ListCentroidConfigsOutput: {
+      results: {
+        count: number;
+        /** @description The vector fields that these centroids are associated with. */
+        vector_fields: string[];
+        /** @description Alias is used to name a cluster. */
+        alias: string;
+      }[];
+    };
     DeleteCentroidInput: {
       /** @description The vector fields that these centroids are associated with. */
       vector_fields?: string[];
@@ -4026,6 +4146,103 @@ export interface components {
       cluster_ids: unknown[];
     };
     DeleteClusterSummariesOutput: unknown;
+    CreateOrganizationInput: {
+      name?: string;
+    };
+    CreateOrganizationOutput: {
+      organization_id: string;
+    };
+    UpdateOrganizationInput: {
+      name?: string;
+    };
+    UpdateOrganizationOutput: unknown;
+    UpdateOrganizationAdminInput: {
+      name?: string;
+      entitlements?: {
+        users?: {
+          limit?: number;
+        };
+        workflows_gpu?: {
+          enabled?: boolean;
+        };
+      };
+      entitlement_plan?: "Starter" | "Business" | "Enterprise";
+    };
+    UpdateOrganizationAdminOutput: unknown;
+    ListOrganizationsInput: unknown;
+    ListOrganizationsOutput: {
+      results: {
+        organization_id?: string;
+        name?: string;
+        entitlements?: {
+          users?: {
+            limit?: number;
+          };
+          workflows_gpu?: {
+            enabled?: boolean;
+          };
+        };
+        entitlement_plan?: "Starter" | "Business" | "Enterprise";
+      }[];
+    };
+    DeleteOrganizationInput: unknown;
+    DeleteOrganizationOutput: unknown;
+    GetOrganizationInput: unknown;
+    GetOrganizationOutput: {
+      organization_id?: string;
+      name?: string;
+      entitlements?: {
+        users?: {
+          limit?: number;
+        };
+        workflows_gpu?: {
+          enabled?: boolean;
+        };
+      };
+      entitlement_plan?: "Starter" | "Business" | "Enterprise";
+    };
+    GetOrganizationUsageInput: unknown;
+    GetOrganizationUsageOutput: {
+      usage: {
+        users?: {
+          limit?: number;
+        };
+        workflows_gpu?: {
+          enabled?: boolean;
+        };
+      };
+      limit: {
+        users?: {
+          limit?: number;
+        };
+        workflows_gpu?: {
+          enabled?: boolean;
+        };
+      };
+    };
+    ListUsersInOrganizationInput: unknown;
+    ListUsersInOrganizationOutput: {
+      results: {
+        _id?: string;
+        profile_picture_url?: string;
+        onboarded?: boolean;
+        first_name?: string;
+        last_name?: string;
+        role?: string;
+        company?: string;
+      }[];
+    };
+    ListProjectsInOrganizationInput: unknown;
+    ListProjectsInOrganizationOutput: {
+      results: {
+        _id?: string;
+        project_id?: string;
+        name?: string;
+        description?: string;
+        permissions?: { [key: string]: unknown };
+        updated_at?: string;
+      }[];
+    };
     InsertInput: {
       /** @description Each document to upsert must have an _id field matching an existing document. */
       document?: {
@@ -7931,11 +8148,37 @@ export interface components {
       _id?: string;
       metadata?: { [key: string]: unknown };
     };
+    DeleteWorkflowStatusInput: unknown;
+    DeleteWorkflowStatusOutput: unknown;
     UpsertWorkflowMetadataInput: {
       /** @description Edit and add metadata for the workflow. */
       metadata: { [key: string]: unknown };
     };
     UpsertWorkflowMetadataOutput: unknown;
+    DeleteFieldChildrenInput: unknown;
+    DeleteFieldChildrenOutput: unknown;
+    ListFieldChildrensInput: { [key: string]: unknown };
+    ListFieldChildrensOutput: {
+      results: {
+        _id?: string;
+      }[];
+    };
+    UpdateFieldChildrenInput: {
+      _id?: string;
+    };
+    UpdateFieldChildrenOutput: unknown;
+    DeleteFavouriteWorkflowInput: unknown;
+    DeleteFavouriteWorkflowOutput: unknown;
+    ListFavouriteWorkflowsInput: { [key: string]: unknown };
+    ListFavouriteWorkflowsOutput: {
+      results: {
+        _id?: string;
+      }[];
+    };
+    UpdateFavouriteWorkflowInput: {
+      _id?: string;
+    };
+    UpdateFavouriteWorkflowOutput: unknown;
   };
 }
 
@@ -8091,6 +8334,23 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["UpdateProjectInput"];
+      };
+    };
+  };
+  /** Tie a project to an organization. This requires admin privileges over project and organization. */
+  TransferProjectToOrganization: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["TransferProjectToOrganizationOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TransferProjectToOrganizationInput"];
       };
     };
   };
@@ -8622,6 +8882,23 @@ export interface operations {
       };
     };
   };
+  /** List centroids configs for a dataset. */
+  ListCentroidConfigs: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListCentroidConfigsOutput"];
+        };
+      };
+    };
+  };
   /** Delete a centroid by ID */
   DeleteCentroid: {
     parameters: {
@@ -8748,6 +9025,161 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["DeleteClusterSummariesInput"];
+      };
+    };
+  };
+  CreateOrganization: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateOrganizationOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateOrganizationInput"];
+      };
+    };
+  };
+  UpdateOrganization: {
+    parameters: {
+      path: {
+        /** ID of organization */
+        organization_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpdateOrganizationOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateOrganizationInput"];
+      };
+    };
+  };
+  UpdateOrganizationAdmin: {
+    parameters: {
+      path: {
+        /** ID of organization */
+        organization_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpdateOrganizationAdminOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateOrganizationAdminInput"];
+      };
+    };
+  };
+  /** List all organizations and their metadata */
+  ListOrganizations: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListOrganizationsOutput"];
+        };
+      };
+    };
+  };
+  DeleteOrganization: {
+    parameters: {
+      path: {
+        /** ID of organization */
+        organization_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteOrganizationOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteOrganizationInput"];
+      };
+    };
+  };
+  GetOrganization: {
+    parameters: {
+      path: {
+        /** ID of organization */
+        organization_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetOrganizationOutput"];
+        };
+      };
+    };
+  };
+  GetOrganizationUsage: {
+    parameters: {
+      path: {
+        /** ID of organization */
+        organization_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetOrganizationUsageOutput"];
+        };
+      };
+    };
+  };
+  ListUsersInOrganization: {
+    parameters: {
+      path: {
+        /** ID of organization */
+        organization_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListUsersInOrganizationOutput"];
+        };
+      };
+    };
+  };
+  ListProjectsInOrganization: {
+    parameters: {
+      path: {
+        /** ID of organization */
+        organization_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListProjectsInOrganizationOutput"];
+        };
       };
     };
   };
@@ -10145,6 +10577,27 @@ export interface operations {
       };
     };
   };
+  DeleteWorkflowStatus: {
+    parameters: {
+      path: {
+        /** ID of workflow */
+        workflow_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteWorkflowStatusOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteWorkflowStatusInput"];
+      };
+    };
+  };
   /** Update metadata for a workflow run */
   UpsertWorkflowMetadata: {
     parameters: {
@@ -10164,6 +10617,138 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["UpsertWorkflowMetadataInput"];
+      };
+    };
+  };
+  DeleteFieldChildren: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+        /** ID of fieldchildren */
+        fieldchildren_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteFieldChildrenOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteFieldChildrenInput"];
+      };
+    };
+  };
+  ListFieldChildrens: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+        /** ID of fieldchildren */
+        fieldchildren_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListFieldChildrensOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListFieldChildrensInput"];
+      };
+    };
+  };
+  UpdateFieldChildren: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+        /** ID of fieldchildren */
+        fieldchildren_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpdateFieldChildrenOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateFieldChildrenInput"];
+      };
+    };
+  };
+  DeleteFavouriteWorkflow: {
+    parameters: {
+      path: {
+        /** ID of favouriteworkflow */
+        favouriteworkflow_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteFavouriteWorkflowOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteFavouriteWorkflowInput"];
+      };
+    };
+  };
+  ListFavouriteWorkflows: {
+    parameters: {
+      path: {
+        /** ID of favouriteworkflow */
+        favouriteworkflow_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListFavouriteWorkflowsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListFavouriteWorkflowsInput"];
+      };
+    };
+  };
+  UpdateFavouriteWorkflow: {
+    parameters: {
+      path: {
+        /** ID of favouriteworkflow */
+        favouriteworkflow_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpdateFavouriteWorkflowOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateFavouriteWorkflowInput"];
       };
     };
   };
