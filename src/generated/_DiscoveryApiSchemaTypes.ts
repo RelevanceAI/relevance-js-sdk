@@ -8161,10 +8161,16 @@ export interface components {
     ListFieldChildrensOutput: {
       results: {
         _id?: string;
+        field?: string;
+        field_children?: string[];
+        metadata?: { [key: string]: unknown };
       }[];
     };
     UpdateFieldChildrenInput: {
       _id?: string;
+      field?: string;
+      field_children?: string[];
+      metadata?: { [key: string]: unknown };
     };
     UpdateFieldChildrenOutput: unknown;
     DeleteFavouriteWorkflowInput: unknown;
