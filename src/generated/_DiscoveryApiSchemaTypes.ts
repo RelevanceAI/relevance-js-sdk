@@ -32,6 +32,10 @@ export interface paths {
     /** List all deployables. */
     get: operations["ListDeployables"];
   };
+  "/projects/create": {
+    /** Create a new Project that your user will have access to */
+    post: operations["CreateProject"];
+  };
   "/projects/update": {
     /** Update metadata of a Project */
     post: operations["UpdateProject"];
@@ -529,10 +533,14 @@ export interface paths {
     /** Update metadata for a workflow run */
     post: operations["UpsertWorkflowMetadata"];
   };
+  "/workflows/{workflow_id}/status": {
+    /** Update status for a workflow run */
+    post: operations["UpsertWorkflowStatus"];
+  };
   "/datasets/{dataset_id}/field_children/{fieldchildren_id}/delete": {
     post: operations["DeleteFieldChildren"];
   };
-  "/datasets/{dataset_id}/field_children/{fieldchildren_id}/list": {
+  "/datasets/{dataset_id}/field_children/list": {
     post: operations["ListFieldChildrens"];
   };
   "/datasets/{dataset_id}/field_children/{fieldchildren_id}/update": {
@@ -541,7 +549,7 @@ export interface paths {
   "/workflows/favourites/{favouriteworkflow_id}/delete": {
     post: operations["DeleteFavouriteWorkflow"];
   };
-  "/workflows/favourites/{favouriteworkflow_id}/list": {
+  "/workflows/favourites/list": {
     post: operations["ListFavouriteWorkflows"];
   };
   "/workflows/favourites/{favouriteworkflow_id}/update": {
@@ -622,6 +630,15 @@ export interface components {
       }[];
       count: number;
     };
+    CreateProjectInput: {
+      /** @description The name of the project */
+      name?: string;
+      /** @description The description of the project */
+      description?: string;
+    };
+    CreateProjectOutput: {
+      project_id: string;
+    };
     UpdateProjectInput: {
       /** @description The name of the project */
       name?: string;
@@ -668,6 +685,8 @@ export interface components {
       last_name?: string;
       role?: string;
       company?: string;
+      label?: string;
+      notes?: string;
       permissions?: components["schemas"]["permissions"];
       organization_permissions?: {
         [key: string]: components["schemas"]["permissions"];
@@ -688,6 +707,19 @@ export interface components {
       page?: number;
       /** @default 20 */
       page_size?: number;
+      required_permissions?: {
+        items: {
+          [key: string]: {
+            resources?: {
+              datasets?: { [key: string]: boolean };
+              deployables?: { [key: string]: boolean };
+              users?: { [key: string]: boolean };
+              workflows?: { [key: string]: boolean };
+            };
+            actions?: { [key: string]: boolean };
+          };
+        };
+      };
     };
     ListUsersOutput: {
       results: {
@@ -697,6 +729,8 @@ export interface components {
         last_name?: string;
         role?: string;
         company?: string;
+        label?: string;
+        notes?: string;
         permissions: {
           projects: {
             [key: string]: {
@@ -785,6 +819,8 @@ export interface components {
       last_name?: string;
       role?: string;
       company?: string;
+      label?: string;
+      notes?: string;
       user_id: string;
       key_id: string;
       permissions: components["schemas"]["fullUserPermissions"];
@@ -859,6 +895,8 @@ export interface components {
       last_name?: string;
       role?: string;
       company?: string;
+      label?: string;
+      notes?: string;
       permissions: {
         projects: {
           [key: string]: {
@@ -903,6 +941,8 @@ export interface components {
       last_name?: string;
       role?: string;
       company?: string;
+      label?: string;
+      notes?: string;
       permissions?: components["schemas"]["permissions"];
       organization_permissions?: {
         [key: string]: components["schemas"]["permissions"];
@@ -4230,6 +4270,8 @@ export interface components {
         last_name?: string;
         role?: string;
         company?: string;
+        label?: string;
+        notes?: string;
       }[];
     };
     ListProjectsInOrganizationInput: unknown;
@@ -8112,13 +8154,14 @@ export interface components {
       params: { [key: string]: unknown };
       notebook_path: string;
       instance_type?: string;
+      dataset_id?: string;
     };
     TriggerWorkflowOutput: {
       job_id: string;
     };
     ListWorkflowsInput: unknown;
     ListWorkflowsOutput: {
-      results: {
+      results: ({
         job_status:
           | "InProgress"
           | "Completed"
@@ -8128,10 +8171,12 @@ export interface components {
         job_message: string;
         creation_time: string;
         notebook_path?: string;
+        dataset_id?: string;
+        status?: string;
         params?: { [key: string]: unknown };
         _id?: string;
         metadata?: { [key: string]: unknown };
-      }[];
+      } & { [key: string]: unknown })[];
     };
     GetWorkflowStatusInput: unknown;
     GetWorkflowStatusOutput: {
@@ -8144,10 +8189,12 @@ export interface components {
       job_message: string;
       creation_time: string;
       notebook_path?: string;
+      dataset_id?: string;
+      status?: string;
       params?: { [key: string]: unknown };
       _id?: string;
       metadata?: { [key: string]: unknown };
-    };
+    } & { [key: string]: unknown };
     DeleteWorkflowStatusInput: unknown;
     DeleteWorkflowStatusOutput: unknown;
     UpsertWorkflowMetadataInput: {
@@ -8155,6 +8202,17 @@ export interface components {
       metadata: { [key: string]: unknown };
     };
     UpsertWorkflowMetadataOutput: unknown;
+    UpsertWorkflowStatusInput: {
+      /** @description Metadata of the workflow. Can be an object including any information you want to store. */
+      metadata?: { [key: string]: unknown };
+      /** @description Status of the workflow. Used for knowing when to send an email notification. */
+      status: "complete" | "inprogress" | "failed";
+      /** @description Workflow name that is passed into the email. */
+      workflow_name?: string;
+      /** @description Additional information of the workflow that is passed into the email. */
+      additional_information?: string;
+    };
+    UpsertWorkflowStatusOutput: unknown;
     DeleteFieldChildrenInput: unknown;
     DeleteFieldChildrenOutput: unknown;
     ListFieldChildrensInput: { [key: string]: unknown };
@@ -8323,6 +8381,23 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["ListDeployablesOutput"];
         };
+      };
+    };
+  };
+  /** Create a new Project that your user will have access to */
+  CreateProject: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateProjectOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateProjectInput"];
       };
     };
   };
@@ -10626,6 +10701,28 @@ export interface operations {
       };
     };
   };
+  /** Update status for a workflow run */
+  UpsertWorkflowStatus: {
+    parameters: {
+      path: {
+        /** ID of workflow */
+        workflow_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpsertWorkflowStatusOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpsertWorkflowStatusInput"];
+      };
+    };
+  };
   DeleteFieldChildren: {
     parameters: {
       path: {
@@ -10654,8 +10751,6 @@ export interface operations {
       path: {
         /** ID of dataset */
         dataset_id: string;
-        /** ID of fieldchildren */
-        fieldchildren_id: string;
       };
     };
     responses: {
@@ -10717,12 +10812,7 @@ export interface operations {
     };
   };
   ListFavouriteWorkflows: {
-    parameters: {
-      path: {
-        /** ID of favouriteworkflow */
-        favouriteworkflow_id: string;
-      };
-    };
+    parameters: {};
     responses: {
       /** successful operation */
       200: {

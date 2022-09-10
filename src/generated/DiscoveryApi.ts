@@ -15,6 +15,8 @@ export type CreateDeployableKeyOutput = operations['CreateDeployableKey']['respo
 export type DeleteDeployableKeyOutput = operations['DeleteDeployableKey']['responses']['200']['content']['application/json']
   export type ListDeployablesInput = {}
 export type ListDeployablesOutput = operations['ListDeployables']['responses']['200']['content']['application/json']
+  export type CreateProjectInput = operations['CreateProject']['requestBody']['content']['application/json']
+export type CreateProjectOutput = operations['CreateProject']['responses']['200']['content']['application/json']
   export type UpdateProjectInput = operations['UpdateProject']['requestBody']['content']['application/json']
 export type UpdateProjectOutput = operations['UpdateProject']['responses']['200']['content']['application/json']
   export type TransferProjectToOrganizationInput = operations['TransferProjectToOrganization']['requestBody']['content']['application/json']
@@ -203,6 +205,8 @@ export type GetWorkflowStatusOutput = operations['GetWorkflowStatus']['responses
 export type DeleteWorkflowStatusOutput = operations['DeleteWorkflowStatus']['responses']['200']['content']['application/json']
   export type UpsertWorkflowMetadataInput = operations['UpsertWorkflowMetadata']['requestBody']['content']['application/json']
 export type UpsertWorkflowMetadataOutput = operations['UpsertWorkflowMetadata']['responses']['200']['content']['application/json']
+  export type UpsertWorkflowStatusInput = operations['UpsertWorkflowStatus']['requestBody']['content']['application/json']
+export type UpsertWorkflowStatusOutput = operations['UpsertWorkflowStatus']['responses']['200']['content']['application/json']
   export type DeleteFieldChildrenInput = operations['DeleteFieldChildren']['requestBody']['content']['application/json']
 export type DeleteFieldChildrenOutput = operations['DeleteFieldChildren']['responses']['200']['content']['application/json']
   export type ListFieldChildrensInput = operations['ListFieldChildrens']['requestBody']['content']['application/json']
@@ -293,6 +297,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'get',
       path:'/deployables/list',
+      options
+    });
+  }
+  public async CreateProject(
+    input: CommandInput<CreateProjectInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateProjectOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/projects/create',
       options
     });
   }
@@ -1330,6 +1345,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
+  public async UpsertWorkflowStatus(
+    input: CommandInput<UpsertWorkflowStatusInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpsertWorkflowStatusOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/{workflow_id}/status',
+      options
+    });
+  }
   public async DeleteFieldChildren(
     input: CommandInput<DeleteFieldChildrenInput>,
     options?: _GenericMethodOptions
@@ -1348,7 +1374,7 @@ export class DiscoveryApiClient  extends _GenericClient {
     return this.SendRequest({
       input,
       method:'post',
-      path:'/datasets/{dataset_id}/field_children/{fieldchildren_id}/list',
+      path:'/datasets/{dataset_id}/field_children/list',
       options
     });
   }
@@ -1381,7 +1407,7 @@ export class DiscoveryApiClient  extends _GenericClient {
     return this.SendRequest({
       input,
       method:'post',
-      path:'/workflows/favourites/{favouriteworkflow_id}/list',
+      path:'/workflows/favourites/list',
       options
     });
   }
