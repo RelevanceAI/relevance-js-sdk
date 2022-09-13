@@ -949,6 +949,8 @@ export interface components {
       };
       /** @description The id token for a signed in account. This attaches the sign in account to the user. */
       id_token?: string;
+      /** @description Set this to true to replace users permissions for project, rather than upserting */
+      overwrite?: boolean;
     };
     UpdateUserOutput: { [key: string]: unknown };
     DeleteUserInput: { [key: string]: unknown };
