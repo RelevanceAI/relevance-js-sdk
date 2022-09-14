@@ -635,6 +635,7 @@ export interface components {
       name?: string;
       /** @description The description of the project */
       description?: string;
+      organization_id: string;
     };
     CreateProjectOutput: {
       project_id: string;
@@ -692,6 +693,8 @@ export interface components {
         [key: string]: components["schemas"]["permissions"];
       };
       referral_code?: string;
+      organization_name?: string;
+      project_name?: string;
       /** @description The name of the project. This will contain all your datasets. */
       project?: string;
       /** @description The id token for a signed in account. This attaches the sign in account to the user. */
@@ -701,6 +704,7 @@ export interface components {
       user_id: string;
       api_key: string;
       project: string;
+      organization_id?: string;
     };
     ListUsersInput: {
       /** @default 1 */
@@ -8156,7 +8160,7 @@ export interface components {
       params: { [key: string]: unknown };
       notebook_path: string;
       instance_type?: string;
-      dataset_id?: string;
+      dataset_id: string;
     };
     TriggerWorkflowOutput: {
       job_id: string;
