@@ -724,6 +724,41 @@ export interface components {
           };
         };
       };
+      /** @description Currently limited to exact_match, ids, exists, regexp filter_type */
+      filters?: {
+        strict?: "must" | "should" | "must_or";
+        condition?: string;
+        field?: string;
+        filter_type?:
+          | "text_match"
+          | "word_match"
+          | "term"
+          | "terms"
+          | "text"
+          | "texts"
+          | "match"
+          | "contains"
+          | "substring"
+          | "class"
+          | "category"
+          | "exact_match"
+          | "classes"
+          | "categories"
+          | "exists"
+          | "traditional"
+          | "fuzzy"
+          | "regexp"
+          | "ids"
+          | "date"
+          | "numeric"
+          | "search"
+          | "or"
+          | "word_count"
+          | "character_count";
+        condition_value?: unknown;
+        fuzzy?: number;
+        join?: boolean;
+      }[];
     };
     ListUsersOutput: {
       results: {
@@ -845,7 +880,7 @@ export interface components {
     ListProjectInvitesOutput: {
       results: {
         _id: string;
-        user_id: string;
+        user_id?: string;
         permissions?: {
           items: {
             [key: string]: {
@@ -4266,7 +4301,43 @@ export interface components {
         };
       };
     };
-    ListUsersInOrganizationInput: unknown;
+    ListUsersInOrganizationInput: {
+      /** @description Currently limited to exact_match, ids, exists, regexp filter_type */
+      filters?: {
+        strict?: "must" | "should" | "must_or";
+        condition?: string;
+        field?: string;
+        filter_type?:
+          | "text_match"
+          | "word_match"
+          | "term"
+          | "terms"
+          | "text"
+          | "texts"
+          | "match"
+          | "contains"
+          | "substring"
+          | "class"
+          | "category"
+          | "exact_match"
+          | "classes"
+          | "categories"
+          | "exists"
+          | "traditional"
+          | "fuzzy"
+          | "regexp"
+          | "ids"
+          | "date"
+          | "numeric"
+          | "search"
+          | "or"
+          | "word_count"
+          | "character_count";
+        condition_value?: unknown;
+        fuzzy?: number;
+        join?: boolean;
+      }[];
+    };
     ListUsersInOrganizationOutput: {
       results: {
         _id?: string;
