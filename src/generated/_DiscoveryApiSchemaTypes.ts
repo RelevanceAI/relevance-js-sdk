@@ -925,7 +925,9 @@ export interface components {
       };
       invite_code: string;
     };
-    ResendProjectInviteOutput: { [key: string]: unknown };
+    ResendProjectInviteOutput: {
+      invite_code: string;
+    };
     GetUserInput: { [key: string]: unknown };
     GetUserOutput: {
       profile_picture_url?: string;
