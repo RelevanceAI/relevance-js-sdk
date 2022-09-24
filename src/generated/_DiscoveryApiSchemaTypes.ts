@@ -24,6 +24,12 @@ export interface paths {
     /** Share a private deployable. */
     post: operations["CreateDeployableKey"];
   };
+  "/deployables/{deployable_id}/invite": {
+    post: operations["CreateDeployableInvite"];
+  };
+  "/deployables/{deployable_id}/users/{user_id}/update": {
+    post: operations["UpdateUsersDeployablePermissions"];
+  };
   "/deployables/{deployable_id}/private": {
     /** Unshare a shared deployable, making it private. */
     post: operations["DeleteDeployableKey"];
@@ -486,9 +492,9 @@ export interface paths {
     /** SimpleSearch is an easy way to use vector search and traditional text matching to search your dataset. It also supports filtering, sorting and aggregating results. */
     post: operations["SimpleSearchPost"];
   };
-  "/datasets/{dataset_id}/fast_search": {
+  "/datasets/{dataset_id}/search": {
     /** SimpleSearch is an easy way to use vector search and traditional text matching to search your dataset. It also supports filtering, sorting and aggregating results. */
-    post: operations["FastSearch"];
+    post: operations["Search"];
   };
   "/datasets/{dataset_id}/recommend": {
     /** Recommend documents similar to specific documents. Specify which vector field must be used for recommendation using  the documentsToRecommend property. */
@@ -612,6 +618,17 @@ export interface components {
       status: string;
       message: string;
     };
+    CreateDeployableInviteInput: {
+      email: string;
+      type: "read" | "write";
+    };
+    CreateDeployableInviteOutput: {
+      invite_code: string;
+    };
+    UpdateUsersDeployablePermissionsInput: {
+      type: "read" | "write" | "none";
+    };
+    UpdateUsersDeployablePermissionsOutput: unknown;
     DeleteDeployableKeyInput: unknown;
     DeleteDeployableKeyOutput: {
       status: string;
@@ -872,6 +889,7 @@ export interface components {
       };
       email?: string;
       user_id?: string;
+      type?: "deployable" | "project";
     };
     CreateProjectInviteOutput: {
       invite_code: string;
@@ -2595,6 +2613,8 @@ export interface components {
       };
       /** @description For each frequency in results, also return expected_frequency as cluster_size*(count(groupbyattribute)/count(dataset)). Useful for knowing if an attribute is occurring more or less than expected. */
       include_expected_frequency?: boolean;
+      /** @description Return the number of clusters in the dataset in the field "count", and the number of documents belonging to at least one cluster in "document_count". */
+      include_counts?: boolean;
     };
     AggregateClustersOutput: {
       results: { [key: string]: unknown[] };
@@ -2604,6 +2624,10 @@ export interface components {
           count: number;
         };
       };
+      /** @description Total number of clusters in the dataset. */
+      count?: number;
+      /** @description Total number of documents that are part of at least one cluster. */
+      document_count?: number;
     };
     ListClusterFacetsInput: {
       filters?: (Partial<{
@@ -7263,7 +7287,7 @@ export interface components {
     } & {
       aggregations: unknown;
     };
-    FastSearchInput: {
+    SearchInput: {
       filters?: (Partial<{
         /** @description Match where document[field] is in value list. */
         match?: {
@@ -7721,7 +7745,7 @@ export interface components {
       /** @description Used in future requests to retrieve items after these values in the sort order. */
       afterId?: unknown[];
     };
-    FastSearchOutput: {
+    SearchOutput: {
       /**
        * @description List of documents. List items are affected by page, pageSize, query, filters. Items order is affected by vectorSeachQuery, sort, textSort.
        *
@@ -8250,6 +8274,7 @@ export interface components {
         job_message: string;
         creation_time: string;
         notebook_path?: string;
+        instance_type?: string;
         dataset_id?: string;
         status?: string;
         params?: { [key: string]: unknown };
@@ -8268,6 +8293,7 @@ export interface components {
       job_message: string;
       creation_time: string;
       notebook_path?: string;
+      instance_type?: string;
       dataset_id?: string;
       status?: string;
       params?: { [key: string]: unknown };
@@ -8290,6 +8316,8 @@ export interface components {
       workflow_name?: string;
       /** @description Additional information of the workflow that is passed into the email. */
       additional_information?: string;
+      /** @description Whether to send an email on workflow completion. */
+      send_email?: boolean;
     };
     UpsertWorkflowStatusOutput: unknown;
     DeleteFieldChildrenInput: unknown;
@@ -8417,6 +8445,50 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["CreateDeployableKeyInput"];
+      };
+    };
+  };
+  CreateDeployableInvite: {
+    parameters: {
+      path: {
+        /** ID of deployable */
+        deployable_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateDeployableInviteOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateDeployableInviteInput"];
+      };
+    };
+  };
+  UpdateUsersDeployablePermissions: {
+    parameters: {
+      path: {
+        /** ID of deployable */
+        deployable_id: string;
+        /** ID of user */
+        user_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpdateUsersDeployablePermissionsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateUsersDeployablePermissionsInput"];
       };
     };
   };
@@ -10472,7 +10544,7 @@ export interface operations {
     };
   };
   /** SimpleSearch is an easy way to use vector search and traditional text matching to search your dataset. It also supports filtering, sorting and aggregating results. */
-  FastSearch: {
+  Search: {
     parameters: {
       path: {
         /** ID of dataset */
@@ -10483,13 +10555,13 @@ export interface operations {
       /** successful operation */
       200: {
         content: {
-          "application/json": components["schemas"]["FastSearchOutput"];
+          "application/json": components["schemas"]["SearchOutput"];
         };
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["FastSearchInput"];
+        "application/json": components["schemas"]["SearchInput"];
       };
     };
   };

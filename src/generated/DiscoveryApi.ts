@@ -11,6 +11,10 @@ export type UpdateDeployableOutput = operations['UpdateDeployable']['responses']
 export type DeleteDeployableOutput = operations['DeleteDeployable']['responses']['200']['content']['application/json']
   export type CreateDeployableKeyInput = operations['CreateDeployableKey']['requestBody']['content']['application/json']
 export type CreateDeployableKeyOutput = operations['CreateDeployableKey']['responses']['200']['content']['application/json']
+  export type CreateDeployableInviteInput = operations['CreateDeployableInvite']['requestBody']['content']['application/json']
+export type CreateDeployableInviteOutput = operations['CreateDeployableInvite']['responses']['200']['content']['application/json']
+  export type UpdateUsersDeployablePermissionsInput = operations['UpdateUsersDeployablePermissions']['requestBody']['content']['application/json']
+export type UpdateUsersDeployablePermissionsOutput = operations['UpdateUsersDeployablePermissions']['responses']['200']['content']['application/json']
   export type DeleteDeployableKeyInput = operations['DeleteDeployableKey']['requestBody']['content']['application/json']
 export type DeleteDeployableKeyOutput = operations['DeleteDeployableKey']['responses']['200']['content']['application/json']
   export type ListDeployablesInput = {}
@@ -177,8 +181,8 @@ export type ListDocumentsOutput = operations['ListDocuments']['responses']['200'
 export type DeleteWhereOutput = operations['DeleteWhere']['responses']['200']['content']['application/json']
   export type SimpleSearchPostInput = operations['SimpleSearchPost']['requestBody']['content']['application/json']
 export type SimpleSearchPostOutput = operations['SimpleSearchPost']['responses']['200']['content']['application/json']
-  export type FastSearchInput = operations['FastSearch']['requestBody']['content']['application/json']
-export type FastSearchOutput = operations['FastSearch']['responses']['200']['content']['application/json']
+  export type SearchInput = operations['Search']['requestBody']['content']['application/json']
+export type SearchOutput = operations['Search']['responses']['200']['content']['application/json']
   export type RecommendInput = operations['Recommend']['requestBody']['content']['application/json']
 export type RecommendOutput = operations['Recommend']['responses']['200']['content']['application/json']
   export type CloneDatasetInput = operations['CloneDataset']['requestBody']['content']['application/json']
@@ -275,6 +279,28 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/deployables/{deployable_id}/share',
+      options
+    });
+  }
+  public async CreateDeployableInvite(
+    input: CommandInput<CreateDeployableInviteInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateDeployableInviteOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployables/{deployable_id}/invite',
+      options
+    });
+  }
+  public async UpdateUsersDeployablePermissions(
+    input: CommandInput<UpdateUsersDeployablePermissionsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateUsersDeployablePermissionsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployables/{deployable_id}/users/{user_id}/update',
       options
     });
   }
@@ -1191,14 +1217,14 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
-  public async FastSearch(
-    input: CommandInput<FastSearchInput>,
+  public async Search(
+    input: CommandInput<SearchInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<FastSearchOutput>> {
+  ):Promise<CommandOutput<SearchOutput>> {
     return this.SendRequest({
       input,
       method:'post',
-      path:'/datasets/{dataset_id}/fast_search',
+      path:'/datasets/{dataset_id}/search',
       options
     });
   }
