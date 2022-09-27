@@ -4423,6 +4423,8 @@ export interface components {
           | "image_text"
           | "text_image"
           | "all-mpnet-base-v2"
+          | "clip-vit-b-32-image"
+          | "clip-vit-b-32-text"
           | "sentence-transformers";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
         body?: string;
@@ -4497,6 +4499,8 @@ export interface components {
           | "image_text"
           | "text_image"
           | "all-mpnet-base-v2"
+          | "clip-vit-b-32-image"
+          | "clip-vit-b-32-text"
           | "sentence-transformers";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
         body?: string;
@@ -5305,6 +5309,8 @@ export interface components {
           | "image_text"
           | "text_image"
           | "all-mpnet-base-v2"
+          | "clip-vit-b-32-image"
+          | "clip-vit-b-32-text"
           | "sentence-transformers";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
         body?: string;
@@ -5392,6 +5398,8 @@ export interface components {
           | "image_text"
           | "text_image"
           | "all-mpnet-base-v2"
+          | "clip-vit-b-32-image"
+          | "clip-vit-b-32-text"
           | "sentence-transformers";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
         body?: string;
@@ -7800,6 +7808,19 @@ export interface components {
        *     Example: true / false
        */
       includeVectors?: boolean;
+      /**
+       * @description Add _relevance field to each document containing the documents relevance based on the search criteria.
+       *
+       *     Example: true
+       * @default true
+       */
+      includeRelevance?: boolean;
+      /**
+       * @description Only return fields of documents listed in this array.
+       *
+       *     Example: ["name","description_vector_"]
+       */
+      includeFields?: string[];
     };
     RecommendOutput: {
       /**
@@ -8141,6 +8162,8 @@ export interface components {
           | "image_text"
           | "text_image"
           | "all-mpnet-base-v2"
+          | "clip-vit-b-32-image"
+          | "clip-vit-b-32-text"
           | "sentence-transformers";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
         body?: string;
@@ -8161,6 +8184,8 @@ export interface components {
         | "image_text"
         | "text_image"
         | "all-mpnet-base-v2"
+        | "clip-vit-b-32-image"
+        | "clip-vit-b-32-text"
         | "sentence-transformers";
       /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
       body?: string;
@@ -8188,6 +8213,8 @@ export interface components {
         | "image_text"
         | "text_image"
         | "all-mpnet-base-v2"
+        | "clip-vit-b-32-image"
+        | "clip-vit-b-32-text"
         | "sentence-transformers";
       /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
       body?: string;
@@ -8230,6 +8257,8 @@ export interface components {
         | "image_text"
         | "text_image"
         | "all-mpnet-base-v2"
+        | "clip-vit-b-32-image"
+        | "clip-vit-b-32-text"
         | "sentence-transformers";
       /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
       body?: string;
