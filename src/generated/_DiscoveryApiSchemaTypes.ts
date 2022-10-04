@@ -769,7 +769,8 @@ export interface components {
           | "search"
           | "or"
           | "word_count"
-          | "character_count";
+          | "character_count"
+          | "dedupe_by_value";
         condition_value?: unknown;
         fuzzy?: number;
         join?: boolean;
@@ -1291,6 +1292,11 @@ export interface components {
         /** @description Field that must exist. */
         field?: string;
       };
+      /** @description Filter down to one document for each value of selected field. */
+      dedupeByValue?: {
+        /** @description Field to filter on. */
+        field: string;
+      };
       /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
       selfreference?: {
         /** @description First field in comparison. */
@@ -1363,7 +1369,8 @@ export interface components {
           | "search"
           | "or"
           | "word_count"
-          | "character_count";
+          | "character_count"
+          | "dedupe_by_value";
         condition_value?: unknown;
         fuzzy?: number;
         join?: boolean;
@@ -1546,6 +1553,11 @@ export interface components {
           /** @description Field that must exist. */
           field?: string;
         };
+        /** @description Filter down to one document for each value of selected field. */
+        dedupeByValue?: {
+          /** @description Field to filter on. */
+          field: string;
+        };
         /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
         selfreference?: {
           /** @description First field in comparison. */
@@ -1618,7 +1630,8 @@ export interface components {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
@@ -1821,6 +1834,11 @@ export interface components {
               /** @description Field that must exist. */
               field?: string;
             };
+            /** @description Filter down to one document for each value of selected field. */
+            dedupeByValue?: {
+              /** @description Field to filter on. */
+              field: string;
+            };
             /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
             selfreference?: {
               /** @description First field in comparison. */
@@ -1893,7 +1911,8 @@ export interface components {
                 | "search"
                 | "or"
                 | "word_count"
-                | "character_count";
+                | "character_count"
+                | "dedupe_by_value";
               condition_value?: unknown;
               fuzzy?: number;
               join?: boolean;
@@ -2147,6 +2166,11 @@ export interface components {
           /** @description Field that must exist. */
           field?: string;
         };
+        /** @description Filter down to one document for each value of selected field. */
+        dedupeByValue?: {
+          /** @description Field to filter on. */
+          field: string;
+        };
         /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
         selfreference?: {
           /** @description First field in comparison. */
@@ -2219,7 +2243,8 @@ export interface components {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
@@ -2422,6 +2447,11 @@ export interface components {
               /** @description Field that must exist. */
               field?: string;
             };
+            /** @description Filter down to one document for each value of selected field. */
+            dedupeByValue?: {
+              /** @description Field to filter on. */
+              field: string;
+            };
             /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
             selfreference?: {
               /** @description First field in comparison. */
@@ -2494,7 +2524,8 @@ export interface components {
                 | "search"
                 | "or"
                 | "word_count"
-                | "character_count";
+                | "character_count"
+                | "dedupe_by_value";
               condition_value?: unknown;
               fuzzy?: number;
               join?: boolean;
@@ -2807,6 +2838,11 @@ export interface components {
           /** @description Field that must exist. */
           field?: string;
         };
+        /** @description Filter down to one document for each value of selected field. */
+        dedupeByValue?: {
+          /** @description Field to filter on. */
+          field: string;
+        };
         /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
         selfreference?: {
           /** @description First field in comparison. */
@@ -2879,7 +2915,8 @@ export interface components {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
@@ -3082,6 +3119,11 @@ export interface components {
               /** @description Field that must exist. */
               field?: string;
             };
+            /** @description Filter down to one document for each value of selected field. */
+            dedupeByValue?: {
+              /** @description Field to filter on. */
+              field: string;
+            };
             /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
             selfreference?: {
               /** @description First field in comparison. */
@@ -3154,7 +3196,8 @@ export interface components {
                 | "search"
                 | "or"
                 | "word_count"
-                | "character_count";
+                | "character_count"
+                | "dedupe_by_value";
               condition_value?: unknown;
               fuzzy?: number;
               join?: boolean;
@@ -3489,6 +3532,11 @@ export interface components {
           /** @description Field that must exist. */
           field?: string;
         };
+        /** @description Filter down to one document for each value of selected field. */
+        dedupeByValue?: {
+          /** @description Field to filter on. */
+          field: string;
+        };
         /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
         selfreference?: {
           /** @description First field in comparison. */
@@ -3561,7 +3609,8 @@ export interface components {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
@@ -3821,6 +3870,11 @@ export interface components {
           /** @description Field that must exist. */
           field?: string;
         };
+        /** @description Filter down to one document for each value of selected field. */
+        dedupeByValue?: {
+          /** @description Field to filter on. */
+          field: string;
+        };
         /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
         selfreference?: {
           /** @description First field in comparison. */
@@ -3893,7 +3947,8 @@ export interface components {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
@@ -4366,7 +4421,8 @@ export interface components {
           | "search"
           | "or"
           | "word_count"
-          | "character_count";
+          | "character_count"
+          | "dedupe_by_value";
         condition_value?: unknown;
         fuzzy?: number;
         join?: boolean;
@@ -4777,6 +4833,11 @@ export interface components {
           /** @description Field that must exist. */
           field?: string;
         };
+        /** @description Filter down to one document for each value of selected field. */
+        dedupeByValue?: {
+          /** @description Field to filter on. */
+          field: string;
+        };
         /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
         selfreference?: {
           /** @description First field in comparison. */
@@ -4849,7 +4910,8 @@ export interface components {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
@@ -5117,6 +5179,11 @@ export interface components {
           /** @description Field that must exist. */
           field?: string;
         };
+        /** @description Filter down to one document for each value of selected field. */
+        dedupeByValue?: {
+          /** @description Field to filter on. */
+          field: string;
+        };
         /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
         selfreference?: {
           /** @description First field in comparison. */
@@ -5189,7 +5256,8 @@ export interface components {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
@@ -5644,6 +5712,11 @@ export interface components {
           /** @description Field that must exist. */
           field?: string;
         };
+        /** @description Filter down to one document for each value of selected field. */
+        dedupeByValue?: {
+          /** @description Field to filter on. */
+          field: string;
+        };
         /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
         selfreference?: {
           /** @description First field in comparison. */
@@ -5716,7 +5789,8 @@ export interface components {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
@@ -5946,6 +6020,11 @@ export interface components {
           /** @description Field that must exist. */
           field?: string;
         };
+        /** @description Filter down to one document for each value of selected field. */
+        dedupeByValue?: {
+          /** @description Field to filter on. */
+          field: string;
+        };
         /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
         selfreference?: {
           /** @description First field in comparison. */
@@ -6018,7 +6097,8 @@ export interface components {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
@@ -6240,6 +6320,11 @@ export interface components {
           /** @description Field that must exist. */
           field?: string;
         };
+        /** @description Filter down to one document for each value of selected field. */
+        dedupeByValue?: {
+          /** @description Field to filter on. */
+          field: string;
+        };
         /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
         selfreference?: {
           /** @description First field in comparison. */
@@ -6312,7 +6397,8 @@ export interface components {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
@@ -6660,6 +6746,11 @@ export interface components {
         /** @description Field that must exist. */
         field?: string;
       };
+      /** @description Filter down to one document for each value of selected field. */
+      dedupeByValue?: {
+        /** @description Field to filter on. */
+        field: string;
+      };
       /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
       selfreference?: {
         /** @description First field in comparison. */
@@ -6732,7 +6823,8 @@ export interface components {
         | "search"
         | "or"
         | "word_count"
-        | "character_count";
+        | "character_count"
+        | "dedupe_by_value";
       condition_value?: unknown;
       fuzzy?: number;
       join?: boolean;
@@ -6766,7 +6858,8 @@ export interface components {
         | "search"
         | "or"
         | "word_count"
-        | "character_count";
+        | "character_count"
+        | "dedupe_by_value";
       condition_value?: unknown;
       fuzzy?: number;
       join?: boolean;
@@ -6954,6 +7047,11 @@ export interface components {
           /** @description Field that must exist. */
           field?: string;
         };
+        /** @description Filter down to one document for each value of selected field. */
+        dedupeByValue?: {
+          /** @description Field to filter on. */
+          field: string;
+        };
         /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
         selfreference?: {
           /** @description First field in comparison. */
@@ -7026,7 +7124,8 @@ export interface components {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
@@ -7495,6 +7594,11 @@ export interface components {
           /** @description Field that must exist. */
           field?: string;
         };
+        /** @description Filter down to one document for each value of selected field. */
+        dedupeByValue?: {
+          /** @description Field to filter on. */
+          field: string;
+        };
         /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
         selfreference?: {
           /** @description First field in comparison. */
@@ -7567,7 +7671,8 @@ export interface components {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
@@ -8048,6 +8153,11 @@ export interface components {
           /** @description Field that must exist. */
           field?: string;
         };
+        /** @description Filter down to one document for each value of selected field. */
+        dedupeByValue?: {
+          /** @description Field to filter on. */
+          field: string;
+        };
         /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
         selfreference?: {
           /** @description First field in comparison. */
@@ -8120,7 +8230,8 @@ export interface components {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
@@ -10452,6 +10563,11 @@ export interface operations {
             /** @description Field that must exist. */
             field?: string;
           };
+          /** @description Filter down to one document for each value of selected field. */
+          dedupeByValue?: {
+            /** @description Field to filter on. */
+            field: string;
+          };
           /** @description Match documents where document[a] <=/>=/</>/==/!=/stringEquals document[b]. Use stringEquals to compare strings. */
           selfreference?: {
             /** @description First field in comparison. */
@@ -10524,7 +10640,8 @@ export interface operations {
               | "search"
               | "or"
               | "word_count"
-              | "character_count";
+              | "character_count"
+              | "dedupe_by_value";
             condition_value?: unknown;
             fuzzy?: number;
             join?: boolean;
@@ -10829,7 +10946,8 @@ export interface operations {
             | "search"
             | "or"
             | "word_count"
-            | "character_count";
+            | "character_count"
+            | "dedupe_by_value";
           condition_value?: unknown;
           fuzzy?: number;
           join?: boolean;
