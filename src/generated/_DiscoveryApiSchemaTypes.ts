@@ -8431,40 +8431,30 @@ export interface components {
     ListWorkflowsInput: unknown;
     ListWorkflowsOutput: {
       results: ({
-        job_status:
-          | "InProgress"
-          | "Completed"
-          | "Failed"
-          | "Stopping"
-          | "Stopped";
-        job_message: string;
-        creation_time: string;
+        creation_time?: string;
         notebook_path?: string;
         instance_type?: string;
         dataset_id?: string;
-        status?: string;
         params?: { [key: string]: unknown };
         _id?: string;
         metadata?: { [key: string]: unknown };
+        /** @description Status of the workflow. Used for knowing when to send an email notification. */
+        status?: "complete" | "inprogress" | "failed";
+        job_status?: "InProgress" | "Completed" | "Failed";
       } & { [key: string]: unknown })[];
     };
     GetWorkflowStatusInput: unknown;
     GetWorkflowStatusOutput: {
-      job_status:
-        | "InProgress"
-        | "Completed"
-        | "Failed"
-        | "Stopping"
-        | "Stopped";
-      job_message: string;
-      creation_time: string;
+      creation_time?: string;
       notebook_path?: string;
       instance_type?: string;
       dataset_id?: string;
-      status?: string;
       params?: { [key: string]: unknown };
       _id?: string;
       metadata?: { [key: string]: unknown };
+      /** @description Status of the workflow. Used for knowing when to send an email notification. */
+      status?: "complete" | "inprogress" | "failed";
+      job_status?: "InProgress" | "Completed" | "Failed";
     } & { [key: string]: unknown };
     DeleteWorkflowStatusInput: unknown;
     DeleteWorkflowStatusOutput: unknown;
@@ -8482,7 +8472,10 @@ export interface components {
       workflow_name?: string;
       /** @description Additional information of the workflow that is passed into the email. */
       additional_information?: string;
-      /** @description Whether to send an email on workflow completion. */
+      /**
+       * @description Whether to send an email on workflow completion.
+       * @default true
+       */
       send_email?: boolean;
     };
     UpsertWorkflowStatusOutput: unknown;
@@ -10910,12 +10903,7 @@ export interface operations {
     parameters: {
       query: {
         /** Only retrieve workflows of this status */
-        job_status?:
-          | "InProgress"
-          | "Completed"
-          | "Failed"
-          | "Stopping"
-          | "Stopped";
+        job_status?: string;
         /** Currently limited to exact_match, ids, exists, regexp filter_type */
         filters?: {
           strict?: "must" | "should" | "must_or";
@@ -10952,6 +10940,10 @@ export interface operations {
           fuzzy?: number;
           join?: boolean;
         }[];
+        /** Size of each page of results. */
+        page?: number;
+        /** Size of each page of results. */
+        page_size?: number;
       };
     };
     responses: {
