@@ -38,6 +38,29 @@ export interface paths {
     /** List all deployables. */
     get: operations["ListDeployables"];
   };
+  "/deployablegroups/{deployablegroup_id}/delete": {
+    post: operations["DeleteDeployableGroup"];
+  };
+  "/deployablegroups/list": {
+    post: operations["ListDeployableGroups"];
+  };
+  "/deployablegroups/{deployablegroup_id}/update": {
+    post: operations["UpdateDeployableGroup"];
+  };
+  "/deployablegroups/create": {
+    post: operations["CreateDeployableGroup"];
+  };
+  "/deployablegroups/{deployablegroup_id}/get": {
+    get: operations["GetDeployableGroup"];
+  };
+  "/deployablegroups/{deployablegroup_id}/share": {
+    /** Share a private deployable group. Required read access to all deployables that are shared, and the datasets deployables are tied to. */
+    post: operations["CreateDeployableGroupKey"];
+  };
+  "/deployablegroups/{deployablegroup_id}/private": {
+    /** Unshare a shared deployable group, making it private. */
+    post: operations["DeleteDeployableGroupKey"];
+  };
   "/projects/create": {
     /** Create a new Project that your user will have access to */
     post: operations["CreateProject"];
@@ -561,6 +584,21 @@ export interface paths {
   "/workflows/favourites/{favouriteworkflow_id}/update": {
     post: operations["UpdateFavouriteWorkflow"];
   };
+  "/savedfilters/{savedfilter_id}/delete": {
+    post: operations["DeleteSavedFilter"];
+  };
+  "/savedfilters/list": {
+    post: operations["ListSavedFilters"];
+  };
+  "/savedfilters/{savedfilter_id}/update": {
+    post: operations["UpdateSavedFilter"];
+  };
+  "/savedfilters/{savedfilter_id}/get": {
+    get: operations["GetSavedFilter"];
+  };
+  "/savedfilters/create": {
+    post: operations["CreateSavedFilter"];
+  };
 }
 
 export interface components {
@@ -647,6 +685,64 @@ export interface components {
       }[];
       count: number;
     };
+    DeleteDeployableGroupInput: unknown;
+    DeleteDeployableGroupOutput: unknown;
+    ListDeployableGroupsInput: { [key: string]: unknown };
+    ListDeployableGroupsOutput: {
+      results: {
+        _id?: string;
+        name?: string;
+        description?: string;
+        deployables?: {
+          id: string;
+          name?: string;
+          api_key?: string;
+          private?: boolean;
+        }[];
+      }[];
+    };
+    UpdateDeployableGroupInput: {
+      _id?: string;
+      name?: string;
+      description?: string;
+      deployables?: {
+        id: string;
+        name?: string;
+        api_key?: string;
+        private?: boolean;
+      }[];
+    };
+    UpdateDeployableGroupOutput: unknown;
+    CreateDeployableGroupInput: {
+      _id?: string;
+      name?: string;
+      description?: string;
+      deployables?: {
+        id: string;
+        name?: string;
+        api_key?: string;
+        private?: boolean;
+      }[];
+    };
+    CreateDeployableGroupOutput: {
+      id: string;
+    };
+    GetDeployableGroupInput: unknown;
+    GetDeployableGroupOutput: {
+      _id?: string;
+      name?: string;
+      description?: string;
+      deployables?: {
+        id: string;
+        name?: string;
+        api_key?: string;
+        private?: boolean;
+      }[];
+    };
+    CreateDeployableGroupKeyInput: unknown;
+    CreateDeployableGroupKeyOutput: unknown;
+    DeleteDeployableGroupKeyInput: unknown;
+    DeleteDeployableGroupKeyOutput: unknown;
     CreateProjectInput: {
       /** @description The name of the project */
       name?: string;
@@ -1014,6 +1110,8 @@ export interface components {
     ListUserKeysOutput: {
       results: {
         _id: string;
+        label?: string;
+        notes?: string;
       }[];
     };
     DeleteUserKeyInput: {
@@ -8509,6 +8607,32 @@ export interface components {
       _id?: string;
     };
     UpdateFavouriteWorkflowOutput: unknown;
+    DeleteSavedFilterInput: unknown;
+    DeleteSavedFilterOutput: unknown;
+    ListSavedFiltersInput: { [key: string]: unknown };
+    ListSavedFiltersOutput: {
+      results: {
+        _id?: string;
+        filters?: unknown[];
+      }[];
+    };
+    UpdateSavedFilterInput: {
+      _id?: string;
+      filters?: unknown[];
+    };
+    UpdateSavedFilterOutput: unknown;
+    GetSavedFilterInput: unknown;
+    GetSavedFilterOutput: {
+      _id?: string;
+      filters?: unknown[];
+    };
+    CreateSavedFilterInput: {
+      _id?: string;
+      filters?: unknown[];
+    };
+    CreateSavedFilterOutput: {
+      id: string;
+    };
   };
 }
 
@@ -8691,6 +8815,140 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["ListDeployablesOutput"];
         };
+      };
+    };
+  };
+  DeleteDeployableGroup: {
+    parameters: {
+      path: {
+        /** ID of deployablegroup */
+        deployablegroup_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteDeployableGroupOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteDeployableGroupInput"];
+      };
+    };
+  };
+  ListDeployableGroups: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListDeployableGroupsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListDeployableGroupsInput"];
+      };
+    };
+  };
+  UpdateDeployableGroup: {
+    parameters: {
+      path: {
+        /** ID of deployablegroup */
+        deployablegroup_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpdateDeployableGroupOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateDeployableGroupInput"];
+      };
+    };
+  };
+  CreateDeployableGroup: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateDeployableGroupOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateDeployableGroupInput"];
+      };
+    };
+  };
+  GetDeployableGroup: {
+    parameters: {
+      path: {
+        /** ID of deployablegroup */
+        deployablegroup_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetDeployableGroupOutput"];
+        };
+      };
+    };
+  };
+  /** Share a private deployable group. Required read access to all deployables that are shared, and the datasets deployables are tied to. */
+  CreateDeployableGroupKey: {
+    parameters: {
+      path: {
+        /** ID of deployablegroup */
+        deployablegroup_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateDeployableGroupKeyOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateDeployableGroupKeyInput"];
+      };
+    };
+  };
+  /** Unshare a shared deployable group, making it private. */
+  DeleteDeployableGroupKey: {
+    parameters: {
+      path: {
+        /** ID of deployablegroup */
+        deployablegroup_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteDeployableGroupKeyOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteDeployableGroupKeyInput"];
       };
     };
   };
@@ -11163,6 +11421,96 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["UpdateFavouriteWorkflowInput"];
+      };
+    };
+  };
+  DeleteSavedFilter: {
+    parameters: {
+      path: {
+        /** ID of savedfilter */
+        savedfilter_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteSavedFilterOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteSavedFilterInput"];
+      };
+    };
+  };
+  ListSavedFilters: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListSavedFiltersOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListSavedFiltersInput"];
+      };
+    };
+  };
+  UpdateSavedFilter: {
+    parameters: {
+      path: {
+        /** ID of savedfilter */
+        savedfilter_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpdateSavedFilterOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateSavedFilterInput"];
+      };
+    };
+  };
+  GetSavedFilter: {
+    parameters: {
+      path: {
+        /** ID of savedfilter */
+        savedfilter_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetSavedFilterOutput"];
+        };
+      };
+    };
+  };
+  CreateSavedFilter: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateSavedFilterOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateSavedFilterInput"];
       };
     };
   };

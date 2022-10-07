@@ -19,6 +19,20 @@ export type UpdateUsersDeployablePermissionsOutput = operations['UpdateUsersDepl
 export type DeleteDeployableKeyOutput = operations['DeleteDeployableKey']['responses']['200']['content']['application/json']
   export type ListDeployablesInput = {}
 export type ListDeployablesOutput = operations['ListDeployables']['responses']['200']['content']['application/json']
+  export type DeleteDeployableGroupInput = operations['DeleteDeployableGroup']['requestBody']['content']['application/json']
+export type DeleteDeployableGroupOutput = operations['DeleteDeployableGroup']['responses']['200']['content']['application/json']
+  export type ListDeployableGroupsInput = operations['ListDeployableGroups']['requestBody']['content']['application/json']
+export type ListDeployableGroupsOutput = operations['ListDeployableGroups']['responses']['200']['content']['application/json']
+  export type UpdateDeployableGroupInput = operations['UpdateDeployableGroup']['requestBody']['content']['application/json']
+export type UpdateDeployableGroupOutput = operations['UpdateDeployableGroup']['responses']['200']['content']['application/json']
+  export type CreateDeployableGroupInput = operations['CreateDeployableGroup']['requestBody']['content']['application/json']
+export type CreateDeployableGroupOutput = operations['CreateDeployableGroup']['responses']['200']['content']['application/json']
+  export type GetDeployableGroupInput = {}
+export type GetDeployableGroupOutput = operations['GetDeployableGroup']['responses']['200']['content']['application/json']
+  export type CreateDeployableGroupKeyInput = operations['CreateDeployableGroupKey']['requestBody']['content']['application/json']
+export type CreateDeployableGroupKeyOutput = operations['CreateDeployableGroupKey']['responses']['200']['content']['application/json']
+  export type DeleteDeployableGroupKeyInput = operations['DeleteDeployableGroupKey']['requestBody']['content']['application/json']
+export type DeleteDeployableGroupKeyOutput = operations['DeleteDeployableGroupKey']['responses']['200']['content']['application/json']
   export type CreateProjectInput = operations['CreateProject']['requestBody']['content']['application/json']
 export type CreateProjectOutput = operations['CreateProject']['responses']['200']['content']['application/json']
   export type UpdateProjectInput = operations['UpdateProject']['requestBody']['content']['application/json']
@@ -223,6 +237,16 @@ export type DeleteFavouriteWorkflowOutput = operations['DeleteFavouriteWorkflow'
 export type ListFavouriteWorkflowsOutput = operations['ListFavouriteWorkflows']['responses']['200']['content']['application/json']
   export type UpdateFavouriteWorkflowInput = operations['UpdateFavouriteWorkflow']['requestBody']['content']['application/json']
 export type UpdateFavouriteWorkflowOutput = operations['UpdateFavouriteWorkflow']['responses']['200']['content']['application/json']
+  export type DeleteSavedFilterInput = operations['DeleteSavedFilter']['requestBody']['content']['application/json']
+export type DeleteSavedFilterOutput = operations['DeleteSavedFilter']['responses']['200']['content']['application/json']
+  export type ListSavedFiltersInput = operations['ListSavedFilters']['requestBody']['content']['application/json']
+export type ListSavedFiltersOutput = operations['ListSavedFilters']['responses']['200']['content']['application/json']
+  export type UpdateSavedFilterInput = operations['UpdateSavedFilter']['requestBody']['content']['application/json']
+export type UpdateSavedFilterOutput = operations['UpdateSavedFilter']['responses']['200']['content']['application/json']
+  export type GetSavedFilterInput = {}
+export type GetSavedFilterOutput = operations['GetSavedFilter']['responses']['200']['content']['application/json']
+  export type CreateSavedFilterInput = operations['CreateSavedFilter']['requestBody']['content']['application/json']
+export type CreateSavedFilterOutput = operations['CreateSavedFilter']['responses']['200']['content']['application/json']
 export class DiscoveryApiClient  extends _GenericClient {
   constructor(config:_ClientInput){
     super({...config,service_name:'DiscoveryApi'});
@@ -323,6 +347,83 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'get',
       path:'/deployables/list',
+      options
+    });
+  }
+  public async DeleteDeployableGroup(
+    input: CommandInput<DeleteDeployableGroupInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteDeployableGroupOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployablegroups/{deployablegroup_id}/delete',
+      options
+    });
+  }
+  public async ListDeployableGroups(
+    input: CommandInput<ListDeployableGroupsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListDeployableGroupsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployablegroups/list',
+      options
+    });
+  }
+  public async UpdateDeployableGroup(
+    input: CommandInput<UpdateDeployableGroupInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateDeployableGroupOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployablegroups/{deployablegroup_id}/update',
+      options
+    });
+  }
+  public async CreateDeployableGroup(
+    input: CommandInput<CreateDeployableGroupInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateDeployableGroupOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployablegroups/create',
+      options
+    });
+  }
+  public async GetDeployableGroup(
+    input: CommandInput<GetDeployableGroupInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetDeployableGroupOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/deployablegroups/{deployablegroup_id}/get',
+      options
+    });
+  }
+  public async CreateDeployableGroupKey(
+    input: CommandInput<CreateDeployableGroupKeyInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateDeployableGroupKeyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployablegroups/{deployablegroup_id}/share',
+      options
+    });
+  }
+  public async DeleteDeployableGroupKey(
+    input: CommandInput<DeleteDeployableGroupKeyInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteDeployableGroupKeyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployablegroups/{deployablegroup_id}/private',
       options
     });
   }
@@ -1445,6 +1546,61 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/workflows/favourites/{favouriteworkflow_id}/update',
+      options
+    });
+  }
+  public async DeleteSavedFilter(
+    input: CommandInput<DeleteSavedFilterInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteSavedFilterOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/savedfilters/{savedfilter_id}/delete',
+      options
+    });
+  }
+  public async ListSavedFilters(
+    input: CommandInput<ListSavedFiltersInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListSavedFiltersOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/savedfilters/list',
+      options
+    });
+  }
+  public async UpdateSavedFilter(
+    input: CommandInput<UpdateSavedFilterInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateSavedFilterOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/savedfilters/{savedfilter_id}/update',
+      options
+    });
+  }
+  public async GetSavedFilter(
+    input: CommandInput<GetSavedFilterInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetSavedFilterOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/savedfilters/{savedfilter_id}/get',
+      options
+    });
+  }
+  public async CreateSavedFilter(
+    input: CommandInput<CreateSavedFilterInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateSavedFilterOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/savedfilters/create',
       options
     });
   }}
