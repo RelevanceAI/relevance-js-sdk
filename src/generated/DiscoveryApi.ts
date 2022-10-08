@@ -23,12 +23,12 @@ export type ListDeployablesOutput = operations['ListDeployables']['responses']['
 export type DeleteDeployableGroupOutput = operations['DeleteDeployableGroup']['responses']['200']['content']['application/json']
   export type ListDeployableGroupsInput = operations['ListDeployableGroups']['requestBody']['content']['application/json']
 export type ListDeployableGroupsOutput = operations['ListDeployableGroups']['responses']['200']['content']['application/json']
-  export type UpdateDeployableGroupInput = operations['UpdateDeployableGroup']['requestBody']['content']['application/json']
-export type UpdateDeployableGroupOutput = operations['UpdateDeployableGroup']['responses']['200']['content']['application/json']
   export type CreateDeployableGroupInput = operations['CreateDeployableGroup']['requestBody']['content']['application/json']
 export type CreateDeployableGroupOutput = operations['CreateDeployableGroup']['responses']['200']['content']['application/json']
   export type GetDeployableGroupInput = {}
 export type GetDeployableGroupOutput = operations['GetDeployableGroup']['responses']['200']['content']['application/json']
+  export type UpdateDeployableGroupInput = operations['UpdateDeployableGroup']['requestBody']['content']['application/json']
+export type UpdateDeployableGroupOutput = operations['UpdateDeployableGroup']['responses']['200']['content']['application/json']
   export type CreateDeployableGroupKeyInput = operations['CreateDeployableGroupKey']['requestBody']['content']['application/json']
 export type CreateDeployableGroupKeyOutput = operations['CreateDeployableGroupKey']['responses']['200']['content']['application/json']
   export type DeleteDeployableGroupKeyInput = operations['DeleteDeployableGroupKey']['requestBody']['content']['application/json']
@@ -372,17 +372,6 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
-  public async UpdateDeployableGroup(
-    input: CommandInput<UpdateDeployableGroupInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<UpdateDeployableGroupOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/deployablegroups/{deployablegroup_id}/update',
-      options
-    });
-  }
   public async CreateDeployableGroup(
     input: CommandInput<CreateDeployableGroupInput>,
     options?: _GenericMethodOptions
@@ -402,6 +391,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'get',
       path:'/deployablegroups/{deployablegroup_id}/get',
+      options
+    });
+  }
+  public async UpdateDeployableGroup(
+    input: CommandInput<UpdateDeployableGroupInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateDeployableGroupOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployablegroups/{deployablegroup_id}/update',
       options
     });
   }

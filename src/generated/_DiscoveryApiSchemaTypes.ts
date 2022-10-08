@@ -6,135 +6,592 @@ interface definitions {[id:string]:any};
 
 export interface paths {
   "/deployables/create": {
-    /** Create a private deployable. */
+    /**
+     * Create a private deployable.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "deployables:write",
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "body": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["CreateDeployable"];
   };
   "/deployables/{deployable_id}/get": {
-    /** Get a deployable. */
+    /**
+     * Get a deployable.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "deployables:read"
+     *     ],
+     *     "deployables": [
+     *       {
+     *         "params": "deployable_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["GetDeployable"];
   };
   "/deployables/{deployable_id}/update": {
-    /** Update a deployable */
+    /**
+     * Update a deployable
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "deployables:write"
+     *     ],
+     *     "deployables": [
+     *       {
+     *         "params": "deployable_id"
+     *       }
+     *     ]
+     *   },
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "body": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["UpdateDeployable"];
   };
   "/deployables/delete": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "deployables:write"
+     *     ],
+     *     "deployables": [
+     *       {
+     *         "body": "id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["DeleteDeployable"];
   };
   "/deployables/{deployable_id}/share": {
-    /** Share a private deployable. */
+    /**
+     * Share a private deployable.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "sharing:write",
+     *       "deployables:read"
+     *     ],
+     *     "deployables": [
+     *       {
+     *         "params": "deployable_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["CreateDeployableKey"];
   };
   "/deployables/{deployable_id}/invite": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "users:write",
+     *       "deployables:read"
+     *     ],
+     *     "deployables": [
+     *       {
+     *         "params": "deployable_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["CreateDeployableInvite"];
   };
   "/deployables/{deployable_id}/users/{user_id}/update": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "users:write",
+     *       "deployables:read"
+     *     ],
+     *     "deployables": [
+     *       {
+     *         "params": "deployable_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["UpdateUsersDeployablePermissions"];
   };
   "/deployables/{deployable_id}/private": {
-    /** Unshare a shared deployable, making it private. */
+    /**
+     * Unshare a shared deployable, making it private.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "sharing:write",
+     *       "deployables:read"
+     *     ],
+     *     "deployables": [
+     *       {
+     *         "params": "deployable_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["DeleteDeployableKey"];
   };
   "/deployables/list": {
-    /** List all deployables. */
+    /**
+     * List all deployables.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": []
+     *   }
+     * ]
+     */
     get: operations["ListDeployables"];
   };
   "/deployablegroups/{deployablegroup_id}/delete": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["DeleteDeployableGroup"];
   };
   "/deployablegroups/list": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["ListDeployableGroups"];
   };
-  "/deployablegroups/{deployablegroup_id}/update": {
-    post: operations["UpdateDeployableGroup"];
-  };
   "/deployablegroups/create": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["CreateDeployableGroup"];
   };
   "/deployablegroups/{deployablegroup_id}/get": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     get: operations["GetDeployableGroup"];
   };
+  "/deployablegroups/{deployablegroup_id}/update": {
+    /**
+     * ### Required permissions
+     * > []
+     */
+    post: operations["UpdateDeployableGroup"];
+  };
   "/deployablegroups/{deployablegroup_id}/share": {
-    /** Share a private deployable group. Required read access to all deployables that are shared, and the datasets deployables are tied to. */
+    /**
+     * Share a private deployable group. Required read access to all deployables that are shared, and the datasets deployables are tied to.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "sharing:write"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["CreateDeployableGroupKey"];
   };
   "/deployablegroups/{deployablegroup_id}/private": {
-    /** Unshare a shared deployable group, making it private. */
+    /**
+     * Unshare a shared deployable group, making it private.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "sharing:write"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["DeleteDeployableGroupKey"];
   };
   "/projects/create": {
-    /** Create a new Project that your user will have access to */
+    /**
+     * Create a new Project that your user will have access to
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "organizations:write"
+     *     ],
+     *     "organizations": [
+     *       {
+     *         "body": "organization_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["CreateProject"];
   };
   "/projects/update": {
-    /** Update metadata of a Project */
+    /**
+     * Update metadata of a Project
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "admin"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["UpdateProject"];
   };
   "/projects/transfer_to_organization": {
-    /** Tie a project to an organization. This requires admin privileges over project and organization. */
+    /**
+     * Tie a project to an organization. This requires admin privileges over project and organization.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "admin"
+     *     ],
+     *     "projects": [
+     *       {
+     *         "user_info": "username"
+     *       }
+     *     ]
+     *   },
+     *   {
+     *     "actions": [
+     *       "organizations:write"
+     *     ],
+     *     "organizations": [
+     *       {
+     *         "body": "organization_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["TransferProjectToOrganization"];
   };
   "/projects/list": {
-    /** List all projects and their metadata */
+    /**
+     * List all projects and their metadata
+     *
+     * ### Required permissions
+     * > []
+     */
     get: operations["ListProjects"];
   };
   "/auth/users/create": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "users:write"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["CreateUser"];
   };
   "/auth/users/list": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": []
+     *   }
+     * ]
+     */
     post: operations["ListUsers"];
   };
   "/auth/is_authorized": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["IsUserAuthorized"];
   };
   "/auth/info": {
-    /** Get user_id, key_id and permissions from an auth header. */
+    /**
+     * Get user_id, key_id and permissions from an auth header.
+     *
+     * ### Required permissions
+     * > []
+     */
     get: operations["GetAuthHeaderInfo"];
   };
   "/auth/invite/create": {
-    /** Invite a user to a project using either their email or their user_id */
+    /**
+     * Invite a user to a project using either their email or their user_id
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "users:write"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["CreateProjectInvite"];
   };
   "/auth/invite/list": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["ListProjectInvites"];
   };
   "/auth/invite/accept": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["AcceptProjectInvite"];
   };
   "/auth/invite/delete": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "users:write"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["DeleteProjectInvite"];
   };
   "/auth/invite/resend": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "users:write"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["ResendProjectInvite"];
   };
   "/auth/users/{user_id}": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "users": [
+     *       {
+     *         "params": "user_id"
+     *       }
+     *     ],
+     *     "actions": [
+     *       "users:read"
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["GetUser"];
   };
   "/auth/users/{user_id}/update": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "users": [
+     *       {
+     *         "params": "user_id"
+     *       }
+     *     ],
+     *     "actions": [
+     *       "users:write"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["UpdateUser"];
   };
   "/auth/users/{user_id}/delete": {
-    /** Deletes a User from ONLY your project. If they have permissions for other projects, they will still have acces to them. */
+    /**
+     * Deletes a User from ONLY your project. If they have permissions for other projects, they will still have acces to them.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "users": [
+     *       {
+     *         "params": "user_id"
+     *       }
+     *     ],
+     *     "actions": [
+     *       "users:write"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["DeleteUser"];
   };
   "/auth/users/{user_id}/keys/create": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "users": [
+     *       {
+     *         "params": "user_id"
+     *       }
+     *     ],
+     *     "actions": [
+     *       "users:write"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["CreateUserKey"];
   };
   "/auth/users/{user_id}/keys/list": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "users": [
+     *       {
+     *         "params": "user_id"
+     *       }
+     *     ],
+     *     "actions": [
+     *       "users:read"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["ListUserKeys"];
   };
   "/auth/users/{user_id}/keys/delete": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "users": [
+     *       {
+     *         "params": "user_id"
+     *       }
+     *     ],
+     *     "actions": [
+     *       "users:write"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["DeleteUserKey"];
   };
   "/datasets/{dataset_id}/cluster/centroids/insert": {
-    /** Insert your own cluster centroids for it to be used in approximate search settings and cluster aggregations. */
+    /**
+     * Insert your own cluster centroids for it to be used in approximate search settings and cluster aggregations.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["InsertClusterCentroids"];
   };
   "/datasets/{dataset_id}/cluster/centroids/update": {
-    /** Update your own cluster centroids for it to be used in approximate search settings and cluster aggregations. Will merge rather than replace centroids. */
+    /**
+     * Update your own cluster centroids for it to be used in approximate search settings and cluster aggregations. Will merge rather than replace centroids.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["UpdateClusterCentroids"];
   };
   "/datasets/{dataset_id}/cluster/centroids/compare_centroids": {
-    /** For each centroid in a list of centroids, find the closest centroids in another set of centroids. */
+    /**
+     * For each centroid in a list of centroids, find the closest centroids in another set of centroids.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       },
+     *       {
+     *         "body": "comparison_centroids.dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["CompareClusterCentroids"];
   };
   "/datasets/{dataset_id}/aggregate": {
@@ -193,78 +650,402 @@ export interface paths {
      *     {"title": {"title": "books", "frequency": 200, "documents": [{...}, {...}]}, {"title": "books", "frequency": 100, "documents": [{...}, {...}]}}
      *
      * For array-aggregations, you can add "agg": "array" into the aggregation query.
+     *
+     *
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
      */
     post: operations["Aggregate"];
   };
   "/datasets/{dataset_id}/cluster/aggregate": {
-    /** Takes an aggregation query and gets the aggregate of each cluster in a collection. This helps you interpret each cluster and what is in them. */
+    /**
+     * Takes an aggregation query and gets the aggregate of each cluster in a collection. This helps you interpret each cluster and what is in them.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["AggregateClusters"];
   };
   "/datasets/{dataset_id}/cluster/facets": {
-    /** Takes a high level aggregation of every field and every cluster in a collection. This helps you interpret each cluster and what is in them. */
+    /**
+     * Takes a high level aggregation of every field and every cluster in a collection. This helps you interpret each cluster and what is in them.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["ListClusterFacets"];
   };
   "/datasets/{dataset_id}/cluster/centroids/list_closest_to_center": {
-    /** List documents with vector fields closest to centroids. */
+    /**
+     * List documents with vector fields closest to centroids.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["ListClosestToCentroids"];
   };
   "/datasets/{dataset_id}/cluster/centroids/list_furthest_from_center": {
-    /** List documents with vector fields furthest from centroids. */
+    /**
+     * List documents with vector fields furthest from centroids.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["ListFurthestFromCentroids"];
   };
   "/datasets/{dataset_id}/cluster/centroids/documents": {
-    /** List centroids, optionally filtering by their ids. */
+    /**
+     * List centroids, optionally filtering by their ids.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["ListCentroids"];
   };
   "/datasets/{dataset_id}/cluster/centroids/configs/list": {
-    /** List centroids configs for a dataset. */
+    /**
+     * List centroids configs for a dataset.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["ListCentroidConfigs"];
   };
   "/datasets/{dataset_id}/cluster/centroids/{centroid_id}/delete": {
-    /** Delete a centroid by ID */
+    /**
+     * Delete a centroid by ID
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["DeleteCentroid"];
   };
   "/datasets/{dataset_id}/cluster/realtime": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "body": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["RealtimeClustering"];
   };
   "/datasets/{dataset_id}/cluster/merge": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["MergeClusters"];
   };
   "/datasets/{dataset_id}/cluster/centroids/summaries/create": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read",
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["CreateClusterSummaries"];
   };
   "/datasets/{dataset_id}/cluster/centroids/summaries/list": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["ListClusterSummaries"];
   };
   "/datasets/{dataset_id}/cluster/centroids/summaries/bulk_delete": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["DeleteClusterSummaries"];
   };
   "/organizations/create": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["CreateOrganization"];
   };
   "/organizations/{organization_id}/update": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "organizations:write"
+     *     ],
+     *     "organizations": [
+     *       {
+     *         "params": "organization_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["UpdateOrganization"];
   };
   "/admin/organizations/{organization_id}/update": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "support:write"
+     *     ],
+     *     "organizations": [
+     *       {
+     *         "params": "organization_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["UpdateOrganizationAdmin"];
   };
   "/organizations/list": {
-    /** List all organizations and their metadata */
+    /**
+     * List all organizations and their metadata
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "organizations:read"
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["ListOrganizations"];
   };
   "/organizations/{organization_id}/delete": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "organizations:write"
+     *     ],
+     *     "organizations": [
+     *       {
+     *         "params": "organization_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["DeleteOrganization"];
   };
   "/organizations/{organization_id}/get": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "organizations:read"
+     *     ],
+     *     "organizations": [
+     *       {
+     *         "params": "organization_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["GetOrganization"];
   };
   "/organizations/{organization_id}/usage/get": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "organizations:read"
+     *     ],
+     *     "organizations": [
+     *       {
+     *         "params": "organization_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["GetOrganizationUsage"];
   };
   "/organizations/{organization_id}/users/list": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "organizations:read"
+     *     ],
+     *     "organizations": [
+     *       {
+     *         "params": "organization_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["ListUsersInOrganization"];
   };
   "/organizations/{organization_id}/projects/list": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "organizations:read"
+     *     ],
+     *     "organizations": [
+     *       {
+     *         "params": "organization_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["ListProjectsInOrganization"];
   };
   "/datasets/{dataset_id}/documents/insert": {
@@ -277,6 +1058,21 @@ export interface paths {
      *
      *     If inserting many items in a short timespan, use bulkInsert, or set update_schema to false.
      *     Every insert api call temporarily locks and updates the schema, so will slow down with many inserts in quick succession.
+     *
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
      */
     post: operations["Insert"];
   };
@@ -294,31 +1090,132 @@ export interface paths {
      * If the provided dataset doesn't exist, one will be automatically created.
      *
      * Limit the payload of documents to a maximum 100MB for optimal performance.
+     *
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
      */
     post: operations["BulkInsert"];
   };
   "/datasets/{dataset_id}/get_file_upload_urls": {
-    /** specify a list of file paths. For each file path, a url upload_url is returned. files can be POSTed on upload_url to upload them. They can then be accessed on url. Upon dataset deletion, these files will be deleted. */
+    /**
+     * specify a list of file paths. For each file path, a url upload_url is returned. files can be POSTed on upload_url to upload them. They can then be accessed on url. Upon dataset deletion, these files will be deleted.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["GetFileUploadUrlsForDataset"];
   };
   "/datasets/{dataset_id}/list_file_uploads": {
-    /** Return up to 1000 files uploaded for a dataset. */
+    /**
+     * Return up to 1000 files uploaded for a dataset.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["ListFileUploadsForDataset"];
   };
   "/datasets/{dataset_id}/parse_blob": {
-    /** Bulk insert a large number of documents by downloading a file using "download url". This bypasses the need to directly send documents to the api, as happens in BulkInsert. */
+    /**
+     * Bulk insert a large number of documents by downloading a file using "download url". This bypasses the need to directly send documents to the api, as happens in BulkInsert.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["ParseBlob"];
   };
   "/admin/copy_foreign_dataset": {
-    /** Copy a dataset from another users projects into your project. This is considered a project job. */
+    /**
+     * Copy a dataset from another users projects into your project. This is considered a project job.
+     *
+     * ### Required permissions
+     * > []
+     */
     post: operations["CopyForeignDataset"];
   };
   "/admin/request_read_api_key": {
-    /** Creates a read only key for your project. Make sure to save the api key somewhere safe. When doing a search the admin username should still be used. */
+    /**
+     * Creates a read only key for your project. Make sure to save the api key somewhere safe. When doing a search the admin username should still be used.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "users:write",
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "raw": "*"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["CreateProjectReadKey"];
   };
   "/datasets/{dataset_id}/delete": {
-    /** Delete a dataset. */
+    /**
+     * Delete a dataset.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["DeleteDataset"];
   };
   "/datasets/create": {
@@ -356,40 +1253,183 @@ export interface paths {
      *
      * For more information about vectors check out the 'Vectorizing' section, **\/services/search/vector** or out blog at [https://relevance.ai/blog](https://relevance.ai/blog).
      * For more information about chunks and chunk vectors check out **\/services/search/chunk**.
+     *
+     *
+     *
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "body": "id"
+     *       }
+     *     ]
+     *   }
+     * ]
      */
     post: operations["CreateDataset"];
   };
   "/datasets/{dataset_id}/schema": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["GetSchema"];
   };
   "/datasets/list": {
-    /** List all datasets in a project that you are authorized to read/write. */
+    /**
+     * List all datasets in a project that you are authorized to read/write.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": []
+     *   }
+     * ]
+     */
     get: operations["ListDatasets"];
   };
   "/datasets/combine": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "body": "dataset_ids"
+     *       }
+     *     ]
+     *   },
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "body": "new_dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["CombineDatasets"];
   };
   "/datasets/combine/{job_id}/get": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["GetCombineJobStatus"];
   };
   "/datasets/search": {
-    /** Search all datasets in a project that you are authorized to read/write. */
+    /**
+     * Search all datasets in a project that you are authorized to read/write.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": []
+     *   }
+     * ]
+     */
     get: operations["SearchDatasets"];
   };
   "/datasets/{dataset_id}/monitor/health": {
-    /** Gives you a summary of the health of your vectors, e.g. how many documents with vectors are missing, how many documents with zero vectors */
+    /**
+     * Gives you a summary of the health of your vectors, e.g. how many documents with vectors are missing, how many documents with zero vectors
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["GetFieldHealth"];
   };
   "/datasets/{dataset_id}/monitor/stats": {
-    /** View the usage statistics of a dataset. */
+    /**
+     * View the usage statistics of a dataset.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["GetDatasetStats"];
   };
   "/datasets/{dataset_id}/monitor/usage": {
-    /** View api call usage statistics for a dataset. */
+    /**
+     * View api call usage statistics for a dataset.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["GetDatasetUsage"];
   };
   "/datasets/{dataset_id}/vector_mappings": {
-    /** DEPRECATED !!!! Retrieve the mapping of vectors generated through fields, dictionary, array, etc */
+    /**
+     * DEPRECATED !!!! Retrieve the mapping of vectors generated through fields, dictionary, array, etc
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["GetVectorMappings"];
   };
   "/datasets/{dataset_id}/details": {
@@ -404,6 +1444,21 @@ export interface paths {
      * | vector_health   | Number of zero vectors stored. (returns same data as **\/dataset/{dataset_id}/monitor/health**) |
      * | schema_stats   | Fields and number of documents missing/not missing for that field. (returns same data as **\/dataset/{dataset_id}/monitor/stats**) |
      * | active_jobs   | All active jobs/tasks on the dataset. (returns same data as **\/dataset/{dataset_id}/tasks/list**) |
+     *
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
      */
     post: operations["GetDatasetDetails"];
   };
@@ -412,6 +1467,21 @@ export interface paths {
      * Retrieve a document by its `_id`.
      *
      * This is the most performant method to get a document or check if it exists, faster than filtering a dataset for by an `_id`.
+     *
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
      */
     get: operations["GetDocument"];
   };
@@ -420,19 +1490,98 @@ export interface paths {
      * Delete a document by its `_id` and remove it from the dataset.
      *
      * Support for deleting many documents at once is available through [`/bulk_delete`](/reference/bulk_delete_api_datasets__dataset_id__documents_bulk_delete_post).
+     *
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
      */
     post: operations["DeleteDocument"];
   };
   "/datasets/{dataset_id}/settings": {
-    /** Retreives settings for dataset. */
+    /**
+     * Retreives settings for dataset.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["GetDatasetSettings"];
-    /** Add and overwrite settings about a dataset. Notably description, data source, etc. */
+    /**
+     * Add and overwrite settings about a dataset. Notably description, data source, etc.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["UpsertDatasetSettings"];
   };
   "/datasets/{dataset_id}/metadata": {
-    /** Retreives metadata about a dataset. Notably description, data source, etc */
+    /**
+     * Retreives metadata about a dataset. Notably description, data source, etc
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["GetDatasetMetadata"];
-    /** Retreives metadata about a dataset. Notably description, data source, etc */
+    /**
+     * Retreives metadata about a dataset. Notably description, data source, etc
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["UpsertDatasetMetadata"];
   };
   "/datasets/{dataset_id}/documents/update": {
@@ -444,11 +1593,42 @@ export interface paths {
      * If the provided `_id` has no matching document in the dataset, a new document will be created. Likewise, if the provided `dataset_id` does not match a dataset in your project a new one will be created.
      *
      * Support for updating many documents at once with a filter condition is available through [`/update_where`](/reference/updatewhere).
+     *
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
      */
     post: operations["Update"];
   };
   "/datasets/{dataset_id}/documents/delete_fields": {
-    /** Delete fields in a document in a dataset by its id. */
+    /**
+     * Delete fields in a document in a dataset by its id.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["DeleteDocumentFields"];
   };
   "/datasets/{dataset_id}/documents/bulk_update": {
@@ -458,6 +1638,21 @@ export interface paths {
      *     If updating many items in a short timespan, please use BulkUpdate.
      *
      *     Every update api call temporarily locks and updates the schema, so will slow down with many updates in quick succession.
+     *
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
      */
     post: operations["BulkUpdate"];
   };
@@ -468,11 +1663,42 @@ export interface paths {
      * This method supports a partial update so you may add new fields or update only those you need. Other fields will remain unaffected.
      *
      * If the provided `dataset_id` does not match a dataset in your project, a new one will be created.
+     *
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
      */
     post: operations["UpdateWhere"];
   };
   "/datasets/{dataset_id}/facets": {
-    /** Takes a high level aggregation of every field, return their unique values and frequencies. This is used to help create the filter bar for search. */
+    /**
+     * Takes a high level aggregation of every field, return their unique values and frequencies. This is used to help create the filter bar for search.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["ListFacets"];
   };
   "/datasets/{dataset_id}/documents/get_where": {
@@ -480,6 +1706,20 @@ export interface paths {
      * Retrieve documents with filters.
      * afterId is provided to retrieve even more documents. Loop through it to retrieve all documents in the database.
      * Filter is used to retrieve documents that match the conditions set in a filter query.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
      */
     post: operations["GetWhere"];
   };
@@ -488,15 +1728,61 @@ export interface paths {
      * Retrieve documents with filters.
      * afterId is provided to retrieve even more documents. Loop through it to retrieve all documents in the database.
      * Filter is used to retrieve documents that match the conditions set in a filter query.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
      */
     post: operations["PaginateDocuments"];
   };
   "/datasets/{dataset_id}/documents/bulk_get": {
-    /** Retrieve documents by their IDs ("_id" field). This will retrieve the documents faster than a filter applied on the "_id" field. For single id lookup version of this request use /datasets/{dataset_id}/documents/get. */
+    /**
+     * Retrieve documents by their IDs ("_id" field). This will retrieve the documents faster than a filter applied on the "_id" field. For single id lookup version of this request use /datasets/{dataset_id}/documents/get.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["BulkGetDocuments"];
   };
   "/datasets/{dataset_id}/documents/bulk_delete": {
-    /** Delete a list of documents by their IDs. For deleting a single document refer to /datasets/{dataset_id}/documents/delete or deleting documents by filters refer to /datasets/{dataset_id}/documents/delete_where. */
+    /**
+     * Delete a list of documents by their IDs. For deleting a single document refer to /datasets/{dataset_id}/documents/delete or deleting documents by filters refer to /datasets/{dataset_id}/documents/delete_where.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["BulkDeleteDocuments"];
   };
   "/datasets/{dataset_id}/documents/list": {
@@ -504,99 +1790,373 @@ export interface paths {
      * Retrieve documents with filters.
      * afterId is provided to retrieve even more documents. Loop through it to retrieve all documents in the database.
      * Filter is used to retrieve documents that match the conditions set in a filter query.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
      */
     get: operations["ListDocuments"];
   };
   "/datasets/{dataset_id}/documents/delete_where": {
-    /** Delete documents that match on a filters. At least one filter must be provided. */
+    /**
+     * Delete documents that match on a filters. At least one filter must be provided.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["DeleteWhere"];
   };
   "/datasets/{dataset_id}/simple_search": {
-    /** SimpleSearch is an easy way to use vector search and traditional text matching to search your dataset. It also supports filtering, sorting and aggregating results. */
+    /**
+     * SimpleSearch is an easy way to use vector search and traditional text matching to search your dataset. It also supports filtering, sorting and aggregating results.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["SimpleSearchPost"];
   };
   "/datasets/{dataset_id}/search": {
-    /** SimpleSearch is an easy way to use vector search and traditional text matching to search your dataset. It also supports filtering, sorting and aggregating results. */
+    /**
+     * SimpleSearch is an easy way to use vector search and traditional text matching to search your dataset. It also supports filtering, sorting and aggregating results.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["Search"];
   };
   "/datasets/{dataset_id}/recommend": {
-    /** Recommend documents similar to specific documents. Specify which vector field must be used for recommendation using  the documentsToRecommend property. */
+    /**
+     * Recommend documents similar to specific documents. Specify which vector field must be used for recommendation using  the documentsToRecommend property.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["Recommend"];
   };
   "/datasets/{dataset_id}/clone": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   },
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "body": "new_dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["CloneDataset"];
   };
   "/services/prediction/regression/knn": {
-    /** Predict using KNN regression. */
+    /**
+     * Predict using KNN regression.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "body": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["PredictKNNRegression"];
   };
   "/services/prediction/knn_from_results": {
-    /** Predict using KNN regression from search results. */
+    /**
+     * Predict using KNN regression from search results.
+     *
+     * ### Required permissions
+     * > []
+     */
     post: operations["PredictKNNFromResults"];
   };
   "/services/evaluation/bias": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["BiasEvaluation"];
   };
   "/services/vectorize": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["Vectorize"];
   };
   "/services/vectorize/{dataset_id}/vectorize_and_insert": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["VectorizeAndInsert"];
   };
   "/services/vectorize/{dataset_id}": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["VectorizeField"];
   };
   "/workflows/trigger": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read",
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "body": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["TriggerWorkflow"];
   };
   "/workflows/list": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ]
+     *   }
+     * ]
+     */
     get: operations["ListWorkflows"];
   };
   "/workflows/{workflow_id}/get": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["GetWorkflowStatus"];
   };
   "/workflows/{workflow_id}/delete": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["DeleteWorkflowStatus"];
   };
   "/workflows/{workflow_id}/metadata": {
-    /** Update metadata for a workflow run */
+    /**
+     * Update metadata for a workflow run
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["UpsertWorkflowMetadata"];
   };
   "/workflows/{workflow_id}/status": {
-    /** Update status for a workflow run */
+    /**
+     * Update status for a workflow run
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ]
+     *   }
+     * ]
+     */
     post: operations["UpsertWorkflowStatus"];
   };
   "/datasets/{dataset_id}/field_children/{fieldchildren_id}/delete": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["DeleteFieldChildren"];
   };
   "/datasets/{dataset_id}/field_children/list": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["ListFieldChildrens"];
   };
   "/datasets/{dataset_id}/field_children/{fieldchildren_id}/update": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["UpdateFieldChildren"];
   };
   "/workflows/favourites/{favouriteworkflow_id}/delete": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["DeleteFavouriteWorkflow"];
   };
   "/workflows/favourites/list": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["ListFavouriteWorkflows"];
   };
   "/workflows/favourites/{favouriteworkflow_id}/update": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["UpdateFavouriteWorkflow"];
   };
   "/savedfilters/{savedfilter_id}/delete": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["DeleteSavedFilter"];
   };
   "/savedfilters/list": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["ListSavedFilters"];
   };
   "/savedfilters/{savedfilter_id}/update": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["UpdateSavedFilter"];
   };
   "/savedfilters/{savedfilter_id}/get": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     get: operations["GetSavedFilter"];
   };
   "/savedfilters/create": {
+    /**
+     * ### Required permissions
+     * > []
+     */
     post: operations["CreateSavedFilter"];
   };
 }
@@ -701,18 +2261,6 @@ export interface components {
         }[];
       }[];
     };
-    UpdateDeployableGroupInput: {
-      _id?: string;
-      name?: string;
-      description?: string;
-      deployables?: {
-        id: string;
-        name?: string;
-        api_key?: string;
-        private?: boolean;
-      }[];
-    };
-    UpdateDeployableGroupOutput: unknown;
     CreateDeployableGroupInput: {
       _id?: string;
       name?: string;
@@ -739,6 +2287,18 @@ export interface components {
         private?: boolean;
       }[];
     };
+    UpdateDeployableGroupInput: {
+      _id?: string;
+      name?: string;
+      description?: string;
+      deployables?: {
+        id: string;
+        name?: string;
+        api_key?: string;
+        private?: boolean;
+      }[];
+    };
+    UpdateDeployableGroupOutput: unknown;
     CreateDeployableGroupKeyInput: unknown;
     CreateDeployableGroupKeyOutput: unknown;
     DeleteDeployableGroupKeyInput: unknown;
@@ -4587,7 +6147,8 @@ export interface components {
           | "all-mpnet-base-v2"
           | "clip-vit-b-32-image"
           | "clip-vit-b-32-text"
-          | "sentence-transformers";
+          | "sentence-transformers"
+          | "similarity-all-mpnet-base-v2";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
         body?: string;
         /** @description The document field to encode. */
@@ -4663,7 +6224,8 @@ export interface components {
           | "all-mpnet-base-v2"
           | "clip-vit-b-32-image"
           | "clip-vit-b-32-text"
-          | "sentence-transformers";
+          | "sentence-transformers"
+          | "similarity-all-mpnet-base-v2";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
         body?: string;
         /** @description The document field to encode. */
@@ -5489,7 +7051,8 @@ export interface components {
           | "all-mpnet-base-v2"
           | "clip-vit-b-32-image"
           | "clip-vit-b-32-text"
-          | "sentence-transformers";
+          | "sentence-transformers"
+          | "similarity-all-mpnet-base-v2";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
         body?: string;
         /** @description The document field to encode. */
@@ -5578,7 +7141,8 @@ export interface components {
           | "all-mpnet-base-v2"
           | "clip-vit-b-32-image"
           | "clip-vit-b-32-text"
-          | "sentence-transformers";
+          | "sentence-transformers"
+          | "similarity-all-mpnet-base-v2";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
         body?: string;
         /** @description The document field to encode. */
@@ -8399,7 +9963,8 @@ export interface components {
           | "all-mpnet-base-v2"
           | "clip-vit-b-32-image"
           | "clip-vit-b-32-text"
-          | "sentence-transformers";
+          | "sentence-transformers"
+          | "similarity-all-mpnet-base-v2";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
         body?: string;
         /** @description The document field to encode. */
@@ -8421,7 +9986,8 @@ export interface components {
         | "all-mpnet-base-v2"
         | "clip-vit-b-32-image"
         | "clip-vit-b-32-text"
-        | "sentence-transformers";
+        | "sentence-transformers"
+        | "similarity-all-mpnet-base-v2";
       /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
       body?: string;
       /** @description The document field to encode. */
@@ -8450,7 +10016,8 @@ export interface components {
         | "all-mpnet-base-v2"
         | "clip-vit-b-32-image"
         | "clip-vit-b-32-text"
-        | "sentence-transformers";
+        | "sentence-transformers"
+        | "similarity-all-mpnet-base-v2";
       /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
       body?: string;
       /** @description The document field to encode. */
@@ -8494,7 +10061,8 @@ export interface components {
         | "all-mpnet-base-v2"
         | "clip-vit-b-32-image"
         | "clip-vit-b-32-text"
-        | "sentence-transformers";
+        | "sentence-transformers"
+        | "similarity-all-mpnet-base-v2";
       /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
       body?: string;
       /** @description The document field to encode. */
@@ -8522,6 +10090,7 @@ export interface components {
       notebook_path: string;
       instance_type?: string;
       dataset_id: string;
+      workflow_id?: string;
     };
     TriggerWorkflowOutput: {
       job_id: string;
@@ -8535,6 +10104,7 @@ export interface components {
         dataset_id?: string;
         params?: { [key: string]: unknown };
         _id?: string;
+        workflow_id?: string;
         metadata?: { [key: string]: unknown };
         /** @description Status of the workflow. Used for knowing when to send an email notification. */
         status?: "complete" | "inprogress" | "failed";
@@ -8549,6 +10119,7 @@ export interface components {
       dataset_id?: string;
       params?: { [key: string]: unknown };
       _id?: string;
+      workflow_id?: string;
       metadata?: { [key: string]: unknown };
       /** @description Status of the workflow. Used for knowing when to send an email notification. */
       status?: "complete" | "inprogress" | "failed";
@@ -8586,6 +10157,7 @@ export interface components {
         field?: string;
         field_children?: string[];
         metadata?: { [key: string]: unknown };
+        category?: string;
       }[];
     };
     UpdateFieldChildrenInput: {
@@ -8593,6 +10165,7 @@ export interface components {
       field?: string;
       field_children?: string[];
       metadata?: { [key: string]: unknown };
+      category?: string;
     };
     UpdateFieldChildrenOutput: unknown;
     DeleteFavouriteWorkflowInput: unknown;
@@ -8613,22 +10186,30 @@ export interface components {
     ListSavedFiltersOutput: {
       results: {
         _id?: string;
-        filters?: unknown[];
+        filters?: { [key: string]: unknown };
+        label?: string;
+        name?: string;
       }[];
     };
     UpdateSavedFilterInput: {
       _id?: string;
-      filters?: unknown[];
+      filters?: { [key: string]: unknown };
+      label?: string;
+      name?: string;
     };
     UpdateSavedFilterOutput: unknown;
     GetSavedFilterInput: unknown;
     GetSavedFilterOutput: {
       _id?: string;
-      filters?: unknown[];
+      filters?: { [key: string]: unknown };
+      label?: string;
+      name?: string;
     };
     CreateSavedFilterInput: {
       _id?: string;
-      filters?: unknown[];
+      filters?: { [key: string]: unknown };
+      label?: string;
+      name?: string;
     };
     CreateSavedFilterOutput: {
       id: string;
@@ -8637,7 +10218,24 @@ export interface components {
 }
 
 export interface operations {
-  /** Create a private deployable. */
+  /**
+   * Create a private deployable.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "deployables:write",
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "body": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   CreateDeployable: {
     parameters: {};
     responses: {
@@ -8654,7 +10252,23 @@ export interface operations {
       };
     };
   };
-  /** Get a deployable. */
+  /**
+   * Get a deployable.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "deployables:read"
+   *     ],
+   *     "deployables": [
+   *       {
+   *         "params": "deployable_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   GetDeployable: {
     parameters: {
       path: {
@@ -8671,7 +10285,33 @@ export interface operations {
       };
     };
   };
-  /** Update a deployable */
+  /**
+   * Update a deployable
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "deployables:write"
+   *     ],
+   *     "deployables": [
+   *       {
+   *         "params": "deployable_id"
+   *       }
+   *     ]
+   *   },
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "body": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   UpdateDeployable: {
     parameters: {
       path: {
@@ -8693,6 +10333,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "deployables:write"
+   *     ],
+   *     "deployables": [
+   *       {
+   *         "body": "id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   DeleteDeployable: {
     parameters: {};
     responses: {
@@ -8709,7 +10364,24 @@ export interface operations {
       };
     };
   };
-  /** Share a private deployable. */
+  /**
+   * Share a private deployable.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "sharing:write",
+   *       "deployables:read"
+   *     ],
+   *     "deployables": [
+   *       {
+   *         "params": "deployable_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   CreateDeployableKey: {
     parameters: {
       path: {
@@ -8731,6 +10403,22 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "users:write",
+   *       "deployables:read"
+   *     ],
+   *     "deployables": [
+   *       {
+   *         "params": "deployable_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   CreateDeployableInvite: {
     parameters: {
       path: {
@@ -8752,6 +10440,22 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "users:write",
+   *       "deployables:read"
+   *     ],
+   *     "deployables": [
+   *       {
+   *         "params": "deployable_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   UpdateUsersDeployablePermissions: {
     parameters: {
       path: {
@@ -8775,7 +10479,24 @@ export interface operations {
       };
     };
   };
-  /** Unshare a shared deployable, making it private. */
+  /**
+   * Unshare a shared deployable, making it private.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "sharing:write",
+   *       "deployables:read"
+   *     ],
+   *     "deployables": [
+   *       {
+   *         "params": "deployable_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   DeleteDeployableKey: {
     parameters: {
       path: {
@@ -8797,7 +10518,16 @@ export interface operations {
       };
     };
   };
-  /** List all deployables. */
+  /**
+   * List all deployables.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": []
+   *   }
+   * ]
+   */
   ListDeployables: {
     parameters: {
       query: {
@@ -8818,6 +10548,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   DeleteDeployableGroup: {
     parameters: {
       path: {
@@ -8839,6 +10573,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   ListDeployableGroups: {
     parameters: {};
     responses: {
@@ -8855,6 +10593,50 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
+  CreateDeployableGroup: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateDeployableGroupOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateDeployableGroupInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > []
+   */
+  GetDeployableGroup: {
+    parameters: {
+      path: {
+        /** ID of deployablegroup */
+        deployablegroup_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetDeployableGroupOutput"];
+        };
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > []
+   */
   UpdateDeployableGroup: {
     parameters: {
       path: {
@@ -8876,39 +10658,18 @@ export interface operations {
       };
     };
   };
-  CreateDeployableGroup: {
-    parameters: {};
-    responses: {
-      /** successful operation */
-      200: {
-        content: {
-          "application/json": components["schemas"]["CreateDeployableGroupOutput"];
-        };
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateDeployableGroupInput"];
-      };
-    };
-  };
-  GetDeployableGroup: {
-    parameters: {
-      path: {
-        /** ID of deployablegroup */
-        deployablegroup_id: string;
-      };
-    };
-    responses: {
-      /** successful operation */
-      200: {
-        content: {
-          "application/json": components["schemas"]["GetDeployableGroupOutput"];
-        };
-      };
-    };
-  };
-  /** Share a private deployable group. Required read access to all deployables that are shared, and the datasets deployables are tied to. */
+  /**
+   * Share a private deployable group. Required read access to all deployables that are shared, and the datasets deployables are tied to.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "sharing:write"
+   *     ]
+   *   }
+   * ]
+   */
   CreateDeployableGroupKey: {
     parameters: {
       path: {
@@ -8930,7 +10691,18 @@ export interface operations {
       };
     };
   };
-  /** Unshare a shared deployable group, making it private. */
+  /**
+   * Unshare a shared deployable group, making it private.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "sharing:write"
+   *     ]
+   *   }
+   * ]
+   */
   DeleteDeployableGroupKey: {
     parameters: {
       path: {
@@ -8952,7 +10724,23 @@ export interface operations {
       };
     };
   };
-  /** Create a new Project that your user will have access to */
+  /**
+   * Create a new Project that your user will have access to
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "organizations:write"
+   *     ],
+   *     "organizations": [
+   *       {
+   *         "body": "organization_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   CreateProject: {
     parameters: {};
     responses: {
@@ -8969,7 +10757,18 @@ export interface operations {
       };
     };
   };
-  /** Update metadata of a Project */
+  /**
+   * Update metadata of a Project
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "admin"
+   *     ]
+   *   }
+   * ]
+   */
   UpdateProject: {
     parameters: {};
     responses: {
@@ -8986,7 +10785,33 @@ export interface operations {
       };
     };
   };
-  /** Tie a project to an organization. This requires admin privileges over project and organization. */
+  /**
+   * Tie a project to an organization. This requires admin privileges over project and organization.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "admin"
+   *     ],
+   *     "projects": [
+   *       {
+   *         "user_info": "username"
+   *       }
+   *     ]
+   *   },
+   *   {
+   *     "actions": [
+   *       "organizations:write"
+   *     ],
+   *     "organizations": [
+   *       {
+   *         "body": "organization_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   TransferProjectToOrganization: {
     parameters: {};
     responses: {
@@ -9003,7 +10828,12 @@ export interface operations {
       };
     };
   };
-  /** List all projects and their metadata */
+  /**
+   * List all projects and their metadata
+   *
+   * ### Required permissions
+   * > []
+   */
   ListProjects: {
     parameters: {};
     responses: {
@@ -9015,6 +10845,16 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "users:write"
+   *     ]
+   *   }
+   * ]
+   */
   CreateUser: {
     parameters: {};
     responses: {
@@ -9031,6 +10871,14 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": []
+   *   }
+   * ]
+   */
   ListUsers: {
     parameters: {};
     responses: {
@@ -9047,6 +10895,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   IsUserAuthorized: {
     parameters: {};
     responses: {
@@ -9063,7 +10915,12 @@ export interface operations {
       };
     };
   };
-  /** Get user_id, key_id and permissions from an auth header. */
+  /**
+   * Get user_id, key_id and permissions from an auth header.
+   *
+   * ### Required permissions
+   * > []
+   */
   GetAuthHeaderInfo: {
     parameters: {};
     responses: {
@@ -9075,7 +10932,18 @@ export interface operations {
       };
     };
   };
-  /** Invite a user to a project using either their email or their user_id */
+  /**
+   * Invite a user to a project using either their email or their user_id
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "users:write"
+   *     ]
+   *   }
+   * ]
+   */
   CreateProjectInvite: {
     parameters: {};
     responses: {
@@ -9092,6 +10960,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   ListProjectInvites: {
     parameters: {};
     responses: {
@@ -9108,6 +10980,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   AcceptProjectInvite: {
     parameters: {};
     responses: {
@@ -9124,6 +11000,16 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "users:write"
+   *     ]
+   *   }
+   * ]
+   */
   DeleteProjectInvite: {
     parameters: {};
     responses: {
@@ -9140,6 +11026,16 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "users:write"
+   *     ]
+   *   }
+   * ]
+   */
   ResendProjectInvite: {
     parameters: {};
     responses: {
@@ -9156,6 +11052,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "users": [
+   *       {
+   *         "params": "user_id"
+   *       }
+   *     ],
+   *     "actions": [
+   *       "users:read"
+   *     ]
+   *   }
+   * ]
+   */
   GetUser: {
     parameters: {
       path: {
@@ -9172,6 +11083,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "users": [
+   *       {
+   *         "params": "user_id"
+   *       }
+   *     ],
+   *     "actions": [
+   *       "users:write"
+   *     ]
+   *   }
+   * ]
+   */
   UpdateUser: {
     parameters: {
       path: {
@@ -9193,7 +11119,23 @@ export interface operations {
       };
     };
   };
-  /** Deletes a User from ONLY your project. If they have permissions for other projects, they will still have acces to them. */
+  /**
+   * Deletes a User from ONLY your project. If they have permissions for other projects, they will still have acces to them.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "users": [
+   *       {
+   *         "params": "user_id"
+   *       }
+   *     ],
+   *     "actions": [
+   *       "users:write"
+   *     ]
+   *   }
+   * ]
+   */
   DeleteUser: {
     parameters: {
       path: {
@@ -9215,6 +11157,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "users": [
+   *       {
+   *         "params": "user_id"
+   *       }
+   *     ],
+   *     "actions": [
+   *       "users:write"
+   *     ]
+   *   }
+   * ]
+   */
   CreateUserKey: {
     parameters: {
       path: {
@@ -9236,6 +11193,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "users": [
+   *       {
+   *         "params": "user_id"
+   *       }
+   *     ],
+   *     "actions": [
+   *       "users:read"
+   *     ]
+   *   }
+   * ]
+   */
   ListUserKeys: {
     parameters: {
       path: {
@@ -9257,6 +11229,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "users": [
+   *       {
+   *         "params": "user_id"
+   *       }
+   *     ],
+   *     "actions": [
+   *       "users:write"
+   *     ]
+   *   }
+   * ]
+   */
   DeleteUserKey: {
     parameters: {
       path: {
@@ -9278,7 +11265,23 @@ export interface operations {
       };
     };
   };
-  /** Insert your own cluster centroids for it to be used in approximate search settings and cluster aggregations. */
+  /**
+   * Insert your own cluster centroids for it to be used in approximate search settings and cluster aggregations.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   InsertClusterCentroids: {
     parameters: {
       path: {
@@ -9300,7 +11303,23 @@ export interface operations {
       };
     };
   };
-  /** Update your own cluster centroids for it to be used in approximate search settings and cluster aggregations. Will merge rather than replace centroids. */
+  /**
+   * Update your own cluster centroids for it to be used in approximate search settings and cluster aggregations. Will merge rather than replace centroids.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   UpdateClusterCentroids: {
     parameters: {
       path: {
@@ -9322,7 +11341,26 @@ export interface operations {
       };
     };
   };
-  /** For each centroid in a list of centroids, find the closest centroids in another set of centroids. */
+  /**
+   * For each centroid in a list of centroids, find the closest centroids in another set of centroids.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       },
+   *       {
+   *         "body": "comparison_centroids.dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   CompareClusterCentroids: {
     parameters: {
       path: {
@@ -9399,6 +11437,22 @@ export interface operations {
    *     {"title": {"title": "books", "frequency": 200, "documents": [{...}, {...}]}, {"title": "books", "frequency": 100, "documents": [{...}, {...}]}}
    *
    * For array-aggregations, you can add "agg": "array" into the aggregation query.
+   *
+   *
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
    */
   Aggregate: {
     parameters: {
@@ -9421,7 +11475,23 @@ export interface operations {
       };
     };
   };
-  /** Takes an aggregation query and gets the aggregate of each cluster in a collection. This helps you interpret each cluster and what is in them. */
+  /**
+   * Takes an aggregation query and gets the aggregate of each cluster in a collection. This helps you interpret each cluster and what is in them.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   AggregateClusters: {
     parameters: {
       path: {
@@ -9443,7 +11513,23 @@ export interface operations {
       };
     };
   };
-  /** Takes a high level aggregation of every field and every cluster in a collection. This helps you interpret each cluster and what is in them. */
+  /**
+   * Takes a high level aggregation of every field and every cluster in a collection. This helps you interpret each cluster and what is in them.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   ListClusterFacets: {
     parameters: {
       path: {
@@ -9465,7 +11551,23 @@ export interface operations {
       };
     };
   };
-  /** List documents with vector fields closest to centroids. */
+  /**
+   * List documents with vector fields closest to centroids.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   ListClosestToCentroids: {
     parameters: {
       path: {
@@ -9487,7 +11589,23 @@ export interface operations {
       };
     };
   };
-  /** List documents with vector fields furthest from centroids. */
+  /**
+   * List documents with vector fields furthest from centroids.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   ListFurthestFromCentroids: {
     parameters: {
       path: {
@@ -9509,7 +11627,23 @@ export interface operations {
       };
     };
   };
-  /** List centroids, optionally filtering by their ids. */
+  /**
+   * List centroids, optionally filtering by their ids.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   ListCentroids: {
     parameters: {
       path: {
@@ -9531,7 +11665,23 @@ export interface operations {
       };
     };
   };
-  /** List centroids configs for a dataset. */
+  /**
+   * List centroids configs for a dataset.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   ListCentroidConfigs: {
     parameters: {
       path: {
@@ -9548,7 +11698,23 @@ export interface operations {
       };
     };
   };
-  /** Delete a centroid by ID */
+  /**
+   * Delete a centroid by ID
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   DeleteCentroid: {
     parameters: {
       path: {
@@ -9572,6 +11738,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "body": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   RealtimeClustering: {
     parameters: {
       path: {
@@ -9593,6 +11774,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   MergeClusters: {
     parameters: {
       path: {
@@ -9614,6 +11810,22 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read",
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   CreateClusterSummaries: {
     parameters: {
       path: {
@@ -9635,6 +11847,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   ListClusterSummaries: {
     parameters: {
       path: {
@@ -9656,6 +11883,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   DeleteClusterSummaries: {
     parameters: {
       path: {
@@ -9677,6 +11919,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   CreateOrganization: {
     parameters: {};
     responses: {
@@ -9693,6 +11939,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "organizations:write"
+   *     ],
+   *     "organizations": [
+   *       {
+   *         "params": "organization_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   UpdateOrganization: {
     parameters: {
       path: {
@@ -9714,6 +11975,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "support:write"
+   *     ],
+   *     "organizations": [
+   *       {
+   *         "params": "organization_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   UpdateOrganizationAdmin: {
     parameters: {
       path: {
@@ -9735,7 +12011,18 @@ export interface operations {
       };
     };
   };
-  /** List all organizations and their metadata */
+  /**
+   * List all organizations and their metadata
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "organizations:read"
+   *     ]
+   *   }
+   * ]
+   */
   ListOrganizations: {
     parameters: {};
     responses: {
@@ -9747,6 +12034,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "organizations:write"
+   *     ],
+   *     "organizations": [
+   *       {
+   *         "params": "organization_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   DeleteOrganization: {
     parameters: {
       path: {
@@ -9768,6 +12070,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "organizations:read"
+   *     ],
+   *     "organizations": [
+   *       {
+   *         "params": "organization_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   GetOrganization: {
     parameters: {
       path: {
@@ -9784,6 +12101,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "organizations:read"
+   *     ],
+   *     "organizations": [
+   *       {
+   *         "params": "organization_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   GetOrganizationUsage: {
     parameters: {
       path: {
@@ -9800,6 +12132,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "organizations:read"
+   *     ],
+   *     "organizations": [
+   *       {
+   *         "params": "organization_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   ListUsersInOrganization: {
     parameters: {
       path: {
@@ -9816,6 +12163,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "organizations:read"
+   *     ],
+   *     "organizations": [
+   *       {
+   *         "params": "organization_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   ListProjectsInOrganization: {
     parameters: {
       path: {
@@ -9841,6 +12203,21 @@ export interface operations {
    *
    *     If inserting many items in a short timespan, use bulkInsert, or set update_schema to false.
    *     Every insert api call temporarily locks and updates the schema, so will slow down with many inserts in quick succession.
+   *
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
    */
   Insert: {
     parameters: {
@@ -9876,6 +12253,21 @@ export interface operations {
    * If the provided dataset doesn't exist, one will be automatically created.
    *
    * Limit the payload of documents to a maximum 100MB for optimal performance.
+   *
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
    */
   BulkInsert: {
     parameters: {
@@ -9898,7 +12290,23 @@ export interface operations {
       };
     };
   };
-  /** specify a list of file paths. For each file path, a url upload_url is returned. files can be POSTed on upload_url to upload them. They can then be accessed on url. Upon dataset deletion, these files will be deleted. */
+  /**
+   * specify a list of file paths. For each file path, a url upload_url is returned. files can be POSTed on upload_url to upload them. They can then be accessed on url. Upon dataset deletion, these files will be deleted.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   GetFileUploadUrlsForDataset: {
     parameters: {
       path: {
@@ -9920,7 +12328,23 @@ export interface operations {
       };
     };
   };
-  /** Return up to 1000 files uploaded for a dataset. */
+  /**
+   * Return up to 1000 files uploaded for a dataset.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   ListFileUploadsForDataset: {
     parameters: {
       path: {
@@ -9937,7 +12361,23 @@ export interface operations {
       };
     };
   };
-  /** Bulk insert a large number of documents by downloading a file using "download url". This bypasses the need to directly send documents to the api, as happens in BulkInsert. */
+  /**
+   * Bulk insert a large number of documents by downloading a file using "download url". This bypasses the need to directly send documents to the api, as happens in BulkInsert.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   ParseBlob: {
     parameters: {
       path: {
@@ -9959,7 +12399,12 @@ export interface operations {
       };
     };
   };
-  /** Copy a dataset from another users projects into your project. This is considered a project job. */
+  /**
+   * Copy a dataset from another users projects into your project. This is considered a project job.
+   *
+   * ### Required permissions
+   * > []
+   */
   CopyForeignDataset: {
     parameters: {};
     responses: {
@@ -9976,7 +12421,24 @@ export interface operations {
       };
     };
   };
-  /** Creates a read only key for your project. Make sure to save the api key somewhere safe. When doing a search the admin username should still be used. */
+  /**
+   * Creates a read only key for your project. Make sure to save the api key somewhere safe. When doing a search the admin username should still be used.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "users:write",
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "raw": "*"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   CreateProjectReadKey: {
     parameters: {};
     responses: {
@@ -9993,7 +12455,23 @@ export interface operations {
       };
     };
   };
-  /** Delete a dataset. */
+  /**
+   * Delete a dataset.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   DeleteDataset: {
     parameters: {
       path: {
@@ -10049,6 +12527,23 @@ export interface operations {
    *
    * For more information about vectors check out the 'Vectorizing' section, **\/services/search/vector** or out blog at [https://relevance.ai/blog](https://relevance.ai/blog).
    * For more information about chunks and chunk vectors check out **\/services/search/chunk**.
+   *
+   *
+   *
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "body": "id"
+   *       }
+   *     ]
+   *   }
+   * ]
    */
   CreateDataset: {
     parameters: {};
@@ -10066,6 +12561,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   GetSchema: {
     parameters: {
       path: {
@@ -10082,7 +12592,16 @@ export interface operations {
       };
     };
   };
-  /** List all datasets in a project that you are authorized to read/write. */
+  /**
+   * List all datasets in a project that you are authorized to read/write.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": []
+   *   }
+   * ]
+   */
   ListDatasets: {
     parameters: {};
     responses: {
@@ -10094,6 +12613,31 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "body": "dataset_ids"
+   *       }
+   *     ]
+   *   },
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "body": "new_dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   CombineDatasets: {
     parameters: {};
     responses: {
@@ -10110,6 +12654,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   GetCombineJobStatus: {
     parameters: {
       path: {
@@ -10131,7 +12679,16 @@ export interface operations {
       };
     };
   };
-  /** Search all datasets in a project that you are authorized to read/write. */
+  /**
+   * Search all datasets in a project that you are authorized to read/write.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": []
+   *   }
+   * ]
+   */
   SearchDatasets: {
     parameters: {
       query: {
@@ -10152,7 +12709,23 @@ export interface operations {
       };
     };
   };
-  /** Gives you a summary of the health of your vectors, e.g. how many documents with vectors are missing, how many documents with zero vectors */
+  /**
+   * Gives you a summary of the health of your vectors, e.g. how many documents with vectors are missing, how many documents with zero vectors
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   GetFieldHealth: {
     parameters: {
       path: {
@@ -10169,7 +12742,23 @@ export interface operations {
       };
     };
   };
-  /** View the usage statistics of a dataset. */
+  /**
+   * View the usage statistics of a dataset.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   GetDatasetStats: {
     parameters: {
       path: {
@@ -10186,7 +12775,23 @@ export interface operations {
       };
     };
   };
-  /** View api call usage statistics for a dataset. */
+  /**
+   * View api call usage statistics for a dataset.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   GetDatasetUsage: {
     parameters: {
       path: {
@@ -10208,7 +12813,23 @@ export interface operations {
       };
     };
   };
-  /** DEPRECATED !!!! Retrieve the mapping of vectors generated through fields, dictionary, array, etc */
+  /**
+   * DEPRECATED !!!! Retrieve the mapping of vectors generated through fields, dictionary, array, etc
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   GetVectorMappings: {
     parameters: {
       path: {
@@ -10236,6 +12857,21 @@ export interface operations {
    * | vector_health   | Number of zero vectors stored. (returns same data as **\/dataset/{dataset_id}/monitor/health**) |
    * | schema_stats   | Fields and number of documents missing/not missing for that field. (returns same data as **\/dataset/{dataset_id}/monitor/stats**) |
    * | active_jobs   | All active jobs/tasks on the dataset. (returns same data as **\/dataset/{dataset_id}/tasks/list**) |
+   *
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
    */
   GetDatasetDetails: {
     parameters: {
@@ -10262,6 +12898,21 @@ export interface operations {
    * Retrieve a document by its `_id`.
    *
    * This is the most performant method to get a document or check if it exists, faster than filtering a dataset for by an `_id`.
+   *
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
    */
   GetDocument: {
     parameters: {
@@ -10289,6 +12940,21 @@ export interface operations {
    * Delete a document by its `_id` and remove it from the dataset.
    *
    * Support for deleting many documents at once is available through [`/bulk_delete`](/reference/bulk_delete_api_datasets__dataset_id__documents_bulk_delete_post).
+   *
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
    */
   DeleteDocument: {
     parameters: {
@@ -10311,7 +12977,23 @@ export interface operations {
       };
     };
   };
-  /** Retreives settings for dataset. */
+  /**
+   * Retreives settings for dataset.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   GetDatasetSettings: {
     parameters: {
       path: {
@@ -10328,7 +13010,23 @@ export interface operations {
       };
     };
   };
-  /** Add and overwrite settings about a dataset. Notably description, data source, etc. */
+  /**
+   * Add and overwrite settings about a dataset. Notably description, data source, etc.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   UpsertDatasetSettings: {
     parameters: {
       path: {
@@ -10350,7 +13048,23 @@ export interface operations {
       };
     };
   };
-  /** Retreives metadata about a dataset. Notably description, data source, etc */
+  /**
+   * Retreives metadata about a dataset. Notably description, data source, etc
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   GetDatasetMetadata: {
     parameters: {
       path: {
@@ -10367,7 +13081,23 @@ export interface operations {
       };
     };
   };
-  /** Retreives metadata about a dataset. Notably description, data source, etc */
+  /**
+   * Retreives metadata about a dataset. Notably description, data source, etc
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   UpsertDatasetMetadata: {
     parameters: {
       path: {
@@ -10397,6 +13127,21 @@ export interface operations {
    * If the provided `_id` has no matching document in the dataset, a new document will be created. Likewise, if the provided `dataset_id` does not match a dataset in your project a new one will be created.
    *
    * Support for updating many documents at once with a filter condition is available through [`/update_where`](/reference/updatewhere).
+   *
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
    */
   Update: {
     parameters: {
@@ -10419,7 +13164,23 @@ export interface operations {
       };
     };
   };
-  /** Delete fields in a document in a dataset by its id. */
+  /**
+   * Delete fields in a document in a dataset by its id.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   DeleteDocumentFields: {
     parameters: {
       path: {
@@ -10447,6 +13208,21 @@ export interface operations {
    *     If updating many items in a short timespan, please use BulkUpdate.
    *
    *     Every update api call temporarily locks and updates the schema, so will slow down with many updates in quick succession.
+   *
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
    */
   BulkUpdate: {
     parameters: {
@@ -10475,6 +13251,21 @@ export interface operations {
    * This method supports a partial update so you may add new fields or update only those you need. Other fields will remain unaffected.
    *
    * If the provided `dataset_id` does not match a dataset in your project, a new one will be created.
+   *
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
    */
   UpdateWhere: {
     parameters: {
@@ -10497,7 +13288,23 @@ export interface operations {
       };
     };
   };
-  /** Takes a high level aggregation of every field, return their unique values and frequencies. This is used to help create the filter bar for search. */
+  /**
+   * Takes a high level aggregation of every field, return their unique values and frequencies. This is used to help create the filter bar for search.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   ListFacets: {
     parameters: {
       path: {
@@ -10523,6 +13330,20 @@ export interface operations {
    * Retrieve documents with filters.
    * afterId is provided to retrieve even more documents. Loop through it to retrieve all documents in the database.
    * Filter is used to retrieve documents that match the conditions set in a filter query.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
    */
   GetWhere: {
     parameters: {
@@ -10549,6 +13370,20 @@ export interface operations {
    * Retrieve documents with filters.
    * afterId is provided to retrieve even more documents. Loop through it to retrieve all documents in the database.
    * Filter is used to retrieve documents that match the conditions set in a filter query.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
    */
   PaginateDocuments: {
     parameters: {
@@ -10571,7 +13406,23 @@ export interface operations {
       };
     };
   };
-  /** Retrieve documents by their IDs ("_id" field). This will retrieve the documents faster than a filter applied on the "_id" field. For single id lookup version of this request use /datasets/{dataset_id}/documents/get. */
+  /**
+   * Retrieve documents by their IDs ("_id" field). This will retrieve the documents faster than a filter applied on the "_id" field. For single id lookup version of this request use /datasets/{dataset_id}/documents/get.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   BulkGetDocuments: {
     parameters: {
       path: {
@@ -10593,7 +13444,23 @@ export interface operations {
       };
     };
   };
-  /** Delete a list of documents by their IDs. For deleting a single document refer to /datasets/{dataset_id}/documents/delete or deleting documents by filters refer to /datasets/{dataset_id}/documents/delete_where. */
+  /**
+   * Delete a list of documents by their IDs. For deleting a single document refer to /datasets/{dataset_id}/documents/delete or deleting documents by filters refer to /datasets/{dataset_id}/documents/delete_where.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   BulkDeleteDocuments: {
     parameters: {
       path: {
@@ -10619,6 +13486,20 @@ export interface operations {
    * Retrieve documents with filters.
    * afterId is provided to retrieve even more documents. Loop through it to retrieve all documents in the database.
    * Filter is used to retrieve documents that match the conditions set in a filter query.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
    */
   ListDocuments: {
     parameters: {
@@ -10924,7 +13805,23 @@ export interface operations {
       };
     };
   };
-  /** Delete documents that match on a filters. At least one filter must be provided. */
+  /**
+   * Delete documents that match on a filters. At least one filter must be provided.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   DeleteWhere: {
     parameters: {
       path: {
@@ -10946,7 +13843,23 @@ export interface operations {
       };
     };
   };
-  /** SimpleSearch is an easy way to use vector search and traditional text matching to search your dataset. It also supports filtering, sorting and aggregating results. */
+  /**
+   * SimpleSearch is an easy way to use vector search and traditional text matching to search your dataset. It also supports filtering, sorting and aggregating results.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   SimpleSearchPost: {
     parameters: {
       path: {
@@ -10968,7 +13881,23 @@ export interface operations {
       };
     };
   };
-  /** SimpleSearch is an easy way to use vector search and traditional text matching to search your dataset. It also supports filtering, sorting and aggregating results. */
+  /**
+   * SimpleSearch is an easy way to use vector search and traditional text matching to search your dataset. It also supports filtering, sorting and aggregating results.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   Search: {
     parameters: {
       path: {
@@ -10990,7 +13919,23 @@ export interface operations {
       };
     };
   };
-  /** Recommend documents similar to specific documents. Specify which vector field must be used for recommendation using  the documentsToRecommend property. */
+  /**
+   * Recommend documents similar to specific documents. Specify which vector field must be used for recommendation using  the documentsToRecommend property.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   Recommend: {
     parameters: {
       path: {
@@ -11012,6 +13957,31 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   },
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "body": "new_dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   CloneDataset: {
     parameters: {
       path: {
@@ -11033,7 +14003,23 @@ export interface operations {
       };
     };
   };
-  /** Predict using KNN regression. */
+  /**
+   * Predict using KNN regression.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "body": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   PredictKNNRegression: {
     parameters: {};
     responses: {
@@ -11050,7 +14036,12 @@ export interface operations {
       };
     };
   };
-  /** Predict using KNN regression from search results. */
+  /**
+   * Predict using KNN regression from search results.
+   *
+   * ### Required permissions
+   * > []
+   */
   PredictKNNFromResults: {
     parameters: {};
     responses: {
@@ -11067,6 +14058,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   BiasEvaluation: {
     parameters: {};
     responses: {
@@ -11083,6 +14078,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   Vectorize: {
     parameters: {};
     responses: {
@@ -11099,6 +14098,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   VectorizeAndInsert: {
     parameters: {
       path: {
@@ -11120,6 +14134,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   VectorizeField: {
     parameters: {
       path: {
@@ -11141,6 +14170,22 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read",
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "body": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
   TriggerWorkflow: {
     parameters: {};
     responses: {
@@ -11157,6 +14202,16 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ]
+   *   }
+   * ]
+   */
   ListWorkflows: {
     parameters: {
       query: {
@@ -11213,6 +14268,16 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ]
+   *   }
+   * ]
+   */
   GetWorkflowStatus: {
     parameters: {
       path: {
@@ -11234,6 +14299,16 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ]
+   *   }
+   * ]
+   */
   DeleteWorkflowStatus: {
     parameters: {
       path: {
@@ -11255,7 +14330,18 @@ export interface operations {
       };
     };
   };
-  /** Update metadata for a workflow run */
+  /**
+   * Update metadata for a workflow run
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ]
+   *   }
+   * ]
+   */
   UpsertWorkflowMetadata: {
     parameters: {
       path: {
@@ -11277,7 +14363,18 @@ export interface operations {
       };
     };
   };
-  /** Update status for a workflow run */
+  /**
+   * Update status for a workflow run
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ]
+   *   }
+   * ]
+   */
   UpsertWorkflowStatus: {
     parameters: {
       path: {
@@ -11299,6 +14396,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   DeleteFieldChildren: {
     parameters: {
       path: {
@@ -11322,6 +14423,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   ListFieldChildrens: {
     parameters: {
       path: {
@@ -11343,6 +14448,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   UpdateFieldChildren: {
     parameters: {
       path: {
@@ -11366,6 +14475,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   DeleteFavouriteWorkflow: {
     parameters: {
       path: {
@@ -11387,6 +14500,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   ListFavouriteWorkflows: {
     parameters: {};
     responses: {
@@ -11403,6 +14520,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   UpdateFavouriteWorkflow: {
     parameters: {
       path: {
@@ -11424,6 +14545,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   DeleteSavedFilter: {
     parameters: {
       path: {
@@ -11445,6 +14570,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   ListSavedFilters: {
     parameters: {};
     responses: {
@@ -11461,6 +14590,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   UpdateSavedFilter: {
     parameters: {
       path: {
@@ -11482,6 +14615,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   GetSavedFilter: {
     parameters: {
       path: {
@@ -11498,6 +14635,10 @@ export interface operations {
       };
     };
   };
+  /**
+   * ### Required permissions
+   * > []
+   */
   CreateSavedFilter: {
     parameters: {};
     responses: {
