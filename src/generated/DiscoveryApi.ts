@@ -121,6 +121,46 @@ export type GetOrganizationUsageOutput = operations['GetOrganizationUsage']['res
 export type ListUsersInOrganizationOutput = operations['ListUsersInOrganization']['responses']['200']['content']['application/json']
   export type ListProjectsInOrganizationInput = {}
 export type ListProjectsInOrganizationOutput = operations['ListProjectsInOrganization']['responses']['200']['content']['application/json']
+  export type CreateConnectorInput = operations['CreateConnector']['requestBody']['content']['application/json']
+export type CreateConnectorOutput = operations['CreateConnector']['responses']['200']['content']['application/json']
+  export type CheckConnectionInput = operations['CheckConnection']['requestBody']['content']['application/json']
+export type CheckConnectionOutput = operations['CheckConnection']['responses']['200']['content']['application/json']
+  export type GetConnectorInput = {}
+export type GetConnectorOutput = operations['GetConnector']['responses']['200']['content']['application/json']
+  export type UpdateConnectorInput = operations['UpdateConnector']['requestBody']['content']['application/json']
+export type UpdateConnectorOutput = operations['UpdateConnector']['responses']['200']['content']['application/json']
+  export type TriggerConnectorInput = operations['TriggerConnector']['requestBody']['content']['application/json']
+export type TriggerConnectorOutput = operations['TriggerConnector']['responses']['200']['content']['application/json']
+  export type DeleteConnectorInput = operations['DeleteConnector']['requestBody']['content']['application/json']
+export type DeleteConnectorOutput = operations['DeleteConnector']['responses']['200']['content']['application/json']
+  export type ListConnectorsInput = {}
+export type ListConnectorsOutput = operations['ListConnectors']['responses']['200']['content']['application/json']
+  export type ListConnectorTypesInput = {}
+export type ListConnectorTypesOutput = operations['ListConnectorTypes']['responses']['200']['content']['application/json']
+  export type GetConnectorTypeInput = {}
+export type GetConnectorTypeOutput = operations['GetConnectorType']['responses']['200']['content']['application/json']
+  export type ListConnectorJobsInput = {}
+export type ListConnectorJobsOutput = operations['ListConnectorJobs']['responses']['200']['content']['application/json']
+  export type GetConnectorJobInput = {}
+export type GetConnectorJobOutput = operations['GetConnectorJob']['responses']['200']['content']['application/json']
+  export type TriggerWorkflowInput = operations['TriggerWorkflow']['requestBody']['content']['application/json']
+export type TriggerWorkflowOutput = operations['TriggerWorkflow']['responses']['200']['content']['application/json']
+  export type ListWorkflowsInput = {}
+export type ListWorkflowsOutput = operations['ListWorkflows']['responses']['200']['content']['application/json']
+  export type GetWorkflowStatusInput = operations['GetWorkflowStatus']['requestBody']['content']['application/json']
+export type GetWorkflowStatusOutput = operations['GetWorkflowStatus']['responses']['200']['content']['application/json']
+  export type DeleteWorkflowStatusInput = operations['DeleteWorkflowStatus']['requestBody']['content']['application/json']
+export type DeleteWorkflowStatusOutput = operations['DeleteWorkflowStatus']['responses']['200']['content']['application/json']
+  export type UpsertWorkflowMetadataInput = operations['UpsertWorkflowMetadata']['requestBody']['content']['application/json']
+export type UpsertWorkflowMetadataOutput = operations['UpsertWorkflowMetadata']['responses']['200']['content']['application/json']
+  export type UpsertWorkflowStatusInput = operations['UpsertWorkflowStatus']['requestBody']['content']['application/json']
+export type UpsertWorkflowStatusOutput = operations['UpsertWorkflowStatus']['responses']['200']['content']['application/json']
+  export type ListWorkflowTypesInput = {}
+export type ListWorkflowTypesOutput = operations['ListWorkflowTypes']['responses']['200']['content']['application/json']
+  export type GetWorkflowTypeInput = {}
+export type GetWorkflowTypeOutput = operations['GetWorkflowType']['responses']['200']['content']['application/json']
+  export type ValidateWorkflowParamsInput = operations['ValidateWorkflowParams']['requestBody']['content']['application/json']
+export type ValidateWorkflowParamsOutput = operations['ValidateWorkflowParams']['responses']['200']['content']['application/json']
   export type InsertInput = operations['Insert']['requestBody']['content']['application/json']
 export type InsertOutput = operations['Insert']['responses']['200']['content']['application/json']
   export type BulkInsertInput = operations['BulkInsert']['requestBody']['content']['application/json']
@@ -213,18 +253,8 @@ export type VectorizeOutput = operations['Vectorize']['responses']['200']['conte
 export type VectorizeAndInsertOutput = operations['VectorizeAndInsert']['responses']['200']['content']['application/json']
   export type VectorizeFieldInput = operations['VectorizeField']['requestBody']['content']['application/json']
 export type VectorizeFieldOutput = operations['VectorizeField']['responses']['200']['content']['application/json']
-  export type TriggerWorkflowInput = operations['TriggerWorkflow']['requestBody']['content']['application/json']
-export type TriggerWorkflowOutput = operations['TriggerWorkflow']['responses']['200']['content']['application/json']
-  export type ListWorkflowsInput = {}
-export type ListWorkflowsOutput = operations['ListWorkflows']['responses']['200']['content']['application/json']
-  export type GetWorkflowStatusInput = operations['GetWorkflowStatus']['requestBody']['content']['application/json']
-export type GetWorkflowStatusOutput = operations['GetWorkflowStatus']['responses']['200']['content']['application/json']
-  export type DeleteWorkflowStatusInput = operations['DeleteWorkflowStatus']['requestBody']['content']['application/json']
-export type DeleteWorkflowStatusOutput = operations['DeleteWorkflowStatus']['responses']['200']['content']['application/json']
-  export type UpsertWorkflowMetadataInput = operations['UpsertWorkflowMetadata']['requestBody']['content']['application/json']
-export type UpsertWorkflowMetadataOutput = operations['UpsertWorkflowMetadata']['responses']['200']['content']['application/json']
-  export type UpsertWorkflowStatusInput = operations['UpsertWorkflowStatus']['requestBody']['content']['application/json']
-export type UpsertWorkflowStatusOutput = operations['UpsertWorkflowStatus']['responses']['200']['content']['application/json']
+  export type CreateImageFromPromptInput = operations['CreateImageFromPrompt']['requestBody']['content']['application/json']
+export type CreateImageFromPromptOutput = operations['CreateImageFromPrompt']['responses']['200']['content']['application/json']
   export type DeleteFieldChildrenInput = operations['DeleteFieldChildren']['requestBody']['content']['application/json']
 export type DeleteFieldChildrenOutput = operations['DeleteFieldChildren']['responses']['200']['content']['application/json']
   export type ListFieldChildrensInput = operations['ListFieldChildrens']['requestBody']['content']['application/json']
@@ -911,6 +941,226 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
+  public async CreateConnector(
+    input: CommandInput<CreateConnectorInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateConnectorOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/connectors/create',
+      options
+    });
+  }
+  public async CheckConnection(
+    input: CommandInput<CheckConnectionInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CheckConnectionOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/connectors/check_connection',
+      options
+    });
+  }
+  public async GetConnector(
+    input: CommandInput<GetConnectorInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetConnectorOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/connectors/{connector_id}/get',
+      options
+    });
+  }
+  public async UpdateConnector(
+    input: CommandInput<UpdateConnectorInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateConnectorOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/connectors/{connector_id}/update',
+      options
+    });
+  }
+  public async TriggerConnector(
+    input: CommandInput<TriggerConnectorInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<TriggerConnectorOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/connectors/{connector_id}/trigger',
+      options
+    });
+  }
+  public async DeleteConnector(
+    input: CommandInput<DeleteConnectorInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteConnectorOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/connectors/{connector_id}/delete',
+      options
+    });
+  }
+  public async ListConnectors(
+    input: CommandInput<ListConnectorsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListConnectorsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/connectors/list',
+      options
+    });
+  }
+  public async ListConnectorTypes(
+    input: CommandInput<ListConnectorTypesInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListConnectorTypesOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/connectors/types/list',
+      options
+    });
+  }
+  public async GetConnectorType(
+    input: CommandInput<GetConnectorTypeInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetConnectorTypeOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/connectors/types/{connector_id}/get',
+      options
+    });
+  }
+  public async ListConnectorJobs(
+    input: CommandInput<ListConnectorJobsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListConnectorJobsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/connectors/{connector_id}/jobs/list',
+      options
+    });
+  }
+  public async GetConnectorJob(
+    input: CommandInput<GetConnectorJobInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetConnectorJobOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/connectors/{connector_id}/jobs/{job_id}/get',
+      options
+    });
+  }
+  public async TriggerWorkflow(
+    input: CommandInput<TriggerWorkflowInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<TriggerWorkflowOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/trigger',
+      options
+    });
+  }
+  public async ListWorkflows(
+    input: CommandInput<ListWorkflowsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListWorkflowsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/workflows/list',
+      options
+    });
+  }
+  public async GetWorkflowStatus(
+    input: CommandInput<GetWorkflowStatusInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetWorkflowStatusOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/{workflow_id}/get',
+      options
+    });
+  }
+  public async DeleteWorkflowStatus(
+    input: CommandInput<DeleteWorkflowStatusInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteWorkflowStatusOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/{workflow_id}/delete',
+      options
+    });
+  }
+  public async UpsertWorkflowMetadata(
+    input: CommandInput<UpsertWorkflowMetadataInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpsertWorkflowMetadataOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/{workflow_id}/metadata',
+      options
+    });
+  }
+  public async UpsertWorkflowStatus(
+    input: CommandInput<UpsertWorkflowStatusInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpsertWorkflowStatusOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/{workflow_id}/status',
+      options
+    });
+  }
+  public async ListWorkflowTypes(
+    input: CommandInput<ListWorkflowTypesInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListWorkflowTypesOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/workflows/types/list',
+      options
+    });
+  }
+  public async GetWorkflowType(
+    input: CommandInput<GetWorkflowTypeInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetWorkflowTypeOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/workflows/types/{workflow_id}/get',
+      options
+    });
+  }
+  public async ValidateWorkflowParams(
+    input: CommandInput<ValidateWorkflowParamsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ValidateWorkflowParamsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/types/{workflow_id}/validate',
+      options
+    });
+  }
   public async Insert(
     input: CommandInput<InsertInput>,
     options?: _GenericMethodOptions
@@ -1417,69 +1667,14 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
-  public async TriggerWorkflow(
-    input: CommandInput<TriggerWorkflowInput>,
+  public async CreateImageFromPrompt(
+    input: CommandInput<CreateImageFromPromptInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<TriggerWorkflowOutput>> {
+  ):Promise<CommandOutput<CreateImageFromPromptOutput>> {
     return this.SendRequest({
       input,
       method:'post',
-      path:'/workflows/trigger',
-      options
-    });
-  }
-  public async ListWorkflows(
-    input: CommandInput<ListWorkflowsInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<ListWorkflowsOutput>> {
-    return this.SendRequest({
-      input,
-      method:'get',
-      path:'/workflows/list',
-      options
-    });
-  }
-  public async GetWorkflowStatus(
-    input: CommandInput<GetWorkflowStatusInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<GetWorkflowStatusOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/workflows/{workflow_id}/get',
-      options
-    });
-  }
-  public async DeleteWorkflowStatus(
-    input: CommandInput<DeleteWorkflowStatusInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<DeleteWorkflowStatusOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/workflows/{workflow_id}/delete',
-      options
-    });
-  }
-  public async UpsertWorkflowMetadata(
-    input: CommandInput<UpsertWorkflowMetadataInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<UpsertWorkflowMetadataOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/workflows/{workflow_id}/metadata',
-      options
-    });
-  }
-  public async UpsertWorkflowStatus(
-    input: CommandInput<UpsertWorkflowStatusInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<UpsertWorkflowStatusOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/workflows/{workflow_id}/status',
+      path:'/services/prompt_to_image/create',
       options
     });
   }

@@ -1048,6 +1048,280 @@ export interface paths {
      */
     get: operations["ListProjectsInOrganization"];
   };
+  "/connectors/create": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write",
+     *       "connectors:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "body": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    post: operations["CreateConnector"];
+  };
+  "/connectors/check_connection": {
+    /**
+     * ### Required permissions
+     * > []
+     */
+    post: operations["CheckConnection"];
+  };
+  "/connectors/{connector_id}/get": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "connectors:read"
+     *     ],
+     *     "connectors": [
+     *       {
+     *         "params": "connector_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    get: operations["GetConnector"];
+  };
+  "/connectors/{connector_id}/update": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "connectors:write",
+     *       "datasets:write"
+     *     ],
+     *     "connectors": [
+     *       {
+     *         "params": "connector_id"
+     *       }
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "body": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    post: operations["UpdateConnector"];
+  };
+  "/connectors/{connector_id}/trigger": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "connectors:write"
+     *     ],
+     *     "connectors": [
+     *       {
+     *         "params": "connector_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    post: operations["TriggerConnector"];
+  };
+  "/connectors/{connector_id}/delete": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "connectors:write"
+     *     ],
+     *     "connectors": [
+     *       {
+     *         "params": "connector_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    post: operations["DeleteConnector"];
+  };
+  "/connectors/list": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": []
+     *   }
+     * ]
+     */
+    get: operations["ListConnectors"];
+  };
+  "/connectors/types/list": {
+    /**
+     * ### Required permissions
+     * > []
+     */
+    get: operations["ListConnectorTypes"];
+  };
+  "/connectors/types/{connector_id}/get": {
+    /**
+     * ### Required permissions
+     * > []
+     */
+    get: operations["GetConnectorType"];
+  };
+  "/connectors/{connector_id}/jobs/list": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "connectors:read"
+     *     ],
+     *     "connectors": [
+     *       {
+     *         "params": "connector_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    get: operations["ListConnectorJobs"];
+  };
+  "/connectors/{connector_id}/jobs/{job_id}/get": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "connectors:read"
+     *     ],
+     *     "connectors": [
+     *       {
+     *         "params": "connector_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    get: operations["GetConnectorJob"];
+  };
+  "/workflows/trigger": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read",
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "body": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    post: operations["TriggerWorkflow"];
+  };
+  "/workflows/list": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ]
+     *   }
+     * ]
+     */
+    get: operations["ListWorkflows"];
+  };
+  "/workflows/{workflow_id}/get": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read"
+     *     ]
+     *   }
+     * ]
+     */
+    post: operations["GetWorkflowStatus"];
+  };
+  "/workflows/{workflow_id}/delete": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ]
+     *   }
+     * ]
+     */
+    post: operations["DeleteWorkflowStatus"];
+  };
+  "/workflows/{workflow_id}/metadata": {
+    /**
+     * Update metadata for a workflow run
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ]
+     *   }
+     * ]
+     */
+    post: operations["UpsertWorkflowMetadata"];
+  };
+  "/workflows/{workflow_id}/status": {
+    /**
+     * Update status for a workflow run
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ]
+     *   }
+     * ]
+     */
+    post: operations["UpsertWorkflowStatus"];
+  };
+  "/workflows/types/list": {
+    /**
+     * ### Required permissions
+     * > []
+     */
+    get: operations["ListWorkflowTypes"];
+  };
+  "/workflows/types/{workflow_id}/get": {
+    /**
+     * ### Required permissions
+     * > []
+     */
+    get: operations["GetWorkflowType"];
+  };
+  "/workflows/types/{workflow_id}/validate": {
+    /**
+     * ### Required permissions
+     * > []
+     */
+    post: operations["ValidateWorkflowParams"];
+  };
   "/datasets/{dataset_id}/documents/insert": {
     /**
      * When inserting the document you can specify your own id for a document by using the field name **"\_id"**.
@@ -1994,93 +2268,12 @@ export interface paths {
      */
     post: operations["VectorizeField"];
   };
-  "/workflows/trigger": {
+  "/services/prompt_to_image/create": {
     /**
      * ### Required permissions
-     * > [
-     *   {
-     *     "actions": [
-     *       "datasets:read",
-     *       "datasets:write"
-     *     ],
-     *     "datasets": [
-     *       {
-     *         "body": "dataset_id"
-     *       }
-     *     ]
-     *   }
-     * ]
+     * > []
      */
-    post: operations["TriggerWorkflow"];
-  };
-  "/workflows/list": {
-    /**
-     * ### Required permissions
-     * > [
-     *   {
-     *     "actions": [
-     *       "datasets:read"
-     *     ]
-     *   }
-     * ]
-     */
-    get: operations["ListWorkflows"];
-  };
-  "/workflows/{workflow_id}/get": {
-    /**
-     * ### Required permissions
-     * > [
-     *   {
-     *     "actions": [
-     *       "datasets:read"
-     *     ]
-     *   }
-     * ]
-     */
-    post: operations["GetWorkflowStatus"];
-  };
-  "/workflows/{workflow_id}/delete": {
-    /**
-     * ### Required permissions
-     * > [
-     *   {
-     *     "actions": [
-     *       "datasets:write"
-     *     ]
-     *   }
-     * ]
-     */
-    post: operations["DeleteWorkflowStatus"];
-  };
-  "/workflows/{workflow_id}/metadata": {
-    /**
-     * Update metadata for a workflow run
-     *
-     * ### Required permissions
-     * > [
-     *   {
-     *     "actions": [
-     *       "datasets:write"
-     *     ]
-     *   }
-     * ]
-     */
-    post: operations["UpsertWorkflowMetadata"];
-  };
-  "/workflows/{workflow_id}/status": {
-    /**
-     * Update status for a workflow run
-     *
-     * ### Required permissions
-     * > [
-     *   {
-     *     "actions": [
-     *       "datasets:write"
-     *     ]
-     *   }
-     * ]
-     */
-    post: operations["UpsertWorkflowStatus"];
+    post: operations["CreateImageFromPrompt"];
   };
   "/datasets/{dataset_id}/field_children/{fieldchildren_id}/delete": {
     /**
@@ -2253,24 +2446,34 @@ export interface components {
         _id?: string;
         name?: string;
         description?: string;
-        deployables?: {
-          id: string;
-          name?: string;
-          api_key?: string;
-          private?: boolean;
-        }[];
+        api_key?: string;
+        private?: boolean;
+        deployables?: (
+          | {
+              id?: string;
+              type?: "subheader";
+              text?: string;
+              name?: string;
+            }
+          | string
+        )[];
       }[];
     };
     CreateDeployableGroupInput: {
       _id?: string;
       name?: string;
       description?: string;
-      deployables?: {
-        id: string;
-        name?: string;
-        api_key?: string;
-        private?: boolean;
-      }[];
+      api_key?: string;
+      private?: boolean;
+      deployables?: (
+        | {
+            id?: string;
+            type?: "subheader";
+            text?: string;
+            name?: string;
+          }
+        | string
+      )[];
     };
     CreateDeployableGroupOutput: {
       id: string;
@@ -2280,23 +2483,33 @@ export interface components {
       _id?: string;
       name?: string;
       description?: string;
-      deployables?: {
-        id: string;
-        name?: string;
-        api_key?: string;
-        private?: boolean;
-      }[];
+      api_key?: string;
+      private?: boolean;
+      deployables?: (
+        | {
+            id?: string;
+            type?: "subheader";
+            text?: string;
+            name?: string;
+          }
+        | string
+      )[];
     };
     UpdateDeployableGroupInput: {
       _id?: string;
       name?: string;
       description?: string;
-      deployables?: {
-        id: string;
-        name?: string;
-        api_key?: string;
-        private?: boolean;
-      }[];
+      api_key?: string;
+      private?: boolean;
+      deployables?: (
+        | {
+            id?: string;
+            type?: "subheader";
+            text?: string;
+            name?: string;
+          }
+        | string
+      )[];
     };
     UpdateDeployableGroupOutput: unknown;
     CreateDeployableGroupKeyInput: unknown;
@@ -2915,6 +3128,15 @@ export interface components {
                 pageSize?: number;
               };
             }[];
+        realtimeClustering?: {
+          /** @default 4 */
+          nClusters?: number;
+          /** @default kmeans-realtime-4 */
+          alias?: string;
+          vectorField: string;
+          /** @default _cluster_.{vector_field}.{alias} */
+          outputField?: string;
+        };
         /**
          * @description A list of fields to search using the "query" parameter.
          *
@@ -2949,6 +3171,13 @@ export interface components {
       fieldExists?: {
         /** @description Field that must exist. */
         field?: string;
+      };
+      /** @description Match documents where doc[field] % module == value */
+      matchModulo?: {
+        /** @default _id */
+        field?: string;
+        modulo: number;
+        value: number;
       };
       /** @description Filter down to one document for each value of selected field. */
       dedupeByValue?: {
@@ -3176,6 +3405,15 @@ export interface components {
                   pageSize?: number;
                 };
               }[];
+          realtimeClustering?: {
+            /** @default 4 */
+            nClusters?: number;
+            /** @default kmeans-realtime-4 */
+            alias?: string;
+            vectorField: string;
+            /** @default _cluster_.{vector_field}.{alias} */
+            outputField?: string;
+          };
           /**
            * @description A list of fields to search using the "query" parameter.
            *
@@ -3210,6 +3448,13 @@ export interface components {
         fieldExists?: {
           /** @description Field that must exist. */
           field?: string;
+        };
+        /** @description Match documents where doc[field] % module == value */
+        matchModulo?: {
+          /** @default _id */
+          field?: string;
+          modulo: number;
+          value: number;
         };
         /** @description Filter down to one document for each value of selected field. */
         dedupeByValue?: {
@@ -3457,6 +3702,15 @@ export interface components {
                       pageSize?: number;
                     };
                   }[];
+              realtimeClustering?: {
+                /** @default 4 */
+                nClusters?: number;
+                /** @default kmeans-realtime-4 */
+                alias?: string;
+                vectorField: string;
+                /** @default _cluster_.{vector_field}.{alias} */
+                outputField?: string;
+              };
               /**
                * @description A list of fields to search using the "query" parameter.
                *
@@ -3491,6 +3745,13 @@ export interface components {
             fieldExists?: {
               /** @description Field that must exist. */
               field?: string;
+            };
+            /** @description Match documents where doc[field] % module == value */
+            matchModulo?: {
+              /** @default _id */
+              field?: string;
+              modulo: number;
+              value: number;
             };
             /** @description Filter down to one document for each value of selected field. */
             dedupeByValue?: {
@@ -3789,6 +4050,15 @@ export interface components {
                   pageSize?: number;
                 };
               }[];
+          realtimeClustering?: {
+            /** @default 4 */
+            nClusters?: number;
+            /** @default kmeans-realtime-4 */
+            alias?: string;
+            vectorField: string;
+            /** @default _cluster_.{vector_field}.{alias} */
+            outputField?: string;
+          };
           /**
            * @description A list of fields to search using the "query" parameter.
            *
@@ -3823,6 +4093,13 @@ export interface components {
         fieldExists?: {
           /** @description Field that must exist. */
           field?: string;
+        };
+        /** @description Match documents where doc[field] % module == value */
+        matchModulo?: {
+          /** @default _id */
+          field?: string;
+          modulo: number;
+          value: number;
         };
         /** @description Filter down to one document for each value of selected field. */
         dedupeByValue?: {
@@ -4070,6 +4347,15 @@ export interface components {
                       pageSize?: number;
                     };
                   }[];
+              realtimeClustering?: {
+                /** @default 4 */
+                nClusters?: number;
+                /** @default kmeans-realtime-4 */
+                alias?: string;
+                vectorField: string;
+                /** @default _cluster_.{vector_field}.{alias} */
+                outputField?: string;
+              };
               /**
                * @description A list of fields to search using the "query" parameter.
                *
@@ -4104,6 +4390,13 @@ export interface components {
             fieldExists?: {
               /** @description Field that must exist. */
               field?: string;
+            };
+            /** @description Match documents where doc[field] % module == value */
+            matchModulo?: {
+              /** @default _id */
+              field?: string;
+              modulo: number;
+              value: number;
             };
             /** @description Filter down to one document for each value of selected field. */
             dedupeByValue?: {
@@ -4461,6 +4754,15 @@ export interface components {
                   pageSize?: number;
                 };
               }[];
+          realtimeClustering?: {
+            /** @default 4 */
+            nClusters?: number;
+            /** @default kmeans-realtime-4 */
+            alias?: string;
+            vectorField: string;
+            /** @default _cluster_.{vector_field}.{alias} */
+            outputField?: string;
+          };
           /**
            * @description A list of fields to search using the "query" parameter.
            *
@@ -4495,6 +4797,13 @@ export interface components {
         fieldExists?: {
           /** @description Field that must exist. */
           field?: string;
+        };
+        /** @description Match documents where doc[field] % module == value */
+        matchModulo?: {
+          /** @default _id */
+          field?: string;
+          modulo: number;
+          value: number;
         };
         /** @description Filter down to one document for each value of selected field. */
         dedupeByValue?: {
@@ -4742,6 +5051,15 @@ export interface components {
                       pageSize?: number;
                     };
                   }[];
+              realtimeClustering?: {
+                /** @default 4 */
+                nClusters?: number;
+                /** @default kmeans-realtime-4 */
+                alias?: string;
+                vectorField: string;
+                /** @default _cluster_.{vector_field}.{alias} */
+                outputField?: string;
+              };
               /**
                * @description A list of fields to search using the "query" parameter.
                *
@@ -4776,6 +5094,13 @@ export interface components {
             fieldExists?: {
               /** @description Field that must exist. */
               field?: string;
+            };
+            /** @description Match documents where doc[field] % module == value */
+            matchModulo?: {
+              /** @default _id */
+              field?: string;
+              modulo: number;
+              value: number;
             };
             /** @description Filter down to one document for each value of selected field. */
             dedupeByValue?: {
@@ -5155,6 +5480,15 @@ export interface components {
                   pageSize?: number;
                 };
               }[];
+          realtimeClustering?: {
+            /** @default 4 */
+            nClusters?: number;
+            /** @default kmeans-realtime-4 */
+            alias?: string;
+            vectorField: string;
+            /** @default _cluster_.{vector_field}.{alias} */
+            outputField?: string;
+          };
           /**
            * @description A list of fields to search using the "query" parameter.
            *
@@ -5189,6 +5523,13 @@ export interface components {
         fieldExists?: {
           /** @description Field that must exist. */
           field?: string;
+        };
+        /** @description Match documents where doc[field] % module == value */
+        matchModulo?: {
+          /** @default _id */
+          field?: string;
+          modulo: number;
+          value: number;
         };
         /** @description Filter down to one document for each value of selected field. */
         dedupeByValue?: {
@@ -5493,6 +5834,15 @@ export interface components {
                   pageSize?: number;
                 };
               }[];
+          realtimeClustering?: {
+            /** @default 4 */
+            nClusters?: number;
+            /** @default kmeans-realtime-4 */
+            alias?: string;
+            vectorField: string;
+            /** @default _cluster_.{vector_field}.{alias} */
+            outputField?: string;
+          };
           /**
            * @description A list of fields to search using the "query" parameter.
            *
@@ -5527,6 +5877,13 @@ export interface components {
         fieldExists?: {
           /** @description Field that must exist. */
           field?: string;
+        };
+        /** @description Match documents where doc[field] % module == value */
+        matchModulo?: {
+          /** @default _id */
+          field?: string;
+          modulo: number;
+          value: number;
         };
         /** @description Filter down to one document for each value of selected field. */
         dedupeByValue?: {
@@ -5815,6 +6172,8 @@ export interface components {
            * @default 1
            */
           accuracy?: 1 | 2 | 3 | 4;
+          /** @default 0.7 */
+          temperature?: number;
           /**
            * @description Maximum number of words that will be generated.
            * @default 60
@@ -5876,6 +6235,8 @@ export interface components {
                * @default 1
                */
               accuracy?: 1 | 2 | 3 | 4;
+              /** @default 0.7 */
+              temperature?: number;
               /**
                * @description Maximum number of words that will be generated.
                * @default 60
@@ -5888,6 +6249,7 @@ export interface components {
               delay_between_summary_generation?: number;
             };
             confidence?: number;
+            retry_count?: number;
           }[];
         };
       };
@@ -5948,6 +6310,8 @@ export interface components {
                * @default 1
                */
               accuracy?: 1 | 2 | 3 | 4;
+              /** @default 0.7 */
+              temperature?: number;
               /**
                * @description Maximum number of words that will be generated.
                * @default 60
@@ -5960,6 +6324,7 @@ export interface components {
               delay_between_summary_generation?: number;
             };
             confidence?: number;
+            retry_count?: number;
           }[];
         };
       };
@@ -6110,6 +6475,625 @@ export interface components {
         updated_at?: string;
       }[];
     };
+    CreateConnectorInput: {
+      source_type: "Snowflake";
+      source_database?: string;
+      source_collection: string;
+      /** @description If provided, use this field as the _id value in documents. */
+      id_field?: string;
+      source_settings: {
+        custom?: { [key: string]: unknown };
+        Snowflake?: {
+          /** Authorization Method */
+          credentials?:
+            | {
+                /** @default OAuth */
+                auth_type: string;
+                /**
+                 * Client ID
+                 * @description The Client ID of your Snowflake developer application.
+                 */
+                client_id: string;
+                /**
+                 * Client Secret
+                 * @description The Client Secret of your Snowflake developer application.
+                 */
+                client_secret: string;
+                /**
+                 * Access Token
+                 * @description Access Token for making authenticated requests.
+                 */
+                access_token?: string;
+                /**
+                 * Refresh Token
+                 * @description Refresh Token for making authenticated requests.
+                 */
+                refresh_token?: string;
+              }
+            | {
+                /** @default username/password */
+                auth_type: string;
+                /**
+                 * Username
+                 * @description The username you created to allow Airbyte to access the database.
+                 */
+                username: string;
+                /**
+                 * Password
+                 * @description The password associated with the username.
+                 */
+                password: string;
+              };
+          /**
+           * Account Name
+           * @description The host domain of the snowflake instance (must include the account, region, cloud environment, and end with snowflakecomputing.com).
+           */
+          host?: string;
+          /**
+           * Role
+           * @description The role you created for Airbyte to access Snowflake.
+           */
+          role?: string;
+          /**
+           * Warehouse
+           * @description The warehouse you created for Airbyte to access data.
+           */
+          warehouse?: string;
+          /**
+           * Database
+           * @description The database you created for Airbyte to access data.
+           */
+          database?: string;
+          /** Schema */
+          schema?: string;
+        };
+      };
+      schedule?: {
+        date_interval: "minutes" | "hours" | "days" | "weeks" | "months";
+        units: number;
+      };
+      dataset_id: string;
+      name?: string;
+    };
+    ConnectorSchema: {
+      source_type: "Snowflake";
+      source_database?: string;
+      source_collection: string;
+      /** @description If provided, use this field as the _id value in documents. */
+      id_field?: string;
+      source_settings: {
+        custom?: { [key: string]: unknown };
+        Snowflake?: {
+          /** Authorization Method */
+          credentials?:
+            | {
+                /** @default OAuth */
+                auth_type: string;
+                /**
+                 * Client ID
+                 * @description The Client ID of your Snowflake developer application.
+                 */
+                client_id: string;
+                /**
+                 * Client Secret
+                 * @description The Client Secret of your Snowflake developer application.
+                 */
+                client_secret: string;
+                /**
+                 * Access Token
+                 * @description Access Token for making authenticated requests.
+                 */
+                access_token?: string;
+                /**
+                 * Refresh Token
+                 * @description Refresh Token for making authenticated requests.
+                 */
+                refresh_token?: string;
+              }
+            | {
+                /** @default username/password */
+                auth_type: string;
+                /**
+                 * Username
+                 * @description The username you created to allow Airbyte to access the database.
+                 */
+                username: string;
+                /**
+                 * Password
+                 * @description The password associated with the username.
+                 */
+                password: string;
+              };
+          /**
+           * Account Name
+           * @description The host domain of the snowflake instance (must include the account, region, cloud environment, and end with snowflakecomputing.com).
+           */
+          host?: string;
+          /**
+           * Role
+           * @description The role you created for Airbyte to access Snowflake.
+           */
+          role?: string;
+          /**
+           * Warehouse
+           * @description The warehouse you created for Airbyte to access data.
+           */
+          warehouse?: string;
+          /**
+           * Database
+           * @description The database you created for Airbyte to access data.
+           */
+          database?: string;
+          /** Schema */
+          schema?: string;
+        };
+      };
+      schedule?: {
+        date_interval: "minutes" | "hours" | "days" | "weeks" | "months";
+        units: number;
+      };
+      dataset_id: string;
+      name?: string;
+    };
+    CreateConnectorOutput: {
+      _id: string;
+    };
+    CheckConnectionInput: {
+      source_type: "Snowflake";
+      source_settings: {
+        custom?: { [key: string]: unknown };
+        Snowflake?: {
+          /** Authorization Method */
+          credentials?:
+            | {
+                /** @default OAuth */
+                auth_type: string;
+                /**
+                 * Client ID
+                 * @description The Client ID of your Snowflake developer application.
+                 */
+                client_id: string;
+                /**
+                 * Client Secret
+                 * @description The Client Secret of your Snowflake developer application.
+                 */
+                client_secret: string;
+                /**
+                 * Access Token
+                 * @description Access Token for making authenticated requests.
+                 */
+                access_token?: string;
+                /**
+                 * Refresh Token
+                 * @description Refresh Token for making authenticated requests.
+                 */
+                refresh_token?: string;
+              }
+            | {
+                /** @default username/password */
+                auth_type: string;
+                /**
+                 * Username
+                 * @description The username you created to allow Airbyte to access the database.
+                 */
+                username: string;
+                /**
+                 * Password
+                 * @description The password associated with the username.
+                 */
+                password: string;
+              };
+          /**
+           * Account Name
+           * @description The host domain of the snowflake instance (must include the account, region, cloud environment, and end with snowflakecomputing.com).
+           */
+          host?: string;
+          /**
+           * Role
+           * @description The role you created for Airbyte to access Snowflake.
+           */
+          role?: string;
+          /**
+           * Warehouse
+           * @description The warehouse you created for Airbyte to access data.
+           */
+          warehouse?: string;
+          /**
+           * Database
+           * @description The database you created for Airbyte to access data.
+           */
+          database?: string;
+          /** Schema */
+          schema?: string;
+        };
+      };
+    };
+    CheckConnectionOutput: {
+      status: "succeeded" | "failed";
+      message: string;
+    };
+    GetConnectorInput: unknown;
+    GetConnectorOutput: {
+      source_type: "Snowflake";
+      source_database?: string;
+      source_collection: string;
+      /** @description If provided, use this field as the _id value in documents. */
+      id_field?: string;
+      source_settings: {
+        custom?: { [key: string]: unknown };
+        Snowflake?: {
+          /** Authorization Method */
+          credentials?:
+            | {
+                /** @default OAuth */
+                auth_type: string;
+                /**
+                 * Client ID
+                 * @description The Client ID of your Snowflake developer application.
+                 */
+                client_id: string;
+                /**
+                 * Client Secret
+                 * @description The Client Secret of your Snowflake developer application.
+                 */
+                client_secret: string;
+                /**
+                 * Access Token
+                 * @description Access Token for making authenticated requests.
+                 */
+                access_token?: string;
+                /**
+                 * Refresh Token
+                 * @description Refresh Token for making authenticated requests.
+                 */
+                refresh_token?: string;
+              }
+            | {
+                /** @default username/password */
+                auth_type: string;
+                /**
+                 * Username
+                 * @description The username you created to allow Airbyte to access the database.
+                 */
+                username: string;
+                /**
+                 * Password
+                 * @description The password associated with the username.
+                 */
+                password: string;
+              };
+          /**
+           * Account Name
+           * @description The host domain of the snowflake instance (must include the account, region, cloud environment, and end with snowflakecomputing.com).
+           */
+          host?: string;
+          /**
+           * Role
+           * @description The role you created for Airbyte to access Snowflake.
+           */
+          role?: string;
+          /**
+           * Warehouse
+           * @description The warehouse you created for Airbyte to access data.
+           */
+          warehouse?: string;
+          /**
+           * Database
+           * @description The database you created for Airbyte to access data.
+           */
+          database?: string;
+          /** Schema */
+          schema?: string;
+        };
+      };
+      schedule?: {
+        date_interval: "minutes" | "hours" | "days" | "weeks" | "months";
+        units: number;
+      };
+      dataset_id: string;
+      name?: string;
+      _id?: string;
+    };
+    UpdateConnectorInput: {
+      source_type: "Snowflake";
+      source_database?: string;
+      source_collection: string;
+      /** @description If provided, use this field as the _id value in documents. */
+      id_field?: string;
+      source_settings: {
+        custom?: { [key: string]: unknown };
+        Snowflake?: {
+          /** Authorization Method */
+          credentials?:
+            | {
+                /** @default OAuth */
+                auth_type: string;
+                /**
+                 * Client ID
+                 * @description The Client ID of your Snowflake developer application.
+                 */
+                client_id: string;
+                /**
+                 * Client Secret
+                 * @description The Client Secret of your Snowflake developer application.
+                 */
+                client_secret: string;
+                /**
+                 * Access Token
+                 * @description Access Token for making authenticated requests.
+                 */
+                access_token?: string;
+                /**
+                 * Refresh Token
+                 * @description Refresh Token for making authenticated requests.
+                 */
+                refresh_token?: string;
+              }
+            | {
+                /** @default username/password */
+                auth_type: string;
+                /**
+                 * Username
+                 * @description The username you created to allow Airbyte to access the database.
+                 */
+                username: string;
+                /**
+                 * Password
+                 * @description The password associated with the username.
+                 */
+                password: string;
+              };
+          /**
+           * Account Name
+           * @description The host domain of the snowflake instance (must include the account, region, cloud environment, and end with snowflakecomputing.com).
+           */
+          host?: string;
+          /**
+           * Role
+           * @description The role you created for Airbyte to access Snowflake.
+           */
+          role?: string;
+          /**
+           * Warehouse
+           * @description The warehouse you created for Airbyte to access data.
+           */
+          warehouse?: string;
+          /**
+           * Database
+           * @description The database you created for Airbyte to access data.
+           */
+          database?: string;
+          /** Schema */
+          schema?: string;
+        };
+      };
+      schedule?: {
+        date_interval: "minutes" | "hours" | "days" | "weeks" | "months";
+        units: number;
+      };
+      dataset_id: string;
+      name?: string;
+    };
+    UpdateConnectorOutput: unknown;
+    TriggerConnectorInput: unknown;
+    TriggerConnectorOutput: unknown;
+    DeleteConnectorInput: unknown;
+    DeleteConnectorOutput: unknown;
+    ListConnectorsInput: unknown;
+    ListConnectorsOutput: {
+      results: {
+        source_type: "Snowflake";
+        source_database?: string;
+        source_collection: string;
+        /** @description If provided, use this field as the _id value in documents. */
+        id_field?: string;
+        source_settings: {
+          custom?: { [key: string]: unknown };
+          Snowflake?: {
+            /** Authorization Method */
+            credentials?:
+              | {
+                  /** @default OAuth */
+                  auth_type: string;
+                  /**
+                   * Client ID
+                   * @description The Client ID of your Snowflake developer application.
+                   */
+                  client_id: string;
+                  /**
+                   * Client Secret
+                   * @description The Client Secret of your Snowflake developer application.
+                   */
+                  client_secret: string;
+                  /**
+                   * Access Token
+                   * @description Access Token for making authenticated requests.
+                   */
+                  access_token?: string;
+                  /**
+                   * Refresh Token
+                   * @description Refresh Token for making authenticated requests.
+                   */
+                  refresh_token?: string;
+                }
+              | {
+                  /** @default username/password */
+                  auth_type: string;
+                  /**
+                   * Username
+                   * @description The username you created to allow Airbyte to access the database.
+                   */
+                  username: string;
+                  /**
+                   * Password
+                   * @description The password associated with the username.
+                   */
+                  password: string;
+                };
+            /**
+             * Account Name
+             * @description The host domain of the snowflake instance (must include the account, region, cloud environment, and end with snowflakecomputing.com).
+             */
+            host?: string;
+            /**
+             * Role
+             * @description The role you created for Airbyte to access Snowflake.
+             */
+            role?: string;
+            /**
+             * Warehouse
+             * @description The warehouse you created for Airbyte to access data.
+             */
+            warehouse?: string;
+            /**
+             * Database
+             * @description The database you created for Airbyte to access data.
+             */
+            database?: string;
+            /** Schema */
+            schema?: string;
+          };
+        };
+        schedule?: {
+          date_interval: "minutes" | "hours" | "days" | "weeks" | "months";
+          units: number;
+        };
+        dataset_id: string;
+        name?: string;
+        _id?: string;
+      }[];
+    };
+    ListConnectorTypesInput: unknown;
+    ListConnectorTypesOutput: {
+      results: {
+        image: string;
+        _id: "Snowflake";
+        name: string;
+        tags: "Data Warehouse"[];
+        description: string;
+      }[];
+    };
+    GetConnectorTypeInput: unknown;
+    GetConnectorTypeOutput: {
+      image: string;
+      _id: "Snowflake";
+      name: string;
+      tags: "Data Warehouse"[];
+      description: string;
+      schema: { [key: string]: unknown };
+    };
+    ListConnectorJobsInput: unknown;
+    ListConnectorJobsOutput: {
+      results: {
+        status:
+          | "pending"
+          | "running"
+          | "incomplete"
+          | "failed"
+          | "succeeded"
+          | "cancelled";
+        created_at: number;
+        error_message?: string;
+        _id: number;
+      }[];
+    };
+    GetConnectorJobInput: unknown;
+    GetConnectorJobOutput: {
+      status:
+        | "pending"
+        | "running"
+        | "incomplete"
+        | "failed"
+        | "succeeded"
+        | "cancelled";
+      created_at: number;
+      error_message?: string;
+      _id: number;
+    };
+    TriggerWorkflowInput: {
+      params: { [key: string]: unknown };
+      notebook_path?: string;
+      instance_type?: string;
+      dataset_id: string;
+      workflow_id?: string;
+    };
+    TriggerWorkflowOutput: {
+      job_id: string;
+    };
+    ListWorkflowsInput: unknown;
+    ListWorkflowsOutput: {
+      results: ({
+        creation_time?: string;
+        notebook_path?: string;
+        instance_type?: string;
+        dataset_id?: string;
+        params?: { [key: string]: unknown };
+        _id?: string;
+        workflow_id?: string;
+        metadata?: { [key: string]: unknown };
+        /** @description Status of the workflow. Used for knowing when to send an email notification. */
+        status?: "complete" | "inprogress" | "failed";
+        job_status?: "InProgress" | "Completed" | "Failed";
+      } & { [key: string]: unknown })[];
+    };
+    GetWorkflowStatusInput: unknown;
+    GetWorkflowStatusOutput: {
+      creation_time?: string;
+      notebook_path?: string;
+      instance_type?: string;
+      dataset_id?: string;
+      params?: { [key: string]: unknown };
+      _id?: string;
+      workflow_id?: string;
+      metadata?: { [key: string]: unknown };
+      /** @description Status of the workflow. Used for knowing when to send an email notification. */
+      status?: "complete" | "inprogress" | "failed";
+      job_status?: "InProgress" | "Completed" | "Failed";
+    } & { [key: string]: unknown };
+    DeleteWorkflowStatusInput: unknown;
+    DeleteWorkflowStatusOutput: unknown;
+    UpsertWorkflowMetadataInput: {
+      /** @description Edit and add metadata for the workflow. */
+      metadata: { [key: string]: unknown };
+    };
+    UpsertWorkflowMetadataOutput: unknown;
+    UpsertWorkflowStatusInput: {
+      /** @description Metadata of the workflow. Can be an object including any information you want to store. */
+      metadata?: { [key: string]: unknown };
+      /** @description Status of the workflow. Used for knowing when to send an email notification. */
+      status: "complete" | "inprogress" | "failed";
+      /** @description Workflow name that is passed into the email. */
+      workflow_name?: string;
+      /** @description Additional information of the workflow that is passed into the email. */
+      additional_information?: string;
+      /**
+       * @description Whether to send an email on workflow completion.
+       * @default true
+       */
+      send_email?: boolean;
+    };
+    UpsertWorkflowStatusOutput: unknown;
+    ListWorkflowTypesInput: unknown;
+    ListWorkflowTypesOutput: {
+      results: ({
+        workflow_id: string;
+        workflow_path?: string;
+        parameters?: { [key: string]: unknown };
+      } & { [key: string]: unknown })[];
+    };
+    GetWorkflowTypeInput: unknown;
+    GetWorkflowTypeOutput: {
+      workflow_id: string;
+      workflow_path?: string;
+      parameters?: { [key: string]: unknown };
+    } & { [key: string]: unknown };
+    ValidateWorkflowParamsInput: {
+      parameters: { [key: string]: unknown };
+    };
+    ValidateWorkflowParamsOutput: {
+      status: string;
+      message: string;
+    };
     InsertInput: {
       /** @description Each document to upsert must have an _id field matching an existing document. */
       document?: {
@@ -6147,6 +7131,8 @@ export interface components {
           | "all-mpnet-base-v2"
           | "clip-vit-b-32-image"
           | "clip-vit-b-32-text"
+          | "clip-vit-l-14-image"
+          | "clip-vit-l-14-text"
           | "sentence-transformers"
           | "similarity-all-mpnet-base-v2";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
@@ -6224,6 +7210,8 @@ export interface components {
           | "all-mpnet-base-v2"
           | "clip-vit-b-32-image"
           | "clip-vit-b-32-text"
+          | "clip-vit-l-14-image"
+          | "clip-vit-l-14-text"
           | "sentence-transformers"
           | "similarity-all-mpnet-base-v2";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
@@ -6458,6 +7446,15 @@ export interface components {
                   pageSize?: number;
                 };
               }[];
+          realtimeClustering?: {
+            /** @default 4 */
+            nClusters?: number;
+            /** @default kmeans-realtime-4 */
+            alias?: string;
+            vectorField: string;
+            /** @default _cluster_.{vector_field}.{alias} */
+            outputField?: string;
+          };
           /**
            * @description A list of fields to search using the "query" parameter.
            *
@@ -6492,6 +7489,13 @@ export interface components {
         fieldExists?: {
           /** @description Field that must exist. */
           field?: string;
+        };
+        /** @description Match documents where doc[field] % module == value */
+        matchModulo?: {
+          /** @default _id */
+          field?: string;
+          modulo: number;
+          value: number;
         };
         /** @description Filter down to one document for each value of selected field. */
         dedupeByValue?: {
@@ -6804,6 +7808,15 @@ export interface components {
                   pageSize?: number;
                 };
               }[];
+          realtimeClustering?: {
+            /** @default 4 */
+            nClusters?: number;
+            /** @default kmeans-realtime-4 */
+            alias?: string;
+            vectorField: string;
+            /** @default _cluster_.{vector_field}.{alias} */
+            outputField?: string;
+          };
           /**
            * @description A list of fields to search using the "query" parameter.
            *
@@ -6838,6 +7851,13 @@ export interface components {
         fieldExists?: {
           /** @description Field that must exist. */
           field?: string;
+        };
+        /** @description Match documents where doc[field] % module == value */
+        matchModulo?: {
+          /** @default _id */
+          field?: string;
+          modulo: number;
+          value: number;
         };
         /** @description Filter down to one document for each value of selected field. */
         dedupeByValue?: {
@@ -7051,6 +8071,8 @@ export interface components {
           | "all-mpnet-base-v2"
           | "clip-vit-b-32-image"
           | "clip-vit-b-32-text"
+          | "clip-vit-l-14-image"
+          | "clip-vit-l-14-text"
           | "sentence-transformers"
           | "similarity-all-mpnet-base-v2";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
@@ -7141,6 +8163,8 @@ export interface components {
           | "all-mpnet-base-v2"
           | "clip-vit-b-32-image"
           | "clip-vit-b-32-text"
+          | "clip-vit-l-14-image"
+          | "clip-vit-l-14-text"
           | "sentence-transformers"
           | "similarity-all-mpnet-base-v2";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
@@ -7339,6 +8363,15 @@ export interface components {
                   pageSize?: number;
                 };
               }[];
+          realtimeClustering?: {
+            /** @default 4 */
+            nClusters?: number;
+            /** @default kmeans-realtime-4 */
+            alias?: string;
+            vectorField: string;
+            /** @default _cluster_.{vector_field}.{alias} */
+            outputField?: string;
+          };
           /**
            * @description A list of fields to search using the "query" parameter.
            *
@@ -7373,6 +8406,13 @@ export interface components {
         fieldExists?: {
           /** @description Field that must exist. */
           field?: string;
+        };
+        /** @description Match documents where doc[field] % module == value */
+        matchModulo?: {
+          /** @default _id */
+          field?: string;
+          modulo: number;
+          value: number;
         };
         /** @description Filter down to one document for each value of selected field. */
         dedupeByValue?: {
@@ -7647,6 +8687,15 @@ export interface components {
                   pageSize?: number;
                 };
               }[];
+          realtimeClustering?: {
+            /** @default 4 */
+            nClusters?: number;
+            /** @default kmeans-realtime-4 */
+            alias?: string;
+            vectorField: string;
+            /** @default _cluster_.{vector_field}.{alias} */
+            outputField?: string;
+          };
           /**
            * @description A list of fields to search using the "query" parameter.
            *
@@ -7681,6 +8730,13 @@ export interface components {
         fieldExists?: {
           /** @description Field that must exist. */
           field?: string;
+        };
+        /** @description Match documents where doc[field] % module == value */
+        matchModulo?: {
+          /** @default _id */
+          field?: string;
+          modulo: number;
+          value: number;
         };
         /** @description Filter down to one document for each value of selected field. */
         dedupeByValue?: {
@@ -7947,6 +9003,15 @@ export interface components {
                   pageSize?: number;
                 };
               }[];
+          realtimeClustering?: {
+            /** @default 4 */
+            nClusters?: number;
+            /** @default kmeans-realtime-4 */
+            alias?: string;
+            vectorField: string;
+            /** @default _cluster_.{vector_field}.{alias} */
+            outputField?: string;
+          };
           /**
            * @description A list of fields to search using the "query" parameter.
            *
@@ -7981,6 +9046,13 @@ export interface components {
         fieldExists?: {
           /** @description Field that must exist. */
           field?: string;
+        };
+        /** @description Match documents where doc[field] % module == value */
+        matchModulo?: {
+          /** @default _id */
+          field?: string;
+          modulo: number;
+          value: number;
         };
         /** @description Filter down to one document for each value of selected field. */
         dedupeByValue?: {
@@ -8373,6 +9445,15 @@ export interface components {
                 pageSize?: number;
               };
             }[];
+        realtimeClustering?: {
+          /** @default 4 */
+          nClusters?: number;
+          /** @default kmeans-realtime-4 */
+          alias?: string;
+          vectorField: string;
+          /** @default _cluster_.{vector_field}.{alias} */
+          outputField?: string;
+        };
         /**
          * @description A list of fields to search using the "query" parameter.
          *
@@ -8407,6 +9488,13 @@ export interface components {
       fieldExists?: {
         /** @description Field that must exist. */
         field?: string;
+      };
+      /** @description Match documents where doc[field] % module == value */
+      matchModulo?: {
+        /** @default _id */
+        field?: string;
+        modulo: number;
+        value: number;
       };
       /** @description Filter down to one document for each value of selected field. */
       dedupeByValue?: {
@@ -8674,6 +9762,15 @@ export interface components {
                   pageSize?: number;
                 };
               }[];
+          realtimeClustering?: {
+            /** @default 4 */
+            nClusters?: number;
+            /** @default kmeans-realtime-4 */
+            alias?: string;
+            vectorField: string;
+            /** @default _cluster_.{vector_field}.{alias} */
+            outputField?: string;
+          };
           /**
            * @description A list of fields to search using the "query" parameter.
            *
@@ -8708,6 +9805,13 @@ export interface components {
         fieldExists?: {
           /** @description Field that must exist. */
           field?: string;
+        };
+        /** @description Match documents where doc[field] % module == value */
+        matchModulo?: {
+          /** @default _id */
+          field?: string;
+          modulo: number;
+          value: number;
         };
         /** @description Filter down to one document for each value of selected field. */
         dedupeByValue?: {
@@ -8884,6 +9988,15 @@ export interface components {
               pageSize?: number;
             };
           }[];
+      realtimeClustering?: {
+        /** @default 4 */
+        nClusters?: number;
+        /** @default kmeans-realtime-4 */
+        alias?: string;
+        vectorField: string;
+        /** @default _cluster_.{vector_field}.{alias} */
+        outputField?: string;
+      };
       /**
        * @description A list of fields to search using the "query" parameter.
        *
@@ -9221,6 +10334,15 @@ export interface components {
                   pageSize?: number;
                 };
               }[];
+          realtimeClustering?: {
+            /** @default 4 */
+            nClusters?: number;
+            /** @default kmeans-realtime-4 */
+            alias?: string;
+            vectorField: string;
+            /** @default _cluster_.{vector_field}.{alias} */
+            outputField?: string;
+          };
           /**
            * @description A list of fields to search using the "query" parameter.
            *
@@ -9255,6 +10377,13 @@ export interface components {
         fieldExists?: {
           /** @description Field that must exist. */
           field?: string;
+        };
+        /** @description Match documents where doc[field] % module == value */
+        matchModulo?: {
+          /** @default _id */
+          field?: string;
+          modulo: number;
+          value: number;
         };
         /** @description Filter down to one document for each value of selected field. */
         dedupeByValue?: {
@@ -9431,6 +10560,15 @@ export interface components {
               pageSize?: number;
             };
           }[];
+      realtimeClustering?: {
+        /** @default 4 */
+        nClusters?: number;
+        /** @default kmeans-realtime-4 */
+        alias?: string;
+        vectorField: string;
+        /** @default _cluster_.{vector_field}.{alias} */
+        outputField?: string;
+      };
       /**
        * @description A list of fields to search using the "query" parameter.
        *
@@ -9780,6 +10918,15 @@ export interface components {
                   pageSize?: number;
                 };
               }[];
+          realtimeClustering?: {
+            /** @default 4 */
+            nClusters?: number;
+            /** @default kmeans-realtime-4 */
+            alias?: string;
+            vectorField: string;
+            /** @default _cluster_.{vector_field}.{alias} */
+            outputField?: string;
+          };
           /**
            * @description A list of fields to search using the "query" parameter.
            *
@@ -9814,6 +10961,13 @@ export interface components {
         fieldExists?: {
           /** @description Field that must exist. */
           field?: string;
+        };
+        /** @description Match documents where doc[field] % module == value */
+        matchModulo?: {
+          /** @default _id */
+          field?: string;
+          modulo: number;
+          value: number;
         };
         /** @description Filter down to one document for each value of selected field. */
         dedupeByValue?: {
@@ -9963,6 +11117,8 @@ export interface components {
           | "all-mpnet-base-v2"
           | "clip-vit-b-32-image"
           | "clip-vit-b-32-text"
+          | "clip-vit-l-14-image"
+          | "clip-vit-l-14-text"
           | "sentence-transformers"
           | "similarity-all-mpnet-base-v2";
         /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
@@ -9986,6 +11142,8 @@ export interface components {
         | "all-mpnet-base-v2"
         | "clip-vit-b-32-image"
         | "clip-vit-b-32-text"
+        | "clip-vit-l-14-image"
+        | "clip-vit-l-14-text"
         | "sentence-transformers"
         | "similarity-all-mpnet-base-v2";
       /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
@@ -10016,6 +11174,8 @@ export interface components {
         | "all-mpnet-base-v2"
         | "clip-vit-b-32-image"
         | "clip-vit-b-32-text"
+        | "clip-vit-l-14-image"
+        | "clip-vit-l-14-text"
         | "sentence-transformers"
         | "similarity-all-mpnet-base-v2";
       /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
@@ -10061,6 +11221,8 @@ export interface components {
         | "all-mpnet-base-v2"
         | "clip-vit-b-32-image"
         | "clip-vit-b-32-text"
+        | "clip-vit-l-14-image"
+        | "clip-vit-l-14-text"
         | "sentence-transformers"
         | "similarity-all-mpnet-base-v2";
       /** @description Can be 'url' or 'text'. Use 'url' for image models and 'text' for text models. */
@@ -10085,69 +11247,18 @@ export interface components {
         };
       }[];
     };
-    TriggerWorkflowInput: {
-      params: { [key: string]: unknown };
-      notebook_path: string;
-      instance_type?: string;
-      dataset_id: string;
-      workflow_id?: string;
+    CreateImageFromPromptInput: {
+      prompt: string;
+      /** @default 512 */
+      width?: number;
+      /** @default 512 */
+      height?: number;
+      /** @default 50 */
+      num_inference_steps?: number;
     };
-    TriggerWorkflowOutput: {
-      job_id: string;
+    CreateImageFromPromptOutput: {
+      url: string;
     };
-    ListWorkflowsInput: unknown;
-    ListWorkflowsOutput: {
-      results: ({
-        creation_time?: string;
-        notebook_path?: string;
-        instance_type?: string;
-        dataset_id?: string;
-        params?: { [key: string]: unknown };
-        _id?: string;
-        workflow_id?: string;
-        metadata?: { [key: string]: unknown };
-        /** @description Status of the workflow. Used for knowing when to send an email notification. */
-        status?: "complete" | "inprogress" | "failed";
-        job_status?: "InProgress" | "Completed" | "Failed";
-      } & { [key: string]: unknown })[];
-    };
-    GetWorkflowStatusInput: unknown;
-    GetWorkflowStatusOutput: {
-      creation_time?: string;
-      notebook_path?: string;
-      instance_type?: string;
-      dataset_id?: string;
-      params?: { [key: string]: unknown };
-      _id?: string;
-      workflow_id?: string;
-      metadata?: { [key: string]: unknown };
-      /** @description Status of the workflow. Used for knowing when to send an email notification. */
-      status?: "complete" | "inprogress" | "failed";
-      job_status?: "InProgress" | "Completed" | "Failed";
-    } & { [key: string]: unknown };
-    DeleteWorkflowStatusInput: unknown;
-    DeleteWorkflowStatusOutput: unknown;
-    UpsertWorkflowMetadataInput: {
-      /** @description Edit and add metadata for the workflow. */
-      metadata: { [key: string]: unknown };
-    };
-    UpsertWorkflowMetadataOutput: unknown;
-    UpsertWorkflowStatusInput: {
-      /** @description Metadata of the workflow. Can be an object including any information you want to store. */
-      metadata?: { [key: string]: unknown };
-      /** @description Status of the workflow. Used for knowing when to send an email notification. */
-      status: "complete" | "inprogress" | "failed";
-      /** @description Workflow name that is passed into the email. */
-      workflow_name?: string;
-      /** @description Additional information of the workflow that is passed into the email. */
-      additional_information?: string;
-      /**
-       * @description Whether to send an email on workflow completion.
-       * @default true
-       */
-      send_email?: boolean;
-    };
-    UpsertWorkflowStatusOutput: unknown;
     DeleteFieldChildrenInput: unknown;
     DeleteFieldChildrenOutput: unknown;
     ListFieldChildrensInput: { [key: string]: unknown };
@@ -12195,6 +13306,607 @@ export interface operations {
     };
   };
   /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write",
+   *       "connectors:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "body": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
+  CreateConnector: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateConnectorOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateConnectorInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > []
+   */
+  CheckConnection: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CheckConnectionOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CheckConnectionInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "connectors:read"
+   *     ],
+   *     "connectors": [
+   *       {
+   *         "params": "connector_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
+  GetConnector: {
+    parameters: {
+      path: {
+        /** ID of connector */
+        connector_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetConnectorOutput"];
+        };
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "connectors:write",
+   *       "datasets:write"
+   *     ],
+   *     "connectors": [
+   *       {
+   *         "params": "connector_id"
+   *       }
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "body": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
+  UpdateConnector: {
+    parameters: {
+      path: {
+        /** ID of connector */
+        connector_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpdateConnectorOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateConnectorInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "connectors:write"
+   *     ],
+   *     "connectors": [
+   *       {
+   *         "params": "connector_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
+  TriggerConnector: {
+    parameters: {
+      path: {
+        /** ID of connector */
+        connector_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["TriggerConnectorOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TriggerConnectorInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "connectors:write"
+   *     ],
+   *     "connectors": [
+   *       {
+   *         "params": "connector_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
+  DeleteConnector: {
+    parameters: {
+      path: {
+        /** ID of connector */
+        connector_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteConnectorOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteConnectorInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": []
+   *   }
+   * ]
+   */
+  ListConnectors: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListConnectorsOutput"];
+        };
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > []
+   */
+  ListConnectorTypes: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListConnectorTypesOutput"];
+        };
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > []
+   */
+  GetConnectorType: {
+    parameters: {
+      path: {
+        /** ID of connector */
+        connector_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetConnectorTypeOutput"];
+        };
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "connectors:read"
+   *     ],
+   *     "connectors": [
+   *       {
+   *         "params": "connector_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
+  ListConnectorJobs: {
+    parameters: {
+      path: {
+        /** ID of connector */
+        connector_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListConnectorJobsOutput"];
+        };
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "connectors:read"
+   *     ],
+   *     "connectors": [
+   *       {
+   *         "params": "connector_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
+  GetConnectorJob: {
+    parameters: {
+      path: {
+        /** ID of connector */
+        connector_id: string;
+        /** ID of job */
+        job_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetConnectorJobOutput"];
+        };
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read",
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "body": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
+  TriggerWorkflow: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["TriggerWorkflowOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TriggerWorkflowInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ]
+   *   }
+   * ]
+   */
+  ListWorkflows: {
+    parameters: {
+      query: {
+        /** Only retrieve workflows of this status */
+        job_status?: string;
+        /** Currently limited to exact_match, ids, exists, regexp filter_type */
+        filters?: {
+          strict?: "must" | "should" | "must_or";
+          condition?: string;
+          field?: string;
+          filter_type?:
+            | "text_match"
+            | "word_match"
+            | "term"
+            | "terms"
+            | "text"
+            | "texts"
+            | "match"
+            | "contains"
+            | "substring"
+            | "class"
+            | "category"
+            | "exact_match"
+            | "classes"
+            | "categories"
+            | "exists"
+            | "traditional"
+            | "fuzzy"
+            | "regexp"
+            | "ids"
+            | "date"
+            | "numeric"
+            | "search"
+            | "or"
+            | "word_count"
+            | "character_count"
+            | "dedupe_by_value";
+          condition_value?: unknown;
+          fuzzy?: number;
+          join?: boolean;
+        }[];
+        /** Size of each page of results. */
+        page?: number;
+        /** Size of each page of results. */
+        page_size?: number;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListWorkflowsOutput"];
+        };
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read"
+   *     ]
+   *   }
+   * ]
+   */
+  GetWorkflowStatus: {
+    parameters: {
+      path: {
+        /** ID of workflow */
+        workflow_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetWorkflowStatusOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GetWorkflowStatusInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ]
+   *   }
+   * ]
+   */
+  DeleteWorkflowStatus: {
+    parameters: {
+      path: {
+        /** ID of workflow */
+        workflow_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteWorkflowStatusOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteWorkflowStatusInput"];
+      };
+    };
+  };
+  /**
+   * Update metadata for a workflow run
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ]
+   *   }
+   * ]
+   */
+  UpsertWorkflowMetadata: {
+    parameters: {
+      path: {
+        /** ID of workflow */
+        workflow_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpsertWorkflowMetadataOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpsertWorkflowMetadataInput"];
+      };
+    };
+  };
+  /**
+   * Update status for a workflow run
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ]
+   *   }
+   * ]
+   */
+  UpsertWorkflowStatus: {
+    parameters: {
+      path: {
+        /** ID of workflow */
+        workflow_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpsertWorkflowStatusOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpsertWorkflowStatusInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > []
+   */
+  ListWorkflowTypes: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListWorkflowTypesOutput"];
+        };
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > []
+   */
+  GetWorkflowType: {
+    parameters: {
+      path: {
+        /** ID of workflow */
+        workflow_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetWorkflowTypeOutput"];
+        };
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > []
+   */
+  ValidateWorkflowParams: {
+    parameters: {
+      path: {
+        /** ID of workflow */
+        workflow_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ValidateWorkflowParamsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ValidateWorkflowParamsInput"];
+      };
+    };
+  };
+  /**
    * When inserting the document you can specify your own id for a document by using the field name **"\_id"**.
    *
    *     For specifying your own vector use the suffix (ends with)  **"\_vector\_"** for the field name.
@@ -13656,6 +15368,15 @@ export interface operations {
                     pageSize?: number;
                   };
                 }[];
+            realtimeClustering?: {
+              /** @default 4 */
+              nClusters?: number;
+              /** @default kmeans-realtime-4 */
+              alias?: string;
+              vectorField: string;
+              /** @default _cluster_.{vector_field}.{alias} */
+              outputField?: string;
+            };
             /**
              * @description A list of fields to search using the "query" parameter.
              *
@@ -13694,6 +15415,13 @@ export interface operations {
             key?: string;
             /** @description Field that must exist. */
             field?: string;
+          };
+          /** @description Match documents where doc[field] % module == value */
+          matchModulo?: {
+            /** @default _id */
+            field?: string;
+            modulo: number;
+            value: number;
           };
           /** @description Filter down to one document for each value of selected field. */
           dedupeByValue?: {
@@ -14172,227 +15900,21 @@ export interface operations {
   };
   /**
    * ### Required permissions
-   * > [
-   *   {
-   *     "actions": [
-   *       "datasets:read",
-   *       "datasets:write"
-   *     ],
-   *     "datasets": [
-   *       {
-   *         "body": "dataset_id"
-   *       }
-   *     ]
-   *   }
-   * ]
+   * > []
    */
-  TriggerWorkflow: {
+  CreateImageFromPrompt: {
     parameters: {};
     responses: {
       /** successful operation */
       200: {
         content: {
-          "application/json": components["schemas"]["TriggerWorkflowOutput"];
+          "application/json": components["schemas"]["CreateImageFromPromptOutput"];
         };
       };
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["TriggerWorkflowInput"];
-      };
-    };
-  };
-  /**
-   * ### Required permissions
-   * > [
-   *   {
-   *     "actions": [
-   *       "datasets:read"
-   *     ]
-   *   }
-   * ]
-   */
-  ListWorkflows: {
-    parameters: {
-      query: {
-        /** Only retrieve workflows of this status */
-        job_status?: string;
-        /** Currently limited to exact_match, ids, exists, regexp filter_type */
-        filters?: {
-          strict?: "must" | "should" | "must_or";
-          condition?: string;
-          field?: string;
-          filter_type?:
-            | "text_match"
-            | "word_match"
-            | "term"
-            | "terms"
-            | "text"
-            | "texts"
-            | "match"
-            | "contains"
-            | "substring"
-            | "class"
-            | "category"
-            | "exact_match"
-            | "classes"
-            | "categories"
-            | "exists"
-            | "traditional"
-            | "fuzzy"
-            | "regexp"
-            | "ids"
-            | "date"
-            | "numeric"
-            | "search"
-            | "or"
-            | "word_count"
-            | "character_count"
-            | "dedupe_by_value";
-          condition_value?: unknown;
-          fuzzy?: number;
-          join?: boolean;
-        }[];
-        /** Size of each page of results. */
-        page?: number;
-        /** Size of each page of results. */
-        page_size?: number;
-      };
-    };
-    responses: {
-      /** successful operation */
-      200: {
-        content: {
-          "application/json": components["schemas"]["ListWorkflowsOutput"];
-        };
-      };
-    };
-  };
-  /**
-   * ### Required permissions
-   * > [
-   *   {
-   *     "actions": [
-   *       "datasets:read"
-   *     ]
-   *   }
-   * ]
-   */
-  GetWorkflowStatus: {
-    parameters: {
-      path: {
-        /** ID of workflow */
-        workflow_id: string;
-      };
-    };
-    responses: {
-      /** successful operation */
-      200: {
-        content: {
-          "application/json": components["schemas"]["GetWorkflowStatusOutput"];
-        };
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["GetWorkflowStatusInput"];
-      };
-    };
-  };
-  /**
-   * ### Required permissions
-   * > [
-   *   {
-   *     "actions": [
-   *       "datasets:write"
-   *     ]
-   *   }
-   * ]
-   */
-  DeleteWorkflowStatus: {
-    parameters: {
-      path: {
-        /** ID of workflow */
-        workflow_id: string;
-      };
-    };
-    responses: {
-      /** successful operation */
-      200: {
-        content: {
-          "application/json": components["schemas"]["DeleteWorkflowStatusOutput"];
-        };
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["DeleteWorkflowStatusInput"];
-      };
-    };
-  };
-  /**
-   * Update metadata for a workflow run
-   *
-   * ### Required permissions
-   * > [
-   *   {
-   *     "actions": [
-   *       "datasets:write"
-   *     ]
-   *   }
-   * ]
-   */
-  UpsertWorkflowMetadata: {
-    parameters: {
-      path: {
-        /** ID of workflow */
-        workflow_id: string;
-      };
-    };
-    responses: {
-      /** successful operation */
-      200: {
-        content: {
-          "application/json": components["schemas"]["UpsertWorkflowMetadataOutput"];
-        };
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpsertWorkflowMetadataInput"];
-      };
-    };
-  };
-  /**
-   * Update status for a workflow run
-   *
-   * ### Required permissions
-   * > [
-   *   {
-   *     "actions": [
-   *       "datasets:write"
-   *     ]
-   *   }
-   * ]
-   */
-  UpsertWorkflowStatus: {
-    parameters: {
-      path: {
-        /** ID of workflow */
-        workflow_id: string;
-      };
-    };
-    responses: {
-      /** successful operation */
-      200: {
-        content: {
-          "application/json": components["schemas"]["UpsertWorkflowStatusOutput"];
-        };
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpsertWorkflowStatusInput"];
+        "application/json": components["schemas"]["CreateImageFromPromptInput"];
       };
     };
   };
