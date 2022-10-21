@@ -2451,7 +2451,7 @@ export interface components {
         deployables?: (
           | {
               id?: string;
-              type?: "subheader";
+              type?: string;
               text?: string;
               name?: string;
             }
@@ -2468,7 +2468,7 @@ export interface components {
       deployables?: (
         | {
             id?: string;
-            type?: "subheader";
+            type?: string;
             text?: string;
             name?: string;
           }
@@ -2488,7 +2488,7 @@ export interface components {
       deployables?: (
         | {
             id?: string;
-            type?: "subheader";
+            type?: string;
             text?: string;
             name?: string;
           }
@@ -2504,7 +2504,7 @@ export interface components {
       deployables?: (
         | {
             id?: string;
-            type?: "subheader";
+            type?: string;
             text?: string;
             name?: string;
           }
