@@ -99,6 +99,8 @@ export type RealtimeClusteringOutput = operations['RealtimeClustering']['respons
 export type MergeClustersOutput = operations['MergeClusters']['responses']['200']['content']['application/json']
   export type CreateClusterSummariesInput = operations['CreateClusterSummaries']['requestBody']['content']['application/json']
 export type CreateClusterSummariesOutput = operations['CreateClusterSummaries']['responses']['200']['content']['application/json']
+  export type CreateClusterLabelsInput = operations['CreateClusterLabels']['requestBody']['content']['application/json']
+export type CreateClusterLabelsOutput = operations['CreateClusterLabels']['responses']['200']['content']['application/json']
   export type ListClusterSummariesInput = operations['ListClusterSummaries']['requestBody']['content']['application/json']
 export type ListClusterSummariesOutput = operations['ListClusterSummaries']['responses']['200']['content']['application/json']
   export type DeleteClusterSummariesInput = operations['DeleteClusterSummaries']['requestBody']['content']['application/json']
@@ -219,6 +221,10 @@ export type DeleteDocumentFieldsOutput = operations['DeleteDocumentFields']['res
 export type BulkUpdateOutput = operations['BulkUpdate']['responses']['200']['content']['application/json']
   export type UpdateWhereInput = operations['UpdateWhere']['requestBody']['content']['application/json']
 export type UpdateWhereOutput = operations['UpdateWhere']['responses']['200']['content']['application/json']
+  export type DeleteTagsInput = operations['DeleteTags']['requestBody']['content']['application/json']
+export type DeleteTagsOutput = operations['DeleteTags']['responses']['200']['content']['application/json']
+  export type MergeTagsInput = operations['MergeTags']['requestBody']['content']['application/json']
+export type MergeTagsOutput = operations['MergeTags']['responses']['200']['content']['application/json']
   export type ListFacetsInput = operations['ListFacets']['requestBody']['content']['application/json']
 export type ListFacetsOutput = operations['ListFacets']['responses']['200']['content']['application/json']
   export type GetWhereInput = operations['GetWhere']['requestBody']['content']['application/json']
@@ -817,6 +823,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/datasets/{dataset_id}/cluster/centroids/summaries/create',
+      options
+    });
+  }
+  public async CreateClusterLabels(
+    input: CommandInput<CreateClusterLabelsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateClusterLabelsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/centroids/labels/create',
       options
     });
   }
@@ -1477,6 +1494,28 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/datasets/{dataset_id}/documents/update_where',
+      options
+    });
+  }
+  public async DeleteTags(
+    input: CommandInput<DeleteTagsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteTagsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/tags/delete',
+      options
+    });
+  }
+  public async MergeTags(
+    input: CommandInput<MergeTagsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<MergeTagsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/tags/merge',
       options
     });
   }

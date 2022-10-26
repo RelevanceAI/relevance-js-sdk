@@ -864,6 +864,25 @@ export interface paths {
      */
     post: operations["CreateClusterSummaries"];
   };
+  "/datasets/{dataset_id}/cluster/centroids/labels/create": {
+    /**
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read",
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    post: operations["CreateClusterLabels"];
+  };
   "/datasets/{dataset_id}/cluster/centroids/summaries/list": {
     /**
      * ### Required permissions
@@ -1954,6 +1973,46 @@ export interface paths {
      * ]
      */
     post: operations["UpdateWhere"];
+  };
+  "/datasets/{dataset_id}/tags/delete": {
+    /**
+     * Delete tags from tag field by tag value. tag field can be in format ["cat"], or [{"label":"cat"}]
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    post: operations["DeleteTags"];
+  };
+  "/datasets/{dataset_id}/tags/merge": {
+    /**
+     * Delete tags from tag field by tag value. tag field can be in format ["cat"], or [{"label":"cat"}]. tags_to_merge should look like {"dog":"pet","cat":"pet"}
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    post: operations["MergeTags"];
   };
   "/datasets/{dataset_id}/facets": {
     /**
@@ -3057,6 +3116,12 @@ export interface components {
            * @default 1
            */
           sentenceWeight?: number;
+          /**
+           * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+           *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+           * @default 1
+           */
+          fuzzyWeight?: number;
         };
         /**
          * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -3334,6 +3399,12 @@ export interface components {
              * @default 1
              */
             sentenceWeight?: number;
+            /**
+             * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+             *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+             * @default 1
+             */
+            fuzzyWeight?: number;
           };
           /**
            * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -3631,6 +3702,12 @@ export interface components {
                  * @default 1
                  */
                 sentenceWeight?: number;
+                /**
+                 * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+                 *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+                 * @default 1
+                 */
+                fuzzyWeight?: number;
               };
               /**
                * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -3979,6 +4056,12 @@ export interface components {
              * @default 1
              */
             sentenceWeight?: number;
+            /**
+             * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+             *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+             * @default 1
+             */
+            fuzzyWeight?: number;
           };
           /**
            * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -4276,6 +4359,12 @@ export interface components {
                  * @default 1
                  */
                 sentenceWeight?: number;
+                /**
+                 * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+                 *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+                 * @default 1
+                 */
+                fuzzyWeight?: number;
               };
               /**
                * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -4560,7 +4649,7 @@ export interface components {
         minimum_cluster_size?: number;
         /**
          * @description Whether to add to list of cluster to show (or), or filter clusters to show based on minimum_cluster_size (and)
-         * @default or
+         * @default and
          */
         minimum_cluster_size_filter_type?: "or" | "and";
         cluster_page?: number;
@@ -4600,6 +4689,7 @@ export interface components {
     };
     AggregateClustersOutput: {
       results: { [key: string]: unknown[] };
+      cluster_order: string[];
       cluster_stats?: {
         [key: string]: {
           percentage: number;
@@ -4683,6 +4773,12 @@ export interface components {
              * @default 1
              */
             sentenceWeight?: number;
+            /**
+             * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+             *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+             * @default 1
+             */
+            fuzzyWeight?: number;
           };
           /**
            * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -4980,6 +5076,12 @@ export interface components {
                  * @default 1
                  */
                 sentenceWeight?: number;
+                /**
+                 * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+                 *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+                 * @default 1
+                 */
+                fuzzyWeight?: number;
               };
               /**
                * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -5264,7 +5366,7 @@ export interface components {
         minimum_cluster_size?: number;
         /**
          * @description Whether to add to list of cluster to show (or), or filter clusters to show based on minimum_cluster_size (and)
-         * @default or
+         * @default and
          */
         minimum_cluster_size_filter_type?: "or" | "and";
         cluster_page?: number;
@@ -5409,6 +5511,12 @@ export interface components {
              * @default 1
              */
             sentenceWeight?: number;
+            /**
+             * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+             *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+             * @default 1
+             */
+            fuzzyWeight?: number;
           };
           /**
            * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -5642,7 +5750,7 @@ export interface components {
         minimum_cluster_size?: number;
         /**
          * @description Whether to add to list of cluster to show (or), or filter clusters to show based on minimum_cluster_size (and)
-         * @default or
+         * @default and
          */
         minimum_cluster_size_filter_type?: "or" | "and";
         cluster_page?: number;
@@ -5763,6 +5871,12 @@ export interface components {
              * @default 1
              */
             sentenceWeight?: number;
+            /**
+             * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+             *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+             * @default 1
+             */
+            fuzzyWeight?: number;
           };
           /**
            * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -5996,7 +6110,7 @@ export interface components {
         minimum_cluster_size?: number;
         /**
          * @description Whether to add to list of cluster to show (or), or filter clusters to show based on minimum_cluster_size (and)
-         * @default or
+         * @default and
          */
         minimum_cluster_size_filter_type?: "or" | "and";
         cluster_page?: number;
@@ -6147,6 +6261,12 @@ export interface components {
          *   ```
          */
         config: {
+          examples?: {
+            /** @description Embedded in prompt as example text that should predict label. */
+            items: string[];
+            /** @description Will embedded in the prompt as the expected target label of the items. */
+            label: string;
+          }[];
           /** @description Text field of clusters to summarize */
           field: string;
           question_prefix?: string;
@@ -6210,6 +6330,160 @@ export interface components {
              *   ```
              */
             config: {
+              examples?: {
+                /** @description Embedded in prompt as example text that should predict label. */
+                items: string[];
+                /** @description Will embedded in the prompt as the expected target label of the items. */
+                label: string;
+              }[];
+              /** @description Text field of clusters to summarize */
+              field: string;
+              question_prefix?: string;
+              question_suffix?: string;
+              item_prefix?: string;
+              /**
+               * @description Add 1:,2:,3:... to each item. This makes it more likely output will be numbered.
+               * @default true
+               */
+              items_numbered?: boolean;
+              /**
+               * @description Cluster items provide context to the question. Limiting cluster item char length reduces cost, but may miss end of sentences with context.
+               * @default 200
+               */
+              max_item_length?: number;
+              /**
+               * @description Cluster items provide context to the question. Limiting cluster item count reduces cost, but may miss items with context.
+               * @default 10
+               */
+              max_item_count?: number;
+              /**
+               * @description Controls answer quality. Higher quality answers have exponentially higher cost.
+               * @default 1
+               */
+              accuracy?: 1 | 2 | 3 | 4;
+              /** @default 0.7 */
+              temperature?: number;
+              /**
+               * @description Maximum number of words that will be generated.
+               * @default 60
+               */
+              max_answer_length?: number;
+              /**
+               * @description To avoid overloading our summary API, you can increase / decrease the ms delay between questions.
+               * @default 1000
+               */
+              delay_between_summary_generation?: number;
+            };
+            confidence?: number;
+            retry_count?: number;
+          }[];
+        };
+      };
+    };
+    CreateClusterLabelsInput: {
+      /** @description The vector fields that these centroids are associated with. */
+      vector_fields?: string[];
+      centroid_vector_fields?: string[];
+      /** @description Alias is used to name a cluster. */
+      alias?: string;
+      dataset_id?: string;
+      cluster_ids?: unknown[];
+      /** @description Set to true to only return summaries, not save them. */
+      dont_save_summaries?: boolean;
+      questions: {
+        cluster_ids?: unknown[];
+        /**
+         * @description Summarise the top results in a sentence. Fields will form a string like:
+         *   ```
+         *   {question_prefix}
+         *   {item_prefix} 1:{field_value}
+         *   {item_prefix} 2: {field_value_2}
+         *   {question_suffix}}
+         *   ```
+         *   To create a summary on a field name 'feedback' for each cluster, An example payload could be:
+         *
+         *   ```
+         *   "cluster_text_summary":[
+         *     {"item_prefix":"Feedback","question_suffix":"Summarise the feedback in one short sentence.","field":"feedback"}
+         *   ]
+         *   ```
+         */
+        config: {
+          examples?: {
+            /** @description Embedded in prompt as example text that should predict label. */
+            items: string[];
+            /** @description Will embedded in the prompt as the expected target label of the items. */
+            label: string;
+          }[];
+          /** @description Text field of clusters to summarize */
+          field: string;
+          question_prefix?: string;
+          question_suffix?: string;
+          item_prefix?: string;
+          /**
+           * @description Add 1:,2:,3:... to each item. This makes it more likely output will be numbered.
+           * @default true
+           */
+          items_numbered?: boolean;
+          /**
+           * @description Cluster items provide context to the question. Limiting cluster item char length reduces cost, but may miss end of sentences with context.
+           * @default 200
+           */
+          max_item_length?: number;
+          /**
+           * @description Cluster items provide context to the question. Limiting cluster item count reduces cost, but may miss items with context.
+           * @default 10
+           */
+          max_item_count?: number;
+          /**
+           * @description Controls answer quality. Higher quality answers have exponentially higher cost.
+           * @default 1
+           */
+          accuracy?: 1 | 2 | 3 | 4;
+          /** @default 0.7 */
+          temperature?: number;
+          /**
+           * @description Maximum number of words that will be generated.
+           * @default 60
+           */
+          max_answer_length?: number;
+          /**
+           * @description To avoid overloading our summary API, you can increase / decrease the ms delay between questions.
+           * @default 1000
+           */
+          delay_between_summary_generation?: number;
+        };
+      }[];
+    };
+    CreateClusterLabelsOutput: {
+      results: {
+        [key: string]: {
+          answers: {
+            answer: string;
+            question: string;
+            /**
+             * @description Summarise the top results in a sentence. Fields will form a string like:
+             *   ```
+             *   {question_prefix}
+             *   {item_prefix} 1:{field_value}
+             *   {item_prefix} 2: {field_value_2}
+             *   {question_suffix}}
+             *   ```
+             *   To create a summary on a field name 'feedback' for each cluster, An example payload could be:
+             *
+             *   ```
+             *   "cluster_text_summary":[
+             *     {"item_prefix":"Feedback","question_suffix":"Summarise the feedback in one short sentence.","field":"feedback"}
+             *   ]
+             *   ```
+             */
+            config: {
+              examples?: {
+                /** @description Embedded in prompt as example text that should predict label. */
+                items: string[];
+                /** @description Will embedded in the prompt as the expected target label of the items. */
+                label: string;
+              }[];
               /** @description Text field of clusters to summarize */
               field: string;
               question_prefix?: string;
@@ -6285,6 +6559,12 @@ export interface components {
              *   ```
              */
             config: {
+              examples?: {
+                /** @description Embedded in prompt as example text that should predict label. */
+                items: string[];
+                /** @description Will embedded in the prompt as the expected target label of the items. */
+                label: string;
+              }[];
               /** @description Text field of clusters to summarize */
               field: string;
               question_prefix?: string;
@@ -7024,6 +7304,7 @@ export interface components {
     ListWorkflowsOutput: {
       results: ({
         creation_time?: string;
+        completion_time?: string;
         notebook_path?: string;
         instance_type?: string;
         dataset_id?: string;
@@ -7039,6 +7320,7 @@ export interface components {
     GetWorkflowStatusInput: unknown;
     GetWorkflowStatusOutput: {
       creation_time?: string;
+      completion_time?: string;
       notebook_path?: string;
       instance_type?: string;
       dataset_id?: string;
@@ -7375,6 +7657,12 @@ export interface components {
              * @default 1
              */
             sentenceWeight?: number;
+            /**
+             * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+             *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+             * @default 1
+             */
+            fuzzyWeight?: number;
           };
           /**
            * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -7620,6 +7908,7 @@ export interface components {
               | "chunks"
               | "base64"
               | "boolean"
+              | "raw"
             )
           | {
               chunkvector?: number;
@@ -7647,6 +7936,7 @@ export interface components {
             | "chunks"
             | "base64"
             | "boolean"
+            | "raw"
           )
         | {
             chunkvector?: number;
@@ -7737,6 +8027,12 @@ export interface components {
              * @default 1
              */
             sentenceWeight?: number;
+            /**
+             * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+             *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+             * @default 1
+             */
+            fuzzyWeight?: number;
           };
           /**
            * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -8292,6 +8588,12 @@ export interface components {
              * @default 1
              */
             sentenceWeight?: number;
+            /**
+             * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+             *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+             * @default 1
+             */
+            fuzzyWeight?: number;
           };
           /**
            * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -8506,6 +8808,16 @@ export interface components {
       /** @description Response message for completion state. */
       message: string;
     };
+    DeleteTagsInput: {
+      field: string;
+      tags_to_delete: string[];
+    };
+    DeleteTagsOutput: unknown;
+    MergeTagsInput: {
+      field: string;
+      tags_to_merge: { [key: string]: string };
+    };
+    MergeTagsOutput: unknown;
     ListFacetsInput: {
       /** @description Fields to include in the facets, if [] then all */
       fields?: string[];
@@ -8616,6 +8928,12 @@ export interface components {
              * @default 1
              */
             sentenceWeight?: number;
+            /**
+             * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+             *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+             * @default 1
+             */
+            fuzzyWeight?: number;
           };
           /**
            * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -8932,6 +9250,12 @@ export interface components {
              * @default 1
              */
             sentenceWeight?: number;
+            /**
+             * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+             *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+             * @default 1
+             */
+            fuzzyWeight?: number;
           };
           /**
            * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -9374,6 +9698,12 @@ export interface components {
            * @default 1
            */
           sentenceWeight?: number;
+          /**
+           * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+           *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+           * @default 1
+           */
+          fuzzyWeight?: number;
         };
         /**
          * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -9691,6 +10021,12 @@ export interface components {
              * @default 1
              */
             sentenceWeight?: number;
+            /**
+             * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+             *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+             * @default 1
+             */
+            fuzzyWeight?: number;
           };
           /**
            * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -9917,6 +10253,12 @@ export interface components {
          * @default 1
          */
         sentenceWeight?: number;
+        /**
+         * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+         *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+         * @default 1
+         */
+        fuzzyWeight?: number;
       };
       /**
        * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -10263,6 +10605,12 @@ export interface components {
              * @default 1
              */
             sentenceWeight?: number;
+            /**
+             * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+             *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+             * @default 1
+             */
+            fuzzyWeight?: number;
           };
           /**
            * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -10489,6 +10837,12 @@ export interface components {
          * @default 1
          */
         sentenceWeight?: number;
+        /**
+         * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+         *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+         * @default 1
+         */
+        fuzzyWeight?: number;
       };
       /**
        * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -10847,6 +11201,12 @@ export interface components {
              * @default 1
              */
             sentenceWeight?: number;
+            /**
+             * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+             *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+             * @default 1
+             */
+            fuzzyWeight?: number;
           };
           /**
            * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
@@ -12963,6 +13323,43 @@ export interface operations {
    * > [
    *   {
    *     "actions": [
+   *       "datasets:read",
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
+  CreateClusterLabels: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateClusterLabelsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateClusterLabelsInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
    *       "datasets:read"
    *     ],
    *     "datasets": [
@@ -15001,6 +15398,82 @@ export interface operations {
     };
   };
   /**
+   * Delete tags from tag field by tag value. tag field can be in format ["cat"], or [{"label":"cat"}]
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
+  DeleteTags: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteTagsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteTagsInput"];
+      };
+    };
+  };
+  /**
+   * Delete tags from tag field by tag value. tag field can be in format ["cat"], or [{"label":"cat"}]. tags_to_merge should look like {"dog":"pet","cat":"pet"}
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
+  MergeTags: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["MergeTagsOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["MergeTagsInput"];
+      };
+    };
+  };
+  /**
    * Takes a high level aggregation of every field, return their unique values and frequencies. This is used to help create the filter bar for search.
    *
    * ### Required permissions
@@ -15297,6 +15770,12 @@ export interface operations {
                * @default 1
                */
               sentenceWeight?: number;
+              /**
+               * @description Increases or decreases the impact of fuzzy matching when calculating a documents _relevance.
+               *         For example, with query "rain", with 0 fuzzy weight, 'brain' would not match.
+               * @default 1
+               */
+              fuzzyWeight?: number;
             };
             /**
              * @description Prioritise the result list of documents based on semantic similarity to "query" provided here.
