@@ -7315,6 +7315,14 @@ export interface components {
         /** @description Status of the workflow. Used for knowing when to send an email notification. */
         status?: "complete" | "inprogress" | "failed";
         job_status?: "InProgress" | "Completed" | "Failed";
+        worker_status?: {
+          [key: string]: {
+            status?: "complete" | "inprogress" | "failed";
+            completion_time?: string;
+            creation_time?: string;
+          };
+        };
+        n_workers?: number;
       } & { [key: string]: unknown })[];
     };
     GetWorkflowStatusInput: unknown;
@@ -7331,6 +7339,14 @@ export interface components {
       /** @description Status of the workflow. Used for knowing when to send an email notification. */
       status?: "complete" | "inprogress" | "failed";
       job_status?: "InProgress" | "Completed" | "Failed";
+      worker_status?: {
+        [key: string]: {
+          status?: "complete" | "inprogress" | "failed";
+          completion_time?: string;
+          creation_time?: string;
+        };
+      };
+      n_workers?: number;
     } & { [key: string]: unknown };
     DeleteWorkflowStatusInput: unknown;
     DeleteWorkflowStatusOutput: unknown;
@@ -7353,6 +7369,7 @@ export interface components {
        * @default true
        */
       send_email?: boolean;
+      worker_number?: number;
     };
     UpsertWorkflowStatusOutput: unknown;
     ListWorkflowTypesInput: unknown;
