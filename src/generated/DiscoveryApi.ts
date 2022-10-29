@@ -155,6 +155,8 @@ export type GetWorkflowStatusOutput = operations['GetWorkflowStatus']['responses
 export type DeleteWorkflowStatusOutput = operations['DeleteWorkflowStatus']['responses']['200']['content']['application/json']
   export type UpsertWorkflowMetadataInput = operations['UpsertWorkflowMetadata']['requestBody']['content']['application/json']
 export type UpsertWorkflowMetadataOutput = operations['UpsertWorkflowMetadata']['responses']['200']['content']['application/json']
+  export type UpsertWorkflowProgressInput = operations['UpsertWorkflowProgress']['requestBody']['content']['application/json']
+export type UpsertWorkflowProgressOutput = operations['UpsertWorkflowProgress']['responses']['200']['content']['application/json']
   export type UpsertWorkflowStatusInput = operations['UpsertWorkflowStatus']['requestBody']['content']['application/json']
 export type UpsertWorkflowStatusOutput = operations['UpsertWorkflowStatus']['responses']['200']['content']['application/json']
   export type ListWorkflowTypesInput = {}
@@ -1131,6 +1133,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/workflows/{workflow_id}/metadata',
+      options
+    });
+  }
+  public async UpsertWorkflowProgress(
+    input: CommandInput<UpsertWorkflowProgressInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpsertWorkflowProgressOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/{workflow_id}/progress',
       options
     });
   }
