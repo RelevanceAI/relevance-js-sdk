@@ -7450,6 +7450,11 @@ export interface components {
        */
       insert_date?: boolean;
       /**
+       * @description Whether to transform fields containing dates to a valid Relevance date format.
+       * @default true
+       */
+      transform_date_format?: boolean;
+      /**
        * @description Whether to overwrite document if it exists.
        * @default true
        */
@@ -7528,6 +7533,11 @@ export interface components {
        * @default true
        */
       insert_date?: boolean;
+      /**
+       * @description Whether to transform fields containing dates to a valid Relevance date format.
+       * @default true
+       */
+      transform_date_format?: boolean;
       /**
        * @description Whether to overwrite document if it exists.
        * @default true
@@ -7636,6 +7646,11 @@ export interface components {
       process_id?: boolean;
       /** @description Only process rows of length skip_rows. */
       skip_rows?: number;
+      /**
+       * @description Whether to return quickly and then wait for ingestion to complete in the background. This will speed up document ingestion significantly.
+       * @default true
+       */
+      ingest_in_background?: boolean;
     };
     ParseBlobOutput: {
       status: string;
@@ -8404,6 +8419,11 @@ export interface components {
        */
       insert_date?: boolean;
       /**
+       * @description Whether to transform fields containing dates to a valid Relevance date format.
+       * @default true
+       */
+      transform_date_format?: boolean;
+      /**
        * @description Whether to overwrite document if it exists.
        * @default true
        */
@@ -8495,6 +8515,11 @@ export interface components {
        * @default true
        */
       insert_date?: boolean;
+      /**
+       * @description Whether to transform fields containing dates to a valid Relevance date format.
+       * @default true
+       */
+      transform_date_format?: boolean;
       /**
        * @description Whether to overwrite document if it exists.
        * @default true
