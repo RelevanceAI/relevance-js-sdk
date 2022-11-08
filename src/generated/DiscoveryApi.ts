@@ -223,6 +223,8 @@ export type DeleteDocumentFieldsOutput = operations['DeleteDocumentFields']['res
 export type BulkUpdateOutput = operations['BulkUpdate']['responses']['200']['content']['application/json']
   export type UpdateWhereInput = operations['UpdateWhere']['requestBody']['content']['application/json']
 export type UpdateWhereOutput = operations['UpdateWhere']['responses']['200']['content']['application/json']
+  export type AppendTagsInput = operations['AppendTags']['requestBody']['content']['application/json']
+export type AppendTagsOutput = operations['AppendTags']['responses']['200']['content']['application/json']
   export type DeleteTagsInput = operations['DeleteTags']['requestBody']['content']['application/json']
 export type DeleteTagsOutput = operations['DeleteTags']['responses']['200']['content']['application/json']
   export type MergeTagsInput = operations['MergeTags']['requestBody']['content']['application/json']
@@ -1507,6 +1509,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/datasets/{dataset_id}/documents/update_where',
+      options
+    });
+  }
+  public async AppendTags(
+    input: CommandInput<AppendTagsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<AppendTagsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/tags/append',
       options
     });
   }
