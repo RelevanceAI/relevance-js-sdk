@@ -7324,6 +7324,11 @@ export interface components {
       _id: number;
     };
     TriggerWorkflowInput: {
+      /**
+       * @description the workflows version to execute. It could be a tag like production or a version like v1.1.5
+       * @default production
+       */
+      version?: string;
       params: { [key: string]: unknown };
       notebook_path?: string;
       instance_type?: string;
@@ -7484,6 +7489,11 @@ export interface components {
       parameters?: { [key: string]: unknown };
     } & { [key: string]: unknown };
     ValidateWorkflowParamsInput: {
+      /**
+       * @description the workflows version to execute. It could be a tag like production or a version like v1.1.5
+       * @default production
+       */
+      version?: string;
       parameters: { [key: string]: unknown };
     };
     ValidateWorkflowParamsOutput: {
@@ -7507,6 +7517,11 @@ export interface components {
        * @default true
        */
       transform_date_format?: boolean;
+      /**
+       * @description Whether to remove fields with the value 'N/A' from documents. Required to process pandas style CSVs.
+       * @default true
+       */
+      remove_na?: boolean;
       /**
        * @description Whether to overwrite document if it exists.
        * @default true
@@ -7591,6 +7606,11 @@ export interface components {
        * @default true
        */
       transform_date_format?: boolean;
+      /**
+       * @description Whether to remove fields with the value 'N/A' from documents. Required to process pandas style CSVs.
+       * @default true
+       */
+      remove_na?: boolean;
       /**
        * @description Whether to overwrite document if it exists.
        * @default true
@@ -8477,6 +8497,11 @@ export interface components {
        */
       transform_date_format?: boolean;
       /**
+       * @description Whether to remove fields with the value 'N/A' from documents. Required to process pandas style CSVs.
+       * @default true
+       */
+      remove_na?: boolean;
+      /**
        * @description Whether to overwrite document if it exists.
        * @default true
        */
@@ -8573,6 +8598,11 @@ export interface components {
        * @default true
        */
       transform_date_format?: boolean;
+      /**
+       * @description Whether to remove fields with the value 'N/A' from documents. Required to process pandas style CSVs.
+       * @default true
+       */
+      remove_na?: boolean;
       /**
        * @description Whether to overwrite document if it exists.
        * @default true
@@ -15568,6 +15598,8 @@ export interface operations {
             fuzzy?: number;
             join?: boolean;
           }>)[];
+        /** the workflows version to execute. It could be a tag like production or a version like v1.1.5 */
+        version?: string;
         show_hidden?: boolean;
       };
     };
@@ -15589,6 +15621,10 @@ export interface operations {
       path: {
         /** ID of workflow */
         workflow_id: string;
+      };
+      query: {
+        /** the workflows version to execute. It could be a tag like production or a version like v1.1.5 */
+        version?: string;
       };
     };
     responses: {
