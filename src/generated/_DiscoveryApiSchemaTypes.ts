@@ -11539,6 +11539,7 @@ export interface components {
         answer?: string;
         status?: string;
         message?: string;
+        question?: string;
       };
       /**
        * @description Total number of documents matched in the dataset.
@@ -12078,6 +12079,7 @@ export interface components {
         answer?: string;
         status?: string;
         message?: string;
+        question?: string;
       };
       /**
        * @description Total number of documents matched in the dataset.
