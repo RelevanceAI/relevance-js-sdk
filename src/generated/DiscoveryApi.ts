@@ -235,6 +235,10 @@ export type ListFacetsOutput = operations['ListFacets']['responses']['200']['con
 export type GetWhereOutput = operations['GetWhere']['responses']['200']['content']['application/json']
   export type PaginateDocumentsInput = operations['PaginateDocuments']['requestBody']['content']['application/json']
 export type PaginateDocumentsOutput = operations['PaginateDocuments']['responses']['200']['content']['application/json']
+  export type CreateDatasetSummaryInput = operations['CreateDatasetSummary']['requestBody']['content']['application/json']
+export type CreateDatasetSummaryOutput = operations['CreateDatasetSummary']['responses']['200']['content']['application/json']
+  export type ListDatasetSummaryHistoryInput = {}
+export type ListDatasetSummaryHistoryOutput = operations['ListDatasetSummaryHistory']['responses']['200']['content']['application/json']
   export type BulkGetDocumentsInput = operations['BulkGetDocuments']['requestBody']['content']['application/json']
 export type BulkGetDocumentsOutput = operations['BulkGetDocuments']['responses']['200']['content']['application/json']
   export type BulkDeleteDocumentsInput = operations['BulkDeleteDocuments']['requestBody']['content']['application/json']
@@ -287,6 +291,16 @@ export type UpdateSavedFilterOutput = operations['UpdateSavedFilter']['responses
 export type GetSavedFilterOutput = operations['GetSavedFilter']['responses']['200']['content']['application/json']
   export type CreateSavedFilterInput = operations['CreateSavedFilter']['requestBody']['content']['application/json']
 export type CreateSavedFilterOutput = operations['CreateSavedFilter']['responses']['200']['content']['application/json']
+  export type DeleteComponentInput = operations['DeleteComponent']['requestBody']['content']['application/json']
+export type DeleteComponentOutput = operations['DeleteComponent']['responses']['200']['content']['application/json']
+  export type ListComponentsInput = operations['ListComponents']['requestBody']['content']['application/json']
+export type ListComponentsOutput = operations['ListComponents']['responses']['200']['content']['application/json']
+  export type UpdateComponentInput = operations['UpdateComponent']['requestBody']['content']['application/json']
+export type UpdateComponentOutput = operations['UpdateComponent']['responses']['200']['content']['application/json']
+  export type GetComponentInput = {}
+export type GetComponentOutput = operations['GetComponent']['responses']['200']['content']['application/json']
+  export type CreateComponentInput = operations['CreateComponent']['requestBody']['content']['application/json']
+export type CreateComponentOutput = operations['CreateComponent']['responses']['200']['content']['application/json']
 export class DiscoveryApiClient  extends _GenericClient {
   constructor(config:_ClientInput){
     super({...config,service_name:'DiscoveryApi'});
@@ -1578,6 +1592,28 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
+  public async CreateDatasetSummary(
+    input: CommandInput<CreateDatasetSummaryInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateDatasetSummaryOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/summaries/create',
+      options
+    });
+  }
+  public async ListDatasetSummaryHistory(
+    input: CommandInput<ListDatasetSummaryHistoryInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListDatasetSummaryHistoryOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/summaries/history/list',
+      options
+    });
+  }
   public async BulkGetDocuments(
     input: CommandInput<BulkGetDocumentsInput>,
     options?: _GenericMethodOptions
@@ -1861,6 +1897,61 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/savedfilters/create',
+      options
+    });
+  }
+  public async DeleteComponent(
+    input: CommandInput<DeleteComponentInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteComponentOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/components/{component_id}/delete',
+      options
+    });
+  }
+  public async ListComponents(
+    input: CommandInput<ListComponentsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListComponentsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/components/list',
+      options
+    });
+  }
+  public async UpdateComponent(
+    input: CommandInput<UpdateComponentInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateComponentOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/components/{component_id}/update',
+      options
+    });
+  }
+  public async GetComponent(
+    input: CommandInput<GetComponentInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetComponentOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/components/{component_id}/get',
+      options
+    });
+  }
+  public async CreateComponent(
+    input: CommandInput<CreateComponentInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateComponentOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/components/create',
       options
     });
   }}
