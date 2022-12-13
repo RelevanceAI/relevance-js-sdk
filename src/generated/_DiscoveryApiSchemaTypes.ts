@@ -901,6 +901,27 @@ export interface paths {
      */
     post: operations["ListClusterSummaries"];
   };
+  "/datasets/{dataset_id}/cluster/hierarchical/create": {
+    /**
+     * Endpoint for creating Hierarchical Clusters from a given dataset on top of existing clusters.
+     *
+     * ### Required permissions
+     * > [
+     *   {
+     *     "actions": [
+     *       "datasets:read",
+     *       "datasets:write"
+     *     ],
+     *     "datasets": [
+     *       {
+     *         "params": "dataset_id"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    post: operations["CreateHierarchicalClusters"];
+  };
   "/datasets/{dataset_id}/cluster/centroids/summaries/bulk_delete": {
     /**
      * ### Required permissions
@@ -2652,6 +2673,41 @@ export interface paths {
      * > []
      */
     post: operations["BulkUpdateKeyphrases"];
+  };
+  "/taxonomys/list": {
+    /**
+     * ### Required permissions
+     * > []
+     */
+    post: operations["ListTaxonomys"];
+  };
+  "/taxonomys/{taxonomy_id}/update": {
+    /**
+     * ### Required permissions
+     * > []
+     */
+    post: operations["UpdateTaxonomy"];
+  };
+  "/taxonomys/{taxonomy_id}/delete": {
+    /**
+     * ### Required permissions
+     * > []
+     */
+    post: operations["DeleteTaxonomy"];
+  };
+  "/taxonomys/{taxonomy_id}/get": {
+    /**
+     * ### Required permissions
+     * > []
+     */
+    get: operations["GetTaxonomy"];
+  };
+  "/taxonomys/create": {
+    /**
+     * ### Required permissions
+     * > []
+     */
+    post: operations["CreateTaxonomy"];
   };
 }
 
@@ -6862,6 +6918,19 @@ export interface components {
         };
       };
     };
+    CreateHierarchicalClustersInput: {
+      /** @description The vector fields that these centroids are associated with. */
+      vector_fields?: string[];
+      centroid_vector_fields?: string[];
+      /** @description Alias is used to name a cluster. */
+      alias?: string;
+      dataset_id?: string;
+      /** @default 10 */
+      n_clusters?: number;
+    };
+    CreateHierarchicalClustersOutput: {
+      alias: string;
+    };
     DeleteClusterSummariesInput: {
       /** @description The vector fields that these centroids are associated with. */
       vector_fields?: string[];
@@ -8233,9 +8302,9 @@ export interface components {
             properties: {
               params: { [key: string]: unknown };
               workflow_id: string;
-              dataset_id: string;
             };
             depends_on?: string[];
+            if?: string;
           };
         };
       };
@@ -8273,9 +8342,9 @@ export interface components {
               properties: {
                 params: { [key: string]: unknown };
                 workflow_id: string;
-                dataset_id: string;
               };
               depends_on?: string[];
+              if?: string;
             };
           };
         };
@@ -8324,9 +8393,9 @@ export interface components {
             properties: {
               params: { [key: string]: unknown };
               workflow_id: string;
-              dataset_id: string;
             };
             depends_on?: string[];
+            if?: string;
           };
         };
       };
@@ -8405,9 +8474,9 @@ export interface components {
             properties: {
               params: { [key: string]: unknown };
               workflow_id: string;
-              dataset_id: string;
             };
             depends_on?: string[];
+            if?: string;
           };
         };
       };
@@ -9926,6 +9995,12 @@ export interface components {
         }>)[];
       /** @description Updates to make to the documents. It should be specified in a format of {"field_name": "value"}. e.g. {"item.status" : "Sold Out"} */
       updates: { [key: string]: unknown };
+      /** @description Updates to apply conditionally based on a fields value. For example, if a field category exists, to add categoryUppercase use conditional_updates:[{field:"category",output_field:"categoryUppercase",condition_map:{"nonfiction":"NONFICTION"}}] */
+      conditional_updates?: {
+        field: string;
+        output_field: string;
+        condition_map: { [key: string]: unknown };
+      }[];
     };
     UpdateWhereOutput: {
       /** @description Completion status. */
@@ -14410,12 +14485,18 @@ export interface components {
       results: {
         _id?: string;
         keyphrase?: string;
+        ancestors?: string[];
+        parents?: string[];
+        metadata?: { [key: string]: unknown };
         score?: number;
       }[];
     };
     UpdateKeyphraseInput: {
       _id?: string;
       keyphrase?: string;
+      ancestors?: string[];
+      parents?: string[];
+      metadata?: { [key: string]: unknown };
       score?: number;
     };
     UpdateKeyphraseOutput: unknown;
@@ -14425,16 +14506,65 @@ export interface components {
     GetKeyphraseOutput: {
       _id?: string;
       keyphrase?: string;
+      ancestors?: string[];
+      parents?: string[];
+      metadata?: { [key: string]: unknown };
       score?: number;
     };
     BulkUpdateKeyphrasesInput: {
       updates?: {
         _id?: string;
         keyphrase?: string;
+        ancestors?: string[];
+        parents?: string[];
+        metadata?: { [key: string]: unknown };
         score?: number;
       }[];
     };
     BulkUpdateKeyphrasesOutput: unknown;
+    ListTaxonomysInput: {
+      page?: number;
+      page_size?: number;
+      /** @description Fields to sort by. For each field, sort by descending or ascending. If you are using descending by datetime, it will get the most recent ones. */
+      sort?: (string | { [key: string]: "asc" | "desc" })[];
+    };
+    ListTaxonomysOutput: {
+      results: {
+        _id?: string;
+        name?: string;
+        taxonomy?: string[];
+        description?: string;
+        metadata?: { [key: string]: unknown };
+      }[];
+    };
+    UpdateTaxonomyInput: {
+      _id?: string;
+      name?: string;
+      taxonomy?: string[];
+      description?: string;
+      metadata?: { [key: string]: unknown };
+    };
+    UpdateTaxonomyOutput: unknown;
+    DeleteTaxonomyInput: unknown;
+    DeleteTaxonomyOutput: unknown;
+    GetTaxonomyInput: unknown;
+    GetTaxonomyOutput: {
+      _id?: string;
+      name?: string;
+      taxonomy?: string[];
+      description?: string;
+      metadata?: { [key: string]: unknown };
+    };
+    CreateTaxonomyInput: {
+      _id?: string;
+      name?: string;
+      taxonomy?: string[];
+      description?: string;
+      metadata?: { [key: string]: unknown };
+    };
+    CreateTaxonomyOutput: {
+      id: string;
+    };
   };
 }
 
@@ -16447,6 +16577,45 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["ListClusterSummariesInput"];
+      };
+    };
+  };
+  /**
+   * Endpoint for creating Hierarchical Clusters from a given dataset on top of existing clusters.
+   *
+   * ### Required permissions
+   * > [
+   *   {
+   *     "actions": [
+   *       "datasets:read",
+   *       "datasets:write"
+   *     ],
+   *     "datasets": [
+   *       {
+   *         "params": "dataset_id"
+   *       }
+   *     ]
+   *   }
+   * ]
+   */
+  CreateHierarchicalClusters: {
+    parameters: {
+      path: {
+        /** ID of dataset */
+        dataset_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateHierarchicalClustersOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateHierarchicalClustersInput"];
       };
     };
   };
@@ -20990,6 +21159,116 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["BulkUpdateKeyphrasesInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > []
+   */
+  ListTaxonomys: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ListTaxonomysOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ListTaxonomysInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > []
+   */
+  UpdateTaxonomy: {
+    parameters: {
+      path: {
+        /** ID of taxonomy */
+        taxonomy_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UpdateTaxonomyOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateTaxonomyInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > []
+   */
+  DeleteTaxonomy: {
+    parameters: {
+      path: {
+        /** ID of taxonomy */
+        taxonomy_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["DeleteTaxonomyOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeleteTaxonomyInput"];
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > []
+   */
+  GetTaxonomy: {
+    parameters: {
+      path: {
+        /** ID of taxonomy */
+        taxonomy_id: string;
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GetTaxonomyOutput"];
+        };
+      };
+    };
+  };
+  /**
+   * ### Required permissions
+   * > []
+   */
+  CreateTaxonomy: {
+    parameters: {};
+    responses: {
+      /** successful operation */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CreateTaxonomyOutput"];
+        };
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateTaxonomyInput"];
       };
     };
   };

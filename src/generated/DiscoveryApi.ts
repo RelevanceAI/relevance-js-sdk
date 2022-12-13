@@ -103,6 +103,8 @@ export type CreateClusterSummariesOutput = operations['CreateClusterSummaries'][
 export type CreateClusterLabelsOutput = operations['CreateClusterLabels']['responses']['200']['content']['application/json']
   export type ListClusterSummariesInput = operations['ListClusterSummaries']['requestBody']['content']['application/json']
 export type ListClusterSummariesOutput = operations['ListClusterSummaries']['responses']['200']['content']['application/json']
+  export type CreateHierarchicalClustersInput = operations['CreateHierarchicalClusters']['requestBody']['content']['application/json']
+export type CreateHierarchicalClustersOutput = operations['CreateHierarchicalClusters']['responses']['200']['content']['application/json']
   export type DeleteClusterSummariesInput = operations['DeleteClusterSummaries']['requestBody']['content']['application/json']
 export type DeleteClusterSummariesOutput = operations['DeleteClusterSummaries']['responses']['200']['content']['application/json']
   export type CreateOrganizationInput = operations['CreateOrganization']['requestBody']['content']['application/json']
@@ -331,6 +333,16 @@ export type DeleteKeyphraseOutput = operations['DeleteKeyphrase']['responses']['
 export type GetKeyphraseOutput = operations['GetKeyphrase']['responses']['200']['content']['application/json']
   export type BulkUpdateKeyphrasesInput = operations['BulkUpdateKeyphrases']['requestBody']['content']['application/json']
 export type BulkUpdateKeyphrasesOutput = operations['BulkUpdateKeyphrases']['responses']['200']['content']['application/json']
+  export type ListTaxonomysInput = operations['ListTaxonomys']['requestBody']['content']['application/json']
+export type ListTaxonomysOutput = operations['ListTaxonomys']['responses']['200']['content']['application/json']
+  export type UpdateTaxonomyInput = operations['UpdateTaxonomy']['requestBody']['content']['application/json']
+export type UpdateTaxonomyOutput = operations['UpdateTaxonomy']['responses']['200']['content']['application/json']
+  export type DeleteTaxonomyInput = operations['DeleteTaxonomy']['requestBody']['content']['application/json']
+export type DeleteTaxonomyOutput = operations['DeleteTaxonomy']['responses']['200']['content']['application/json']
+  export type GetTaxonomyInput = {}
+export type GetTaxonomyOutput = operations['GetTaxonomy']['responses']['200']['content']['application/json']
+  export type CreateTaxonomyInput = operations['CreateTaxonomy']['requestBody']['content']['application/json']
+export type CreateTaxonomyOutput = operations['CreateTaxonomy']['responses']['200']['content']['application/json']
 export class DiscoveryApiClient  extends _GenericClient {
   constructor(config:_ClientInput){
     super({...config,service_name:'DiscoveryApi'});
@@ -893,6 +905,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/datasets/{dataset_id}/cluster/centroids/summaries/list',
+      options
+    });
+  }
+  public async CreateHierarchicalClusters(
+    input: CommandInput<CreateHierarchicalClustersInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateHierarchicalClustersOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/hierarchical/create',
       options
     });
   }
@@ -2147,6 +2170,61 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/datasets/{dataset_id}/fields/{field}/keyphrase/bulk_update',
+      options
+    });
+  }
+  public async ListTaxonomys(
+    input: CommandInput<ListTaxonomysInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListTaxonomysOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/taxonomys/list',
+      options
+    });
+  }
+  public async UpdateTaxonomy(
+    input: CommandInput<UpdateTaxonomyInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateTaxonomyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/taxonomys/{taxonomy_id}/update',
+      options
+    });
+  }
+  public async DeleteTaxonomy(
+    input: CommandInput<DeleteTaxonomyInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteTaxonomyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/taxonomys/{taxonomy_id}/delete',
+      options
+    });
+  }
+  public async GetTaxonomy(
+    input: CommandInput<GetTaxonomyInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetTaxonomyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/taxonomys/{taxonomy_id}/get',
+      options
+    });
+  }
+  public async CreateTaxonomy(
+    input: CommandInput<CreateTaxonomyInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateTaxonomyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/taxonomys/create',
       options
     });
   }}
