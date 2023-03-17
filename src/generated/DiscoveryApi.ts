@@ -409,7 +409,7 @@ export type GetTranscriptTagListOutput = operations['GetTranscriptTagList']['res
 export type UpdateTranscriptTagListOutput = operations['UpdateTranscriptTagList']['responses']['200']['content']['application/json']
   export type ListTranscriptTagListsInput = operations['ListTranscriptTagLists']['requestBody']['content']['application/json']
 export type ListTranscriptTagListsOutput = operations['ListTranscriptTagLists']['responses']['200']['content']['application/json']
-export class DiscoveryApiClient  extends _GenericClient {
+export class VecDBApiClient  extends _GenericClient {
   constructor(config:_ClientInput){
     super({...config,service_name:'DiscoveryApi'});
   }

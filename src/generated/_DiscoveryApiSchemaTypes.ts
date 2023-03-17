@@ -14367,8 +14367,8 @@ export interface components {
        *     Example 2: {"price":"asc"}
        */
       textSort?: { [key: string]: "asc" | "desc" };
-      fieldsToAggregate?: unknown;
-      fieldsToAggregateStats?: unknown;
+      fieldsToAggregate?: unknown[];
+      fieldsToAggregateStats?: unknown[];
       /** @description Add relevance to documents if they match conditions in this list. configure 'weight' on each condition to modify the relevance contribution. */
       relevanceBoosters?: unknown[];
       /** @description Used in future requests to retrieve items after these values in the sort order. */
@@ -14517,7 +14517,7 @@ export interface components {
            *
            *     ]
            */
-          vectorSearchQuery?: unknown;
+          vectorSearchQuery?: unknown[];
           realtimeClustering?: {
             /** @default 4 */
             nClusters?: number;
