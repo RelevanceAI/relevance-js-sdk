@@ -109,14 +109,9 @@ export class _QueryBuilder extends _FilterBuilder {
         this.body.pageSize = value;
         return this;
     }
+    
     includeFields(fields:bodyType['includeFields']) {
         this.body.includeFields = fields;
-    }
-    excludeFields(fields:bodyType['excludeFields']) {
-        this.body.excludeFields = fields;
-    }
-    includeVectors(whetherToInclude:bodyType['includeVectors']){
-        this.body.includeVectors = whetherToInclude;
     }
 }
 
