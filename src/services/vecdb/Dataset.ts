@@ -26,6 +26,27 @@ export class Dataset {
         return this.name;
     };
 
+    async createIfNotExist() {
+        try {
+            await this.client.apiClient.GetDatasetDetails({}, { dataset_id: this.name });
+            return false;
+        } catch (err) {
+            await this.client.apiClient.CreateDataset({ id: this.name, ...(this.config.schema ? { schema: this.config.schema } : {}) });
+            return true;
+        }
+    }
+
+    async recreateIfExists() {
+        try {
+            await this.client.apiClient.GetDatasetDetails({}, { dataset_id: this.name });
+            await this.client.apiClient.DeleteDataset({}, { dataset_id: this.name });
+            await this.client.apiClient.CreateDataset({ id: this.name, ...(this.config.schema ? { schema: this.config.schema } : {}) });
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
     async insertDocument(document: any, options?: _GenericMethodOptions) {
         const response = await this.client.apiClient.Insert({
             document,
