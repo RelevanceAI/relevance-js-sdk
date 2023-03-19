@@ -114,6 +114,17 @@ export class _QueryBuilder extends _FilterBuilder {
         this.body.includeFields = fields;
         return this;
     }
+
+    ask(query: string, field: string, options: { preset?: string, titleReferenceField?: string, urlReferenceField?: string }) {
+        this.body.instantAnswerQuery = {
+            query,
+            field: field,
+            preset: options.preset ?? 'support3',
+            ...(options.titleReferenceField ? {titleReferenceField: options.titleReferenceField} : {}),
+            ...(options.urlReferenceField ? {urlReferenceField: options.urlReferenceField} : {}),
+        }
+        return this;
+    }
 }
 
 export class VecDBClient {
