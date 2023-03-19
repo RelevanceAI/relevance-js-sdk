@@ -112,6 +112,7 @@ export class _QueryBuilder extends _FilterBuilder {
     
     includeFields(fields:bodyType['includeFields']) {
         this.body.includeFields = fields;
+        return this;
     }
 }
 
