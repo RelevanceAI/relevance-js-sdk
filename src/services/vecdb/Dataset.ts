@@ -19,7 +19,7 @@ export class Dataset {
 
         this.client = client;
         this.name = name;
-        this.config = options;
+        this.config = options || {};
     }
 
     get datasetName(): string {
