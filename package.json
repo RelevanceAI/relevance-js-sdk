@@ -1,6 +1,6 @@
 {
   "name": "@relevanceai/sdk",
-  "version": "1.150.0",
+  "version": "2.0.0",
   "description": "Javascript client for RelevanceAI APIs. Browser, Node.js and typescript support.",
   "main": "./dist-cjs/index.js",
   "types": "./dist-types/index.d.ts",
@@ -12,7 +12,8 @@
     "build": "tsc -p tsconfig.json && tsc -p tsconfig.es.json && tsc -p tsconfig.types.json",
     "generate": "ts-node ./src/shared/generate.ts",
     "test": "jest",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "sample": "ts-node ./test/sample.test.mjs"
   },
   "repository": {
     "type": "git",

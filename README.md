@@ -5,20 +5,26 @@ npm i @relevanceai/sdk
 ```
 ## Features
 - Node and Browser support
-- Typescript definitions for almost all [relevance.ai](https://relevance.ai/) apis
+- Typescript definitions for almost all [relevanceai.com](https://relevanceai.com/) apis
 - Insert millions of documents with one function call
 - Our SearchBuilder makes searching, filtering, and aggregating your data simple
 # Getting started
-Get started in seconds with a demo dataset of popular movies.
-```javascript
-import {DiscoveryClient,QueryBuilder} from "@relevanceai/sdk";
+Get started by creating an account in cloud.relevanceai.com(https://cloud.relevanceai.com) - select the Vector Database onboarding option. Once set up you can fetch your API key and use the below snippet.
 
-const discovery = new DiscoveryClient({
-  project:'dummy-collections',
-  api_key:'UzdYRktIY0JxNmlvb1NpOFNsenU6VGdTU0s4UjhUR0NsaDdnQTVwUkpKZw',
+```javascript
+import {VecDBClient,QueryBuilder} from "@relevanceai/sdk";
+
+const discovery = new VecDBClient({
+  project: '',
+  api_key: '',
+  endpoint: ''
 });
 const dataset = discovery.dataset('1000-movies');
-const {results} = await dataset.search(QueryBuilder().text('Las Vegas'));
+
+const movies = [{ title: 'Lord of the Rings: The Fellowship of the Ring', grenre: 'action', budget: 100 }, ...]
+await dataset.insertDocuments(movies, [{ model_name: 'text-embedding-ada-002', field: 'title' }]);
+
+const {results} = await dataset.search(QueryBuilder().vector('title_vector_', { query: 'LOTR', model: 'text-embeddings-ada-002' }));
 ```
 ## Set up your credentials
 ### Option 1 - Use environment variables
@@ -27,7 +33,7 @@ First, set environment variables in your shell before you run your code.
 set RELEVANCE_PROJECT to your project name.
 
 set RELEVANCE_API_KEY to your api key.
-for more information, view the docs here: [Authorization docs](https://discovery.relevance.ai/reference/api-usage)
+for more information, view the docs here: [Authorization docs](https://discovery.relevanceai.com/reference/api-usage)
 
 Heres a template to copy and paste in for linux environments:
 ```bash
@@ -36,13 +42,13 @@ export RELEVANCE_API_KEY=#########
 ```
 The SDK will use these variables when making api calls. You can then initialise your client like this:
 ```javascript
-import {DiscoveryClient} from "@relevanceai/sdk";
-const discovery = new DiscoveryClient({});
+import {VecDBClient} from "@relevanceai/sdk";
+const client = new VecDBClient({});
 ```
 ### Option 2 - Passing them in code.
 ```javascript
-import {DiscoveryClient} from "@relevanceai/sdk";
-const discovery = new DiscoveryClient({
+import {VecDBClient} from "@relevanceai/sdk";
+const client = new VecDBClient({
   project:'########',
   api_key:'########',
 });
@@ -50,18 +56,18 @@ const discovery = new DiscoveryClient({
 # Examples
 ### You can import builders and type definitions like this
 ```javascript
-import {QueryBuilder,DiscoveryClient,BulkInsertOutput} from "@relevanceai/sdk";
+import {QueryBuilder,VecDBClient,BulkInsertOutput} from "@relevanceai/sdk";
 ```
 ## Insert millions of items with one function call
 ```javascript
-const discovery = new DiscoveryClient({ });
+const discovery = new VecDBClient({ ... });
 const dataset = discovery.dataset('tshirts-prod');
  // Here we create some demo data. Replace this with your real data
 const fakeVector = [];
 for (let i = 0; i < 768; i++) fakeVector.push(1);
 const tshirtsData = [];
 for (let i = 0; i < 10000; i++) {
-  tshirtsData.push({_id:`tshirt-${i}1`,color:'red',price:i/1000,'title_text@1-0_vector_':fakeVector});
+  tshirtsData.push({_id:`tshirt-${i}1`,color:'red',price:i/1000,'title-fake_vector_':fakeVector});
   tshirtsData.push({_id:`tshirt-${i}2`,color:'blue',price:i/1000});
   tshirtsData.push({_id:`tshirt-${i}3`,color:'orange',price:i/1000});
 }
@@ -74,7 +80,7 @@ const res = await dataset.insertDocuments(tshirtsData,{batchSize:10000});
 ## Text Search and Vector Search
 ```javascript
 const builder = QueryBuilder();
-builder.query('red').text().vector('title_text@1-0_vector_',0.5).minimumRelevance(0.1);
+builder.query('red').text().vector('title-fake_vector_',0.5).minimumRelevance(0.1);
 // .text() searches all fields. alternatively, use .text(field1).text(field2)... to search specific fields
 const searchResults = await dataset.search(builder);
 ```
@@ -103,41 +109,13 @@ const filteredItems = await dataset.search(filters);
   aggregateStats: {}
 }
 ```
-## Summarise your data using aggregations
-```javascript
-const aggregates = QueryBuilder();
-aggregates.aggregate('color').aggregateStats('price',10);
-const aggregatesResult = await dataset.search(aggregates);
-```
-### aggregates will output:
-```javascript
-{
-  aggregates:{
-    color: {
-      results: { blue: 10000, orange: 10000, red: 10000 },
-      aggregates: {}
-    },
-    price: {
-      results: {
-        '0': 0000,
-        '10': 3000,
-        '20': 3000,
-        '30': 3000,
-        '40': 3000,
-        '50': 3000,
-        '60': 3000,
-        '70': 3000,
-        '80': 3000,
-        '90': 3000
-      },
-      aggregates: {}
-    }
-  }
-}
+
+
 ```
 ## Call raw api methods directly
 ```javascript
-const rawClient = new DiscoveryApiClient({dataset_id:'tshirts-prod'});
-const {body} = await rawClient.FastSearch({filters:[{match:{key:'_id',value:`tshirt-01`}}]});
+const discovery = new VecDBClient({ ... });
+const dataset = discovery.dataset('tshirts-prod');
+const {body} = await dataset.apiClient.FastSearch({filters:[{match:{key:'_id',value:`tshirt-01`}}]});
 expect((body.results[0] as any).color).toBe('red')
 ```
