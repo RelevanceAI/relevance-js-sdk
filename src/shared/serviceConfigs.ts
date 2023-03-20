@@ -5,9 +5,9 @@ export interface serviceConfig {
   name:string,
 }
 export const serviceConfigs:{[id:string]:serviceConfig} = {
-  DiscoveryApi:{
+  VecDBApi:{
     schema_url:'https://api-f1db6c.stack.tryrelevance.com/latest/openapi_schema.json',
     endpoint:'https://api-f1db6c.stack.tryrelevance.com',
-    name:'DiscoveryApi',
+    name:'VecDBApi',
   },
 }

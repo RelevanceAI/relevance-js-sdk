@@ -1,6 +1,6 @@
 import { VecDBApiClient, BulkInsertInput, BulkInsertOutput } from '../../';
 import { _ClientInput, CommandInput, CommandOutput, _GenericMethodOptions } from '../../shared/BaseClient';
-import { operations, components } from '../../generated/_DiscoveryApiSchemaTypes';
+import { operations, components } from '../../generated/_VecDBApiSchemaTypes';
 import { Dataset } from './Dataset';
 type bodyType = any; // TODO operations['SimpleSearchPost']['requestBody']['content']['application/json'];
 export function QueryBuilder():_QueryBuilder{
@@ -115,7 +115,7 @@ export class _QueryBuilder extends _FilterBuilder {
         return this;
     }
 
-    ask(query: string, field: string, options: { preset?: string, titleReferenceField?: string, urlReferenceField?: string }) {
+    ask(query: string, field: string, options: { preset?: any, titleReferenceField?: string, urlReferenceField?: string }) {
         this.body.instantAnswerQuery = {
             query,
             field: field,
