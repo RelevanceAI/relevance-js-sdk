@@ -1,5 +1,5 @@
 import {CommandInput,_GenericClient,CommandOutput,_ClientInput,_GenericMethodOptions} from '../shared/BaseClient';
-      import {operations} from './_DiscoveryApiSchemaTypes';
+      import {operations} from './_VecDBApiSchemaTypes';
 
   export type CreateDeployableInput = operations['CreateDeployable']['requestBody']['content']['application/json']
 export type CreateDeployableOutput = operations['CreateDeployable']['responses']['200']['content']['application/json']
@@ -41,6 +41,16 @@ export type UpdateProjectOutput = operations['UpdateProject']['responses']['200'
 export type TransferProjectToOrganizationOutput = operations['TransferProjectToOrganization']['responses']['200']['content']['application/json']
   export type ListProjectsInput = {}
 export type ListProjectsOutput = operations['ListProjects']['responses']['200']['content']['application/json']
+  export type GetProjectsOrgInfoInput = {}
+export type GetProjectsOrgInfoOutput = operations['GetProjectsOrgInfo']['responses']['200']['content']['application/json']
+  export type ListProjectKeysInput = {}
+export type ListProjectKeysOutput = operations['ListProjectKeys']['responses']['200']['content']['application/json']
+  export type GetProjectKeyInput = operations['GetProjectKey']['requestBody']['content']['application/json']
+export type GetProjectKeyOutput = operations['GetProjectKey']['responses']['200']['content']['application/json']
+  export type SetProjectKeyInput = operations['SetProjectKey']['requestBody']['content']['application/json']
+export type SetProjectKeyOutput = operations['SetProjectKey']['responses']['200']['content']['application/json']
+  export type DeleteProjectKeyInput = operations['DeleteProjectKey']['requestBody']['content']['application/json']
+export type DeleteProjectKeyOutput = operations['DeleteProjectKey']['responses']['200']['content']['application/json']
   export type CreateUserInput = operations['CreateUser']['requestBody']['content']['application/json']
 export type CreateUserOutput = operations['CreateUser']['responses']['200']['content']['application/json']
   export type ListUsersInput = operations['ListUsers']['requestBody']['content']['application/json']
@@ -107,6 +117,10 @@ export type ListClusterSummariesOutput = operations['ListClusterSummaries']['res
 export type CreateHierarchicalClustersOutput = operations['CreateHierarchicalClusters']['responses']['200']['content']['application/json']
   export type DeleteClusterSummariesInput = operations['DeleteClusterSummaries']['requestBody']['content']['application/json']
 export type DeleteClusterSummariesOutput = operations['DeleteClusterSummaries']['responses']['200']['content']['application/json']
+  export type EditOneToManyClustersInput = operations['EditOneToManyClusters']['requestBody']['content']['application/json']
+export type EditOneToManyClustersOutput = operations['EditOneToManyClusters']['responses']['200']['content']['application/json']
+  export type EditListInDocumentsInput = operations['EditListInDocuments']['requestBody']['content']['application/json']
+export type EditListInDocumentsOutput = operations['EditListInDocuments']['responses']['200']['content']['application/json']
   export type CreateOrganizationInput = operations['CreateOrganization']['requestBody']['content']['application/json']
 export type CreateOrganizationOutput = operations['CreateOrganization']['responses']['200']['content']['application/json']
   export type UpdateOrganizationInput = operations['UpdateOrganization']['requestBody']['content']['application/json']
@@ -127,6 +141,14 @@ export type ListUsersInOrganizationOutput = operations['ListUsersInOrganization'
 export type ListProjectsInOrganizationOutput = operations['ListProjectsInOrganization']['responses']['200']['content']['application/json']
   export type AggregateOrganizationMetricsInput = operations['AggregateOrganizationMetrics']['requestBody']['content']['application/json']
 export type AggregateOrganizationMetricsOutput = operations['AggregateOrganizationMetrics']['responses']['200']['content']['application/json']
+  export type ListBillingEventsInput = operations['ListBillingEvents']['requestBody']['content']['application/json']
+export type ListBillingEventsOutput = operations['ListBillingEvents']['responses']['200']['content']['application/json']
+  export type CreateBillingEventAdminInput = operations['CreateBillingEventAdmin']['requestBody']['content']['application/json']
+export type CreateBillingEventAdminOutput = operations['CreateBillingEventAdmin']['responses']['200']['content']['application/json']
+  export type GetBillingFrontendLinkInput = {}
+export type GetBillingFrontendLinkOutput = operations['GetBillingFrontendLink']['responses']['200']['content']['application/json']
+  export type UpdateOrganizationBillingInput = operations['UpdateOrganizationBilling']['requestBody']['content']['application/json']
+export type UpdateOrganizationBillingOutput = operations['UpdateOrganizationBilling']['responses']['200']['content']['application/json']
   export type CreateConnectorInput = operations['CreateConnector']['requestBody']['content']['application/json']
 export type CreateConnectorOutput = operations['CreateConnector']['responses']['200']['content']['application/json']
   export type CheckConnectionInput = operations['CheckConnection']['requestBody']['content']['application/json']
@@ -155,6 +177,8 @@ export type TriggerWorkflowOutput = operations['TriggerWorkflow']['responses']['
 export type ListWorkflowsOutput = operations['ListWorkflows']['responses']['200']['content']['application/json']
   export type GetWorkflowStatusInput = operations['GetWorkflowStatus']['requestBody']['content']['application/json']
 export type GetWorkflowStatusOutput = operations['GetWorkflowStatus']['responses']['200']['content']['application/json']
+  export type GetWorkflowConfigInput = operations['GetWorkflowConfig']['requestBody']['content']['application/json']
+export type GetWorkflowConfigOutput = operations['GetWorkflowConfig']['responses']['200']['content']['application/json']
   export type DeleteWorkflowStatusInput = operations['DeleteWorkflowStatus']['requestBody']['content']['application/json']
 export type DeleteWorkflowStatusOutput = operations['DeleteWorkflowStatus']['responses']['200']['content']['application/json']
   export type TerminateWorkflowInput = operations['TerminateWorkflow']['requestBody']['content']['application/json']
@@ -167,6 +191,18 @@ export type UpsertWorkflowProgressOutput = operations['UpsertWorkflowProgress'][
 export type UpsertWorkflowStatusOutput = operations['UpsertWorkflowStatus']['responses']['200']['content']['application/json']
   export type ListWorkflowTypesInput = {}
 export type ListWorkflowTypesOutput = operations['ListWorkflowTypes']['responses']['200']['content']['application/json']
+  export type SearchWorkflowTypesInput = operations['SearchWorkflowTypes']['requestBody']['content']['application/json']
+export type SearchWorkflowTypesOutput = operations['SearchWorkflowTypes']['responses']['200']['content']['application/json']
+  export type GetWorkflowTypesAsOpenAPIInput = {}
+export type GetWorkflowTypesAsOpenAPIOutput = operations['GetWorkflowTypesAsOpenAPI']['responses']['200']['content']['application/json']
+  export type AggregateWorkflowTypesInput = operations['AggregateWorkflowTypes']['requestBody']['content']['application/json']
+export type AggregateWorkflowTypesOutput = operations['AggregateWorkflowTypes']['responses']['200']['content']['application/json']
+  export type BulkUpdateWorkflowTypesAdminInput = operations['BulkUpdateWorkflowTypesAdmin']['requestBody']['content']['application/json']
+export type BulkUpdateWorkflowTypesAdminOutput = operations['BulkUpdateWorkflowTypesAdmin']['responses']['200']['content']['application/json']
+  export type UpdateWorkflowTypesVersionAliasesAdminInput = operations['UpdateWorkflowTypesVersionAliasesAdmin']['requestBody']['content']['application/json']
+export type UpdateWorkflowTypesVersionAliasesAdminOutput = operations['UpdateWorkflowTypesVersionAliasesAdmin']['responses']['200']['content']['application/json']
+  export type GetWorkflowTypesVersionAliasesInput = operations['GetWorkflowTypesVersionAliases']['requestBody']['content']['application/json']
+export type GetWorkflowTypesVersionAliasesOutput = operations['GetWorkflowTypesVersionAliases']['responses']['200']['content']['application/json']
   export type GetWorkflowTypeInput = {}
 export type GetWorkflowTypeOutput = operations['GetWorkflowType']['responses']['200']['content']['application/json']
   export type ValidateWorkflowParamsInput = operations['ValidateWorkflowParams']['requestBody']['content']['application/json']
@@ -177,6 +213,8 @@ export type InsertOutput = operations['Insert']['responses']['200']['content']['
 export type BulkInsertOutput = operations['BulkInsert']['responses']['200']['content']['application/json']
   export type GetFileUploadUrlsForDatasetInput = operations['GetFileUploadUrlsForDataset']['requestBody']['content']['application/json']
 export type GetFileUploadUrlsForDatasetOutput = operations['GetFileUploadUrlsForDataset']['responses']['200']['content']['application/json']
+  export type GetTemporaryFileUploadUrlInput = operations['GetTemporaryFileUploadUrl']['requestBody']['content']['application/json']
+export type GetTemporaryFileUploadUrlOutput = operations['GetTemporaryFileUploadUrl']['responses']['200']['content']['application/json']
   export type ListFileUploadsForDatasetInput = {}
 export type ListFileUploadsForDatasetOutput = operations['ListFileUploadsForDataset']['responses']['200']['content']['application/json']
   export type ParseBlobInput = operations['ParseBlob']['requestBody']['content']['application/json']
@@ -185,6 +223,8 @@ export type ParseBlobOutput = operations['ParseBlob']['responses']['200']['conte
 export type CopyForeignDatasetOutput = operations['CopyForeignDataset']['responses']['200']['content']['application/json']
   export type CreateProjectReadKeyInput = operations['CreateProjectReadKey']['requestBody']['content']['application/json']
 export type CreateProjectReadKeyOutput = operations['CreateProjectReadKey']['responses']['200']['content']['application/json']
+  export type GenerateOnboardingInput = operations['GenerateOnboarding']['requestBody']['content']['application/json']
+export type GenerateOnboardingOutput = operations['GenerateOnboarding']['responses']['200']['content']['application/json']
   export type DeleteDatasetInput = operations['DeleteDataset']['requestBody']['content']['application/json']
 export type DeleteDatasetOutput = operations['DeleteDataset']['responses']['200']['content']['application/json']
   export type CreateDatasetInput = operations['CreateDataset']['requestBody']['content']['application/json']
@@ -203,8 +243,6 @@ export type SearchDatasetsOutput = operations['SearchDatasets']['responses']['20
 export type GetFieldHealthOutput = operations['GetFieldHealth']['responses']['200']['content']['application/json']
   export type GetDatasetStatsInput = {}
 export type GetDatasetStatsOutput = operations['GetDatasetStats']['responses']['200']['content']['application/json']
-  export type GetDatasetUsageInput = operations['GetDatasetUsage']['requestBody']['content']['application/json']
-export type GetDatasetUsageOutput = operations['GetDatasetUsage']['responses']['200']['content']['application/json']
   export type GetVectorMappingsInput = {}
 export type GetVectorMappingsOutput = operations['GetVectorMappings']['responses']['200']['content']['application/json']
   export type GetDatasetDetailsInput = operations['GetDatasetDetails']['requestBody']['content']['application/json']
@@ -275,8 +313,10 @@ export type VectorizeOutput = operations['Vectorize']['responses']['200']['conte
 export type VectorizeAndInsertOutput = operations['VectorizeAndInsert']['responses']['200']['content']['application/json']
   export type VectorizeFieldInput = operations['VectorizeField']['requestBody']['content']['application/json']
 export type VectorizeFieldOutput = operations['VectorizeField']['responses']['200']['content']['application/json']
-  export type CreateImageFromPromptInput = operations['CreateImageFromPrompt']['requestBody']['content']['application/json']
-export type CreateImageFromPromptOutput = operations['CreateImageFromPrompt']['responses']['200']['content']['application/json']
+  export type ListDatasetWorkflowsByFieldsInput = {}
+export type ListDatasetWorkflowsByFieldsOutput = operations['ListDatasetWorkflowsByFields']['responses']['200']['content']['application/json']
+  export type GetAPIHealthInput = {}
+export type GetAPIHealthOutput = operations['GetAPIHealth']['responses']['200']['content']['application/json']
   export type DeleteFieldChildrenInput = operations['DeleteFieldChildren']['requestBody']['content']['application/json']
 export type DeleteFieldChildrenOutput = operations['DeleteFieldChildren']['responses']['200']['content']['application/json']
   export type ListFieldChildrensInput = operations['ListFieldChildrens']['requestBody']['content']['application/json']
@@ -313,16 +353,16 @@ export type CreateComponentOutput = operations['CreateComponent']['responses']['
 export type ListDatasetEditorHistorysOutput = operations['ListDatasetEditorHistorys']['responses']['200']['content']['application/json']
   export type CreateDatasetEditorHistoryInput = operations['CreateDatasetEditorHistory']['requestBody']['content']['application/json']
 export type CreateDatasetEditorHistoryOutput = operations['CreateDatasetEditorHistory']['responses']['200']['content']['application/json']
-  export type ListDatasetEditorConfigurationsInput = operations['ListDatasetEditorConfigurations']['requestBody']['content']['application/json']
-export type ListDatasetEditorConfigurationsOutput = operations['ListDatasetEditorConfigurations']['responses']['200']['content']['application/json']
-  export type CreateDatasetEditorConfigurationInput = operations['CreateDatasetEditorConfiguration']['requestBody']['content']['application/json']
-export type CreateDatasetEditorConfigurationOutput = operations['CreateDatasetEditorConfiguration']['responses']['200']['content']['application/json']
-  export type UpdateDatasetEditorConfigurationInput = operations['UpdateDatasetEditorConfiguration']['requestBody']['content']['application/json']
-export type UpdateDatasetEditorConfigurationOutput = operations['UpdateDatasetEditorConfiguration']['responses']['200']['content']['application/json']
-  export type DeleteDatasetEditorConfigurationInput = operations['DeleteDatasetEditorConfiguration']['requestBody']['content']['application/json']
-export type DeleteDatasetEditorConfigurationOutput = operations['DeleteDatasetEditorConfiguration']['responses']['200']['content']['application/json']
-  export type GetDatasetEditorConfigurationInput = {}
-export type GetDatasetEditorConfigurationOutput = operations['GetDatasetEditorConfiguration']['responses']['200']['content']['application/json']
+  export type ListEditorConfigurationsInput = operations['ListEditorConfigurations']['requestBody']['content']['application/json']
+export type ListEditorConfigurationsOutput = operations['ListEditorConfigurations']['responses']['200']['content']['application/json']
+  export type CreateEditorConfigurationInput = operations['CreateEditorConfiguration']['requestBody']['content']['application/json']
+export type CreateEditorConfigurationOutput = operations['CreateEditorConfiguration']['responses']['200']['content']['application/json']
+  export type UpdateEditorConfigurationInput = operations['UpdateEditorConfiguration']['requestBody']['content']['application/json']
+export type UpdateEditorConfigurationOutput = operations['UpdateEditorConfiguration']['responses']['200']['content']['application/json']
+  export type DeleteEditorConfigurationInput = operations['DeleteEditorConfiguration']['requestBody']['content']['application/json']
+export type DeleteEditorConfigurationOutput = operations['DeleteEditorConfiguration']['responses']['200']['content']['application/json']
+  export type GetEditorConfigurationInput = {}
+export type GetEditorConfigurationOutput = operations['GetEditorConfiguration']['responses']['200']['content']['application/json']
   export type ListKeyphrasesInput = operations['ListKeyphrases']['requestBody']['content']['application/json']
 export type ListKeyphrasesOutput = operations['ListKeyphrases']['responses']['200']['content']['application/json']
   export type UpdateKeyphraseInput = operations['UpdateKeyphrase']['requestBody']['content']['application/json']
@@ -333,6 +373,8 @@ export type DeleteKeyphraseOutput = operations['DeleteKeyphrase']['responses']['
 export type GetKeyphraseOutput = operations['GetKeyphrase']['responses']['200']['content']['application/json']
   export type BulkUpdateKeyphrasesInput = operations['BulkUpdateKeyphrases']['requestBody']['content']['application/json']
 export type BulkUpdateKeyphrasesOutput = operations['BulkUpdateKeyphrases']['responses']['200']['content']['application/json']
+  export type BulkDeleteKeyphrasesInput = operations['BulkDeleteKeyphrases']['requestBody']['content']['application/json']
+export type BulkDeleteKeyphrasesOutput = operations['BulkDeleteKeyphrases']['responses']['200']['content']['application/json']
   export type ListTaxonomysInput = operations['ListTaxonomys']['requestBody']['content']['application/json']
 export type ListTaxonomysOutput = operations['ListTaxonomys']['responses']['200']['content']['application/json']
   export type UpdateTaxonomyInput = operations['UpdateTaxonomy']['requestBody']['content']['application/json']
@@ -343,9 +385,43 @@ export type DeleteTaxonomyOutput = operations['DeleteTaxonomy']['responses']['20
 export type GetTaxonomyOutput = operations['GetTaxonomy']['responses']['200']['content']['application/json']
   export type CreateTaxonomyInput = operations['CreateTaxonomy']['requestBody']['content']['application/json']
 export type CreateTaxonomyOutput = operations['CreateTaxonomy']['responses']['200']['content']['application/json']
-export class DiscoveryApiClient  extends _GenericClient {
+  export type DeleteFavouriteDatasetInput = operations['DeleteFavouriteDataset']['requestBody']['content']['application/json']
+export type DeleteFavouriteDatasetOutput = operations['DeleteFavouriteDataset']['responses']['200']['content']['application/json']
+  export type ListFavouriteDatasetsInput = operations['ListFavouriteDatasets']['requestBody']['content']['application/json']
+export type ListFavouriteDatasetsOutput = operations['ListFavouriteDatasets']['responses']['200']['content']['application/json']
+  export type UpdateFavouriteDatasetInput = operations['UpdateFavouriteDataset']['requestBody']['content']['application/json']
+export type UpdateFavouriteDatasetOutput = operations['UpdateFavouriteDataset']['responses']['200']['content']['application/json']
+  export type DeleteFavouriteDeployableInput = operations['DeleteFavouriteDeployable']['requestBody']['content']['application/json']
+export type DeleteFavouriteDeployableOutput = operations['DeleteFavouriteDeployable']['responses']['200']['content']['application/json']
+  export type ListFavouriteDeployablesInput = operations['ListFavouriteDeployables']['requestBody']['content']['application/json']
+export type ListFavouriteDeployablesOutput = operations['ListFavouriteDeployables']['responses']['200']['content']['application/json']
+  export type UpdateFavouriteDeployableInput = operations['UpdateFavouriteDeployable']['requestBody']['content']['application/json']
+export type UpdateFavouriteDeployableOutput = operations['UpdateFavouriteDeployable']['responses']['200']['content']['application/json']
+  export type DeleteUserOnboardingFlagInput = operations['DeleteUserOnboardingFlag']['requestBody']['content']['application/json']
+export type DeleteUserOnboardingFlagOutput = operations['DeleteUserOnboardingFlag']['responses']['200']['content']['application/json']
+  export type ListUserOnboardingFlagsInput = operations['ListUserOnboardingFlags']['requestBody']['content']['application/json']
+export type ListUserOnboardingFlagsOutput = operations['ListUserOnboardingFlags']['responses']['200']['content']['application/json']
+  export type UpdateUserOnboardingFlagInput = operations['UpdateUserOnboardingFlag']['requestBody']['content']['application/json']
+export type UpdateUserOnboardingFlagOutput = operations['UpdateUserOnboardingFlag']['responses']['200']['content']['application/json']
+  export type GetTranscriptTagListInput = {}
+export type GetTranscriptTagListOutput = operations['GetTranscriptTagList']['responses']['200']['content']['application/json']
+  export type UpdateTranscriptTagListInput = operations['UpdateTranscriptTagList']['requestBody']['content']['application/json']
+export type UpdateTranscriptTagListOutput = operations['UpdateTranscriptTagList']['responses']['200']['content']['application/json']
+  export type ListTranscriptTagListsInput = operations['ListTranscriptTagLists']['requestBody']['content']['application/json']
+export type ListTranscriptTagListsOutput = operations['ListTranscriptTagLists']['responses']['200']['content']['application/json']
+  export type ListTagsInput = operations['ListTags']['requestBody']['content']['application/json']
+export type ListTagsOutput = operations['ListTags']['responses']['200']['content']['application/json']
+  export type DeleteTagInput = operations['DeleteTag']['requestBody']['content']['application/json']
+export type DeleteTagOutput = operations['DeleteTag']['responses']['200']['content']['application/json']
+  export type GetTagInput = {}
+export type GetTagOutput = operations['GetTag']['responses']['200']['content']['application/json']
+  export type BulkDeleteTagsInput = operations['BulkDeleteTags']['requestBody']['content']['application/json']
+export type BulkDeleteTagsOutput = operations['BulkDeleteTags']['responses']['200']['content']['application/json']
+  export type BulkUpdateTagsInput = operations['BulkUpdateTags']['requestBody']['content']['application/json']
+export type BulkUpdateTagsOutput = operations['BulkUpdateTags']['responses']['200']['content']['application/json']
+export class VecDBApiClient  extends _GenericClient {
   constructor(config:_ClientInput){
-    super({...config,service_name:'DiscoveryApi'});
+    super({...config,service_name:'VecDBApi'});
   }
   public async CreateDeployable(
     input: CommandInput<CreateDeployableInput>,
@@ -564,6 +640,61 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'get',
       path:'/projects/list',
+      options
+    });
+  }
+  public async GetProjectsOrgInfo(
+    input: CommandInput<GetProjectsOrgInfoInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetProjectsOrgInfoOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/projects/organization_info',
+      options
+    });
+  }
+  public async ListProjectKeys(
+    input: CommandInput<ListProjectKeysInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListProjectKeysOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/projects/keys/list',
+      options
+    });
+  }
+  public async GetProjectKey(
+    input: CommandInput<GetProjectKeyInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetProjectKeyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/projects/keys/get',
+      options
+    });
+  }
+  public async SetProjectKey(
+    input: CommandInput<SetProjectKeyInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<SetProjectKeyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/projects/keys/set',
+      options
+    });
+  }
+  public async DeleteProjectKey(
+    input: CommandInput<DeleteProjectKeyInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteProjectKeyOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/projects/keys/delete',
       options
     });
   }
@@ -930,6 +1061,28 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
+  public async EditOneToManyClusters(
+    input: CommandInput<EditOneToManyClustersInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<EditOneToManyClustersOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/cluster/one_to_many/edit',
+      options
+    });
+  }
+  public async EditListInDocuments(
+    input: CommandInput<EditListInDocumentsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<EditListInDocumentsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/documents/edit_list',
+      options
+    });
+  }
   public async CreateOrganization(
     input: CommandInput<CreateOrganizationInput>,
     options?: _GenericMethodOptions
@@ -1037,6 +1190,50 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/organizations/{organization_id}/metrics/aggregate',
+      options
+    });
+  }
+  public async ListBillingEvents(
+    input: CommandInput<ListBillingEventsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListBillingEventsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/organizations/{organization_id}/billing/events/list',
+      options
+    });
+  }
+  public async CreateBillingEventAdmin(
+    input: CommandInput<CreateBillingEventAdminInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<CreateBillingEventAdminOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/admin/organizations/{organization_id}/billing/events/create',
+      options
+    });
+  }
+  public async GetBillingFrontendLink(
+    input: CommandInput<GetBillingFrontendLinkInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetBillingFrontendLinkOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/organizations/{organization_id}/billing/get_billing_frontend_link',
+      options
+    });
+  }
+  public async UpdateOrganizationBilling(
+    input: CommandInput<UpdateOrganizationBillingInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateOrganizationBillingOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/organizations/{organization_id}/billing/update',
       options
     });
   }
@@ -1194,6 +1391,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
+  public async GetWorkflowConfig(
+    input: CommandInput<GetWorkflowConfigInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetWorkflowConfigOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/{workflow_id}/config',
+      options
+    });
+  }
   public async DeleteWorkflowStatus(
     input: CommandInput<DeleteWorkflowStatusInput>,
     options?: _GenericMethodOptions
@@ -1260,6 +1468,72 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
+  public async SearchWorkflowTypes(
+    input: CommandInput<SearchWorkflowTypesInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<SearchWorkflowTypesOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/types/search',
+      options
+    });
+  }
+  public async GetWorkflowTypesAsOpenAPI(
+    input: CommandInput<GetWorkflowTypesAsOpenAPIInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetWorkflowTypesAsOpenAPIOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/workflows/types/openapi',
+      options
+    });
+  }
+  public async AggregateWorkflowTypes(
+    input: CommandInput<AggregateWorkflowTypesInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<AggregateWorkflowTypesOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/types/aggregate',
+      options
+    });
+  }
+  public async BulkUpdateWorkflowTypesAdmin(
+    input: CommandInput<BulkUpdateWorkflowTypesAdminInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<BulkUpdateWorkflowTypesAdminOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/types/bulk_update',
+      options
+    });
+  }
+  public async UpdateWorkflowTypesVersionAliasesAdmin(
+    input: CommandInput<UpdateWorkflowTypesVersionAliasesAdminInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateWorkflowTypesVersionAliasesAdminOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/types/version_aliases/update',
+      options
+    });
+  }
+  public async GetWorkflowTypesVersionAliases(
+    input: CommandInput<GetWorkflowTypesVersionAliasesInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetWorkflowTypesVersionAliasesOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/workflows/types/version_aliases/get',
+      options
+    });
+  }
   public async GetWorkflowType(
     input: CommandInput<GetWorkflowTypeInput>,
     options?: _GenericMethodOptions
@@ -1315,6 +1589,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
+  public async GetTemporaryFileUploadUrl(
+    input: CommandInput<GetTemporaryFileUploadUrlInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetTemporaryFileUploadUrlOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/services/get_temporary_file_upload_url',
+      options
+    });
+  }
   public async ListFileUploadsForDataset(
     input: CommandInput<ListFileUploadsForDatasetInput>,
     options?: _GenericMethodOptions
@@ -1356,6 +1641,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/admin/request_read_api_key',
+      options
+    });
+  }
+  public async GenerateOnboarding(
+    input: CommandInput<GenerateOnboardingInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GenerateOnboardingOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/onboard/generate',
       options
     });
   }
@@ -1455,17 +1751,6 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'get',
       path:'/datasets/{dataset_id}/monitor/stats',
-      options
-    });
-  }
-  public async GetDatasetUsage(
-    input: CommandInput<GetDatasetUsageInput>,
-    options?: _GenericMethodOptions
-  ):Promise<CommandOutput<GetDatasetUsageOutput>> {
-    return this.SendRequest({
-      input,
-      method:'post',
-      path:'/datasets/{dataset_id}/monitor/usage',
       options
     });
   }
@@ -1854,14 +2139,25 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
-  public async CreateImageFromPrompt(
-    input: CommandInput<CreateImageFromPromptInput>,
+  public async ListDatasetWorkflowsByFields(
+    input: CommandInput<ListDatasetWorkflowsByFieldsInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<CreateImageFromPromptOutput>> {
+  ):Promise<CommandOutput<ListDatasetWorkflowsByFieldsOutput>> {
     return this.SendRequest({
       input,
-      method:'post',
-      path:'/services/prompt_to_image/create',
+      method:'get',
+      path:'/datasets/{dataset_id}/workflows_by_fields',
+      options
+    });
+  }
+  public async GetAPIHealth(
+    input: CommandInput<GetAPIHealthInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetAPIHealthOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/health',
       options
     });
   }
@@ -2063,58 +2359,58 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
-  public async ListDatasetEditorConfigurations(
-    input: CommandInput<ListDatasetEditorConfigurationsInput>,
+  public async ListEditorConfigurations(
+    input: CommandInput<ListEditorConfigurationsInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<ListDatasetEditorConfigurationsOutput>> {
+  ):Promise<CommandOutput<ListEditorConfigurationsOutput>> {
     return this.SendRequest({
       input,
       method:'post',
-      path:'/datasets/{dataset_id}/editor/configuration/list',
+      path:'/editor/configuration/list',
       options
     });
   }
-  public async CreateDatasetEditorConfiguration(
-    input: CommandInput<CreateDatasetEditorConfigurationInput>,
+  public async CreateEditorConfiguration(
+    input: CommandInput<CreateEditorConfigurationInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<CreateDatasetEditorConfigurationOutput>> {
+  ):Promise<CommandOutput<CreateEditorConfigurationOutput>> {
     return this.SendRequest({
       input,
       method:'post',
-      path:'/datasets/{dataset_id}/editor/configuration/create',
+      path:'/editor/configuration/create',
       options
     });
   }
-  public async UpdateDatasetEditorConfiguration(
-    input: CommandInput<UpdateDatasetEditorConfigurationInput>,
+  public async UpdateEditorConfiguration(
+    input: CommandInput<UpdateEditorConfigurationInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<UpdateDatasetEditorConfigurationOutput>> {
+  ):Promise<CommandOutput<UpdateEditorConfigurationOutput>> {
     return this.SendRequest({
       input,
       method:'post',
-      path:'/datasets/{dataset_id}/editor/configuration/{dataseteditorconfiguration_id}/update',
+      path:'/editor/configuration/{editorconfiguration_id}/update',
       options
     });
   }
-  public async DeleteDatasetEditorConfiguration(
-    input: CommandInput<DeleteDatasetEditorConfigurationInput>,
+  public async DeleteEditorConfiguration(
+    input: CommandInput<DeleteEditorConfigurationInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<DeleteDatasetEditorConfigurationOutput>> {
+  ):Promise<CommandOutput<DeleteEditorConfigurationOutput>> {
     return this.SendRequest({
       input,
       method:'post',
-      path:'/datasets/{dataset_id}/editor/configuration/{dataseteditorconfiguration_id}/delete',
+      path:'/editor/configuration/{editorconfiguration_id}/delete',
       options
     });
   }
-  public async GetDatasetEditorConfiguration(
-    input: CommandInput<GetDatasetEditorConfigurationInput>,
+  public async GetEditorConfiguration(
+    input: CommandInput<GetEditorConfigurationInput>,
     options?: _GenericMethodOptions
-  ):Promise<CommandOutput<GetDatasetEditorConfigurationOutput>> {
+  ):Promise<CommandOutput<GetEditorConfigurationOutput>> {
     return this.SendRequest({
       input,
       method:'get',
-      path:'/datasets/{dataset_id}/editor/configuration/{dataseteditorconfiguration_id}/get',
+      path:'/editor/configuration/{editorconfiguration_id}/get',
       options
     });
   }
@@ -2173,6 +2469,17 @@ export class DiscoveryApiClient  extends _GenericClient {
       options
     });
   }
+  public async BulkDeleteKeyphrases(
+    input: CommandInput<BulkDeleteKeyphrasesInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<BulkDeleteKeyphrasesOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/fields/{field}/keyphrase/bulk_delete',
+      options
+    });
+  }
   public async ListTaxonomys(
     input: CommandInput<ListTaxonomysInput>,
     options?: _GenericMethodOptions
@@ -2225,6 +2532,193 @@ export class DiscoveryApiClient  extends _GenericClient {
       input,
       method:'post',
       path:'/taxonomys/create',
+      options
+    });
+  }
+  public async DeleteFavouriteDataset(
+    input: CommandInput<DeleteFavouriteDatasetInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteFavouriteDatasetOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/favourites/{favouritedataset_id}/delete',
+      options
+    });
+  }
+  public async ListFavouriteDatasets(
+    input: CommandInput<ListFavouriteDatasetsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListFavouriteDatasetsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/favourites/list',
+      options
+    });
+  }
+  public async UpdateFavouriteDataset(
+    input: CommandInput<UpdateFavouriteDatasetInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateFavouriteDatasetOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/favourites/{favouritedataset_id}/update',
+      options
+    });
+  }
+  public async DeleteFavouriteDeployable(
+    input: CommandInput<DeleteFavouriteDeployableInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteFavouriteDeployableOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployable/favourites/{favouritedeployable_id}/delete',
+      options
+    });
+  }
+  public async ListFavouriteDeployables(
+    input: CommandInput<ListFavouriteDeployablesInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListFavouriteDeployablesOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployable/favourites/list',
+      options
+    });
+  }
+  public async UpdateFavouriteDeployable(
+    input: CommandInput<UpdateFavouriteDeployableInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateFavouriteDeployableOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/deployable/favourites/{favouritedeployable_id}/update',
+      options
+    });
+  }
+  public async DeleteUserOnboardingFlag(
+    input: CommandInput<DeleteUserOnboardingFlagInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteUserOnboardingFlagOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/useronboardingflags/{useronboardingflag_id}/delete',
+      options
+    });
+  }
+  public async ListUserOnboardingFlags(
+    input: CommandInput<ListUserOnboardingFlagsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListUserOnboardingFlagsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/useronboardingflags/list',
+      options
+    });
+  }
+  public async UpdateUserOnboardingFlag(
+    input: CommandInput<UpdateUserOnboardingFlagInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateUserOnboardingFlagOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/useronboardingflags/{useronboardingflag_id}/update',
+      options
+    });
+  }
+  public async GetTranscriptTagList(
+    input: CommandInput<GetTranscriptTagListInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetTranscriptTagListOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/fields/{field}/transcript_tags/{transcripttaglist_id}/get',
+      options
+    });
+  }
+  public async UpdateTranscriptTagList(
+    input: CommandInput<UpdateTranscriptTagListInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<UpdateTranscriptTagListOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/fields/{field}/transcript_tags/{transcripttaglist_id}/update',
+      options
+    });
+  }
+  public async ListTranscriptTagLists(
+    input: CommandInput<ListTranscriptTagListsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListTranscriptTagListsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/fields/{field}/transcript_tags/list',
+      options
+    });
+  }
+  public async ListTags(
+    input: CommandInput<ListTagsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<ListTagsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/field/{tag_field}/tags/list',
+      options
+    });
+  }
+  public async DeleteTag(
+    input: CommandInput<DeleteTagInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<DeleteTagOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/field/{tag_field}/tags/{tag_id}/delete',
+      options
+    });
+  }
+  public async GetTag(
+    input: CommandInput<GetTagInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<GetTagOutput>> {
+    return this.SendRequest({
+      input,
+      method:'get',
+      path:'/datasets/{dataset_id}/field/{tag_field}/tags/{tag_id}/get',
+      options
+    });
+  }
+  public async BulkDeleteTags(
+    input: CommandInput<BulkDeleteTagsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<BulkDeleteTagsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/field/{tag_field}/tags/bulk_delete',
+      options
+    });
+  }
+  public async BulkUpdateTags(
+    input: CommandInput<BulkUpdateTagsInput>,
+    options?: _GenericMethodOptions
+  ):Promise<CommandOutput<BulkUpdateTagsOutput>> {
+    return this.SendRequest({
+      input,
+      method:'post',
+      path:'/datasets/{dataset_id}/field/{tag_field}/tags/bulk_update',
       options
     });
   }}

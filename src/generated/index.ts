@@ -1,1 +1,1 @@
-export * from "./DiscoveryApi";
+export * from "./VecDBApi";
