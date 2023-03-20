@@ -9,7 +9,7 @@ npm i @relevanceai/sdk
 - Insert millions of documents with one function call
 - Our SearchBuilder makes searching, filtering, and aggregating your data simple
 # Getting started
-Get started by creating an account in cloud.relevanceai.com(https://cloud.relevanceai.com) - select the Vector Database onboarding option. Once set up you can fetch your API key and use the below snippet.
+Get started by creating an account in [cloud.relevanceai.com](https://cloud.relevanceai.com) - select the Vector Database onboarding option. Once set up you can fetch your API key and use the below snippet.
 
 ```javascript
 import {VecDBClient,QueryBuilder} from "@relevanceai/sdk";
