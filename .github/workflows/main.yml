@@ -11,7 +11,6 @@ jobs:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       RELEVANCE_API_KEY: ${{ secrets.RELEVANCE_API_KEY }}
       RELEVANCE_PROJECT: ${{ secrets.RELEVANCE_PROJECT }}
-    if: github.ref == 'refs/heads/main'
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
