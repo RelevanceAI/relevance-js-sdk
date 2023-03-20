@@ -23,5 +23,5 @@ jobs:
       run: npm run generate && npm run prepare
     - name: Set git identity
       run: (git config --global user.email "jssdkautomation@relevance.ai") && (git config --global user.name "jssdkautomation")
-    - name: Publish to github and npm only if there has been a new change
-      run: git diff-index --quiet HEAD || (git add . && npm version minor --force && git push && npm publish --access public)
+    - name: Publish to github and npm
+      run: git add . && git push && npm publish --access public
