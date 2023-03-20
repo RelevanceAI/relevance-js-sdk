@@ -9,8 +9,6 @@ jobs:
     environment: Publish
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      RELEVANCE_API_KEY: ${{ secrets.RELEVANCE_API_KEY }}
-      RELEVANCE_PROJECT: ${{ secrets.RELEVANCE_PROJECT }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
@@ -20,7 +18,5 @@ jobs:
       run: npm install
     - name: Regenerate SDK
       run: npm run generate && npm run prepare
-    - name: Set git identity
-      run: (git config --global user.email "jssdkautomation@relevance.ai") && (git config --global user.name "jssdkautomation")
-    - name: Publish to github and npm
-      run: git add . && git push && npm publish --access public
+    - name: Publish to npm
+      run: npm publish --access public
