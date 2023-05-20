@@ -12,9 +12,9 @@ npm i @relevanceai/sdk
 Get started by creating an account in [cloud.relevanceai.com](https://cloud.relevanceai.com) - select the Vector Database onboarding option. Once set up you can fetch your API key and use the below snippet.
 
 ```javascript
-import {VecDBClient,QueryBuilder} from "@relevanceai/sdk";
+import {Client,QueryBuilder} from "@relevanceai/sdk";
 
-const discovery = new VecDBClient({
+const discovery = new Client({
   project: '',
   api_key: '',
   endpoint: ''
@@ -42,13 +42,13 @@ export RELEVANCE_API_KEY=#########
 ```
 The SDK will use these variables when making api calls. You can then initialise your client like this:
 ```javascript
-import {VecDBClient} from "@relevanceai/sdk";
-const client = new VecDBClient({});
+import {Client} from "@relevanceai/sdk";
+const client = new Client({});
 ```
 ### Option 2 - Passing them in code.
 ```javascript
-import {VecDBClient} from "@relevanceai/sdk";
-const client = new VecDBClient({
+import {Client} from "@relevanceai/sdk";
+const client = new Client({
   project:'########',
   api_key:'########',
 });
@@ -56,11 +56,11 @@ const client = new VecDBClient({
 # Examples
 ### You can import builders and type definitions like this
 ```javascript
-import {QueryBuilder,VecDBClient,BulkInsertOutput} from "@relevanceai/sdk";
+import {QueryBuilder,Client,BulkInsertOutput} from "@relevanceai/sdk";
 ```
 ## Insert millions of items with one function call
 ```javascript
-const discovery = new VecDBClient({ ... });
+const discovery = new Client({ ... });
 const dataset = discovery.dataset('tshirts-prod');
  // Here we create some demo data. Replace this with your real data
 const fakeVector = [];
@@ -114,7 +114,7 @@ const filteredItems = await dataset.search(filters);
 ```
 ## Call raw api methods directly
 ```javascript
-const discovery = new VecDBClient({ ... });
+const discovery = new Client({ ... });
 const dataset = discovery.dataset('tshirts-prod');
 const {body} = await dataset.apiClient.FastSearch({filters:[{match:{key:'_id',value:`tshirt-01`}}]});
 expect((body.results[0] as any).color).toBe('red')

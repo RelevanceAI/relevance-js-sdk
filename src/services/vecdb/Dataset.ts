@@ -1,4 +1,4 @@
-import { QueryBuilder, VecDBClient, _QueryBuilder } from ".";
+import { QueryBuilder, Client, _QueryBuilder } from ".";
 import { DeleteDocumentOutput, DeleteWhereOutput, GetDocumentOutput, SimpleSearchPostOutput, BulkInsertOutput,UpdateWhereOutput,BulkUpdateOutput } from "../..";
 import { _GenericMethodOptions } from "../../shared/BaseClient";
 
@@ -9,12 +9,12 @@ interface searchOptions {
 
 
 export class Dataset {
-    client: VecDBClient;
+    client: Client;
     name: string;
     config: any;
     debounceTimer?:NodeJS.Timeout;
 
-    constructor(client: VecDBClient, name: string, options: any) {
+    constructor(client: Client, name: string, options: any) {
         // TODO validate name
 
         this.client = client;

@@ -127,7 +127,7 @@ export class _QueryBuilder extends _FilterBuilder {
     }
 }
 
-export class VecDBClient {
+export class Client {
     apiClient:VecDBApiClient;
 
     constructor(config?: _ClientInput) {

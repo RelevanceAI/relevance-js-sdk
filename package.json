@@ -1,6 +1,6 @@
 {
-  "name": "@relevanceai/sdk",
-  "version": "2.0.0",
+  "name": "@relevanceai/dataset",
+  "version": "2.1.0",
   "description": "Javascript client for RelevanceAI APIs. Browser, Node.js and typescript support.",
   "main": "./dist-cjs/index.js",
   "types": "./dist-types/index.d.ts",
