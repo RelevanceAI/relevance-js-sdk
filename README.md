@@ -12,7 +12,7 @@ npm i @relevanceai/dataset
 Get started by creating an account in [cloud.relevanceai.com](https://cloud.relevanceai.com) - select the Vector Database onboarding option. Once set up you can fetch your API key and use the below snippet.
 
 ```javascript
-import {Client,QueryBuilder} from "@relevanceai/sdk";
+import {Client,QueryBuilder} from "@relevanceai/dataset";
 
 const discovery = new Client({
   project: '',
@@ -42,12 +42,12 @@ export RELEVANCE_API_KEY=#########
 ```
 The SDK will use these variables when making api calls. You can then initialise your client like this:
 ```javascript
-import {Client} from "@relevanceai/sdk";
+import {Client} from "@relevanceai/dataset";
 const client = new Client({});
 ```
 ### Option 2 - Passing them in code.
 ```javascript
-import {Client} from "@relevanceai/sdk";
+import {Client} from "@relevanceai/dataset";
 const client = new Client({
   project:'########',
   api_key:'########',
@@ -56,7 +56,7 @@ const client = new Client({
 # Examples
 ### You can import builders and type definitions like this
 ```javascript
-import {QueryBuilder,Client,BulkInsertOutput} from "@relevanceai/sdk";
+import {QueryBuilder,Client,BulkInsertOutput} from "@relevanceai/dataset";
 ```
 ## Insert millions of items with one function call
 ```javascript
