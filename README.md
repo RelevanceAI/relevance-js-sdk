@@ -1,7 +1,7 @@
 # relevance-js-sdk
 Install with npm using:
 ```
-npm i @relevanceai/sdk
+npm i @relevanceai/dataset
 ```
 ## Features
 - Node and Browser support
