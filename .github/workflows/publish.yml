@@ -47,4 +47,4 @@ jobs:
           deno-version: v2
       
       - name: Publish to JSR
-        run: deno publish --token ${{ secrets.NPM_TOKEN }} --dry-run
+        run: deno publish --token ${{ secrets.JSR_TOKEN }} --dry-run
