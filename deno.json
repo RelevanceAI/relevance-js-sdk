@@ -1,0 +1,19 @@
+{
+  "name": "@relevanceai/sdk",
+  "version": "3.0.0-alpha.0",
+  "exports": "./mod.ts",
+  "license": "MIT",
+  "tasks": {
+    "dev": "deno test --watch",
+    "dnt": "deno run -A internal/tasks/dnt.ts"
+  },
+  "imports": {
+    "@deno/dnt": "jsr:@deno/dnt@^0.42.3",
+    "@denosaurs/wait": "jsr:@denosaurs/wait@^0.2.2",
+    "@std/cli": "jsr:@std/cli@^1.0.21"
+  },
+  "exclude": [
+    "examples",
+    "npm"
+  ]
+}
