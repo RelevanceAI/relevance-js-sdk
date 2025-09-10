@@ -42,9 +42,7 @@ jobs:
         uses: actions/checkout@v5
       
       - name: Setup Deno
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2
+        uses: ./.github/actions/setup-deno
       
       - name: Publish to JSR
         run: deno publish --token ${{ secrets.JSR_TOKEN }} --dry-run
