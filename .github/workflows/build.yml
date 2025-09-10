@@ -26,6 +26,6 @@ jobs:
       - name: Upload npm package artifact
         uses: actions/upload-artifact@v4
         with:
-          name: npm-package
+          name: npm-package-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
           path: npm/
           retention-days: 1
