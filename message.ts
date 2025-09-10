@@ -20,7 +20,7 @@ export class TaskMessage<T extends TaskMessageType = TaskMessageType> {
     this.#data = data;
   }
 
-  public get id() {
+  public get id(): string {
     return this.#data.item_id;
   }
 
@@ -28,11 +28,11 @@ export class TaskMessage<T extends TaskMessageType = TaskMessageType> {
     return this.#data.content.type as T;
   }
 
-  public get createdAt() {
+  public get createdAt(): Date {
     return new Date(this.#data.insert_date_);
   }
 
-  public get text() {
+  public get text(): string {
     return this.#data.content.text;
   }
 }

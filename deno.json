@@ -8,12 +8,7 @@
     "dnt": "deno run -A internal/tasks/dnt.ts"
   },
   "imports": {
-    "@deno/dnt": "jsr:@deno/dnt@^0.42.3",
-    "@denosaurs/wait": "jsr:@denosaurs/wait@^0.2.2",
-    "@std/cli": "jsr:@std/cli@^1.0.21"
+    "@deno/dnt": "jsr:@deno/dnt@^0.42.3"
   },
-  "exclude": [
-    "examples",
-    "npm"
-  ]
+  "exclude": [".github", "internal", "npm", "CLAUDE.md"]
 }

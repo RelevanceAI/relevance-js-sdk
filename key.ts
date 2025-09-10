@@ -127,7 +127,7 @@ export class Key {
    *
    * @returns {boolean}
    */
-  public isEmbed() {
+  public isEmbed(): boolean {
     return (this.agentId !== undefined && this.taskPrefix !== undefined);
   }
 

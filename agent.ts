@@ -18,7 +18,7 @@ export class Agent {
 
   public static async fetch(
     agentId: string,
-    cli = Client.default(),
+    cli: Client = Client.default(),
   ): Promise<Agent> {
     const config = await cli.fetch<{ agent: AgentConfig }>(
       `/agents/${agentId}/get`,
@@ -31,27 +31,30 @@ export class Agent {
     this.client = client;
   }
 
-  public get id() {
+  public get id(): string {
     return this.#config.agent_id;
   }
 
-  public get name() {
+  public get name(): string | undefined {
     return this.#config.name;
   }
 
-  public get description() {
+  public get description(): string | undefined {
     return this.#config.description;
   }
 
-  public get avatar() {
+  public get avatar(): string | undefined {
     return this.#config.emoji;
   }
 
-  public isPublic() {
+  public isPublic(): boolean {
     return this.#config.public;
   }
 
-  public async trigger(message: string, taskId?: string) {
+  public async trigger(
+    message: string,
+    taskId?: string,
+  ): Promise<{ id: string; state: AgentTaskState }> {
     // embed keys require a task prefixing for new tasks
     if (!taskId && this.client.isEmbedKey()) {
       taskId = [this.client.key.taskPrefix, await randomUUID()].join(

@@ -57,15 +57,15 @@ export class Client {
     this.baseURL = regionBaseURL(this.key.region);
   }
 
-  public get region() {
+  public get region(): Region {
     return this.key.region;
   }
 
-  public get project() {
+  public get project(): string {
     return this.key.project;
   }
 
-  public isEmbedKey() {
+  public isEmbedKey(): boolean {
     return this.key.isEmbed();
   }
 
@@ -75,7 +75,7 @@ export class Client {
     if (agent) {
       return new AgentTask(
         typeof agent === "string" ? await Agent.fetch(agent) : agent,
-        null,
+        undefined,
         this,
       );
     }

@@ -23,7 +23,7 @@ export abstract class Task<S, E extends Record<string, unknown>>
   public readonly subject: S;
   protected readonly client: Client;
 
-  readonly #id: string | null;
+  readonly #id: string | undefined;
 
   private listenController: AbortController | undefined;
 
@@ -35,8 +35,8 @@ export abstract class Task<S, E extends Record<string, unknown>>
 
   public constructor(
     subject: S,
-    id: string | null = null,
-    client = Client.default(),
+    id: string | undefined = undefined,
+    client: Client = Client.default(),
   ) {
     super();
 
@@ -46,7 +46,7 @@ export abstract class Task<S, E extends Record<string, unknown>>
     this.#id = id;
   }
 
-  public get id() {
+  public get id(): string | undefined {
     return this.#id;
   }
 
@@ -122,7 +122,7 @@ export abstract class Task<S, E extends Record<string, unknown>>
     );
   }
 
-  public isListening() {
+  public isListening(): boolean {
     return this.listenController !== undefined;
   }
 

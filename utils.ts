@@ -38,6 +38,7 @@ export async function randomUUID() {
     return crypto.randomUUID();
   }
 
+  // @ts-ignore allow this import for node builds
   const cryptoModule = await import("node:crypto");
 
   return cryptoModule.randomUUID();

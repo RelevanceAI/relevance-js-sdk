@@ -2,22 +2,13 @@
   "version": "5",
   "specifiers": {
     "jsr:@david/code-block-writer@^13.0.3": "13.0.3",
-    "jsr:@deno/dnt@*": "0.42.3",
     "jsr:@deno/dnt@~0.42.3": "0.42.3",
-    "jsr:@denosaurs/tty@~0.2.1": "0.2.1",
-    "jsr:@denosaurs/wait@*": "0.2.2",
-    "jsr:@denosaurs/wait@~0.2.2": "0.2.2",
-    "jsr:@std/assert@0.224": "0.224.0",
-    "jsr:@std/cli@*": "1.0.21",
-    "jsr:@std/cli@^1.0.21": "1.0.21",
-    "jsr:@std/flags@*": "0.224.0",
     "jsr:@std/fmt@1": "1.0.3",
     "jsr:@std/fs@1": "1.0.5",
     "jsr:@std/path@1": "1.0.8",
     "jsr:@std/path@^1.0.7": "1.0.8",
     "jsr:@ts-morph/bootstrap@0.27": "0.27.0",
-    "jsr:@ts-morph/common@0.27": "0.27.0",
-    "npm:@types/node@*": "24.2.0"
+    "jsr:@ts-morph/common@0.27": "0.27.0"
   },
   "jsr": {
     "@david/code-block-writer@13.0.3": {
@@ -31,28 +22,6 @@
         "jsr:@std/fs",
         "jsr:@std/path@1",
         "jsr:@ts-morph/bootstrap"
-      ]
-    },
-    "@denosaurs/tty@0.2.1": {
-      "integrity": "f1fc651cc9021c90bf230a45c6eb893c26a54fae6a855e9cd26aad0083d772dd"
-    },
-    "@denosaurs/wait@0.2.2": {
-      "integrity": "5ec0a7e72c57a96c9fdb2f4a52e2ce3b1ad010acc59fefe6f88054a9e27bc33d",
-      "dependencies": [
-        "jsr:@denosaurs/tty",
-        "jsr:@std/fmt"
-      ]
-    },
-    "@std/assert@0.224.0": {
-      "integrity": "8643233ec7aec38a940a8264a6e3eed9bfa44e7a71cc6b3c8874213ff401967f"
-    },
-    "@std/cli@1.0.21": {
-      "integrity": "cd25b050bdf6282e321854e3822bee624f07aca7636a3a76d95f77a3a919ca2a"
-    },
-    "@std/flags@0.224.0": {
-      "integrity": "d40eaf58c356b2e1313c6d4e62dc28b614aad2ddae6f5ff72a969e0b1f5ad689",
-      "dependencies": [
-        "jsr:@std/assert"
       ]
     },
     "@std/fmt@1.0.3": {
@@ -81,22 +50,9 @@
       ]
     }
   },
-  "npm": {
-    "@types/node@24.2.0": {
-      "integrity": "sha512-3xyG3pMCq3oYCNg7/ZP+E1ooTaGB4cG8JWRsqqOYQdbWNY4zbaV0Ennrd7stjiJEFZCaybcIgpTjJWHRfBSIDw==",
-      "dependencies": [
-        "undici-types"
-      ]
-    },
-    "undici-types@7.10.0": {
-      "integrity": "sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag=="
-    }
-  },
   "workspace": {
     "dependencies": [
-      "jsr:@deno/dnt@~0.42.3",
-      "jsr:@denosaurs/wait@~0.2.2",
-      "jsr:@std/cli@^1.0.21"
+      "jsr:@deno/dnt@~0.42.3"
     ]
   }
 }
