@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      
+      - name: Setup Deno
+        uses: ./.github/actions/setup-deno
+      
+      - name: Run dnt build task
+        run: deno run --allow-all internal/tasks/dnt.ts
+      
+      - name: Upload npm package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-package-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
+          path: npm/
+          retention-days: 1

@@ -1,0 +1,10 @@
+name: 'Setup Deno'
+description: 'Sets up Deno v2 environment'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Deno
+      uses: denoland/setup-deno@v2
+      with:
+        deno-version: v2
