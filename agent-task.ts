@@ -1,7 +1,7 @@
 import type { Agent } from "./agent.ts";
 import { AgentErrorMessage } from "./messages/agent-error.ts";
 import { AgentMessage } from "./messages/agent.ts";
-import type { TaskMessage, TaskMessageData } from "./messages/task.ts";
+import type { AnyTaskMessage, TaskMessageData } from "./messages/task.ts";
 import { ToolMessage } from "./messages/tool.ts";
 import { UserMessage } from "./messages/user.ts";
 import { Task, type TaskStatus } from "./task.ts";
@@ -9,8 +9,8 @@ import { Task, type TaskStatus } from "./task.ts";
 type AgentTaskEvents = {
   start: { status: TaskStatus };
   status: { status: TaskStatus };
-  message: { message: TaskMessage<"agent-message" | "user-message"> };
-  update: { message: TaskMessage<"tool-run"> };
+  message: { message: AgentMessage | UserMessage };
+  update: { message: ToolMessage };
 };
 
 export type AgentTaskState =
@@ -146,7 +146,7 @@ export class AgentTask extends Task<Agent, AgentTaskEvents> {
    */
   override async fetchMessages(
     { from = new Date(0) }: { from?: Date } = {},
-  ): Promise<TaskMessage[]> {
+  ): Promise<AnyTaskMessage[]> {
     if (!this.subject.id) {
       throw new Error("expecting agent id");
     }

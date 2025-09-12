@@ -9,3 +9,4 @@ export type { AgentErrorMessage } from "./messages/agent-error.ts";
 export type { AgentMessage } from "./messages/agent.ts";
 export type { ToolMessage } from "./messages/tool.ts";
 export type { UserMessage } from "./messages/user.ts";
+export type { AnyTaskMessage } from "./messages/task.ts";

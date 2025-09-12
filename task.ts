@@ -6,11 +6,8 @@ import {
   TaskStatusEvent,
   TaskUpdateEvent,
 } from "./events.ts";
-import type { AgentErrorMessage } from "./messages/agent-error.ts";
-import type { AgentMessage } from "./messages/agent.ts";
-import type { TaskMessage } from "./messages/task.ts";
+import type { AnyTaskMessage } from "./messages/task.ts";
 import type { ToolMessage } from "./messages/tool.ts";
-import type { UserMessage } from "./messages/user.ts";
 import { runInterval } from "./utils.ts";
 
 export type TaskStatus =
@@ -33,7 +30,7 @@ export abstract class Task<S, E extends Record<string, unknown>>
 
   public abstract fetchMessages(
     fetchOptions?: { from?: Date },
-  ): Promise<TaskMessage[]>;
+  ): Promise<AnyTaskMessage[]>;
 
   public abstract fetchStatus(): Promise<TaskStatus>;
 
@@ -118,31 +115,31 @@ export abstract class Task<S, E extends Record<string, unknown>>
             switch (message.type) {
               case "agent-error":
                 this.dispatchEvent(
-                  new TaskErrorEvent(message as AgentErrorMessage),
+                  new TaskErrorEvent(message),
                 );
                 break;
 
               case "tool-run": {
-                const { status } = message as ToolMessage;
+                const { status } = message;
                 if (pendingTools.get(message.id)?.status == status) {
                   // no change to the tool status
                   continue;
                 }
 
                 if (["pending", "running"].includes(status)) {
-                  pendingTools.set(message.id, message as ToolMessage);
+                  pendingTools.set(message.id, message);
                 } else {
                   pendingTools.delete(message.id);
                 }
 
-                this.dispatchEvent(new TaskUpdateEvent(message as ToolMessage));
+                this.dispatchEvent(new TaskUpdateEvent(message));
                 break;
               }
 
               case "agent-message":
               case "user-message":
                 this.dispatchEvent(
-                  new TaskMessageEvent(message as AgentMessage | UserMessage),
+                  new TaskMessageEvent(message),
                 );
             }
           }
