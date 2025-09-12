@@ -6,11 +6,11 @@ import {
   TaskStatusEvent,
   TaskUpdateEvent,
 } from "./events.ts";
-import { AgentErrorMessage } from "./messages/agent-error.ts";
-import { AgentMessage } from "./messages/agent.ts";
+import type { AgentErrorMessage } from "./messages/agent-error.ts";
+import type { AgentMessage } from "./messages/agent.ts";
 import type { TaskMessage } from "./messages/task.ts";
-import { ToolMessage } from "./messages/tool.ts";
-import { UserMessage } from "./messages/user.ts";
+import type { ToolMessage } from "./messages/tool.ts";
+import type { UserMessage } from "./messages/user.ts";
 import { runInterval } from "./utils.ts";
 
 export type TaskStatus =
@@ -75,6 +75,9 @@ export abstract class Task<S, E extends Record<string, unknown>>
     let currentStatus: TaskStatus | null = null;
     const messagesCursor = new Date(0);
 
+    const emitted = new Set<string>();
+    const pendingTools = new Map<string, ToolMessage>();
+
     void runInterval(
       async () => {
         // no task, yet
@@ -100,6 +103,18 @@ export abstract class Task<S, E extends Record<string, unknown>>
 
         if (messages.length) {
           for (const message of messages) {
+            if (emitted.has(message.id)) {
+              switch (message.type) {
+                case "agent-error":
+                case "agent-message":
+                case "user-message":
+                  // don't re-fire
+                  continue;
+              }
+            }
+
+            emitted.add(message.id);
+
             switch (message.type) {
               case "agent-error":
                 this.dispatchEvent(
@@ -107,9 +122,22 @@ export abstract class Task<S, E extends Record<string, unknown>>
                 );
                 break;
 
-              case "tool-run":
+              case "tool-run": {
+                const { status } = message as ToolMessage;
+                if (pendingTools.get(message.id)?.status == status) {
+                  // no change to the tool status
+                  continue;
+                }
+
+                if (["pending", "running"].includes(status)) {
+                  pendingTools.set(message.id, message as ToolMessage);
+                } else {
+                  pendingTools.delete(message.id);
+                }
+
                 this.dispatchEvent(new TaskUpdateEvent(message as ToolMessage));
                 break;
+              }
 
               case "agent-message":
               case "user-message":
@@ -119,13 +147,20 @@ export abstract class Task<S, E extends Record<string, unknown>>
             }
           }
 
-          messagesCursor.setTime(
-            // +1 the api treats after inclusively
-            messages.at(-1)!.createdAt.getTime() + 1,
-          );
+          // +1 the api treats after inclusively
+          let nextCursor = messages.at(-1)!.createdAt.getTime() + 1;
+
+          // set the cursor as the earliest pending tool
+          for (const pending of pendingTools.values()) {
+            if (nextCursor > pending.createdAt.getTime()) {
+              nextCursor = pending.createdAt.getTime();
+            }
+          }
+
+          messagesCursor.setTime(nextCursor);
         }
       },
-      15_000,
+      1_000,
       { signal },
     );
   }

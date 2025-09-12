@@ -97,7 +97,8 @@ export class Client {
     const response = await fetch(url, Object.assign({ headers }, init));
 
     if (!response.ok) {
-      console.error(url, init, headers);
+      const body = await response.text();
+      console.error(url, init, headers, body);
       throw new Error(response.statusText);
     }
 
