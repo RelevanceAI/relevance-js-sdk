@@ -1,5 +1,9 @@
 import type { Agent } from "./agent.ts";
-import { type MessageData, TaskMessage } from "./message.ts";
+import { AgentErrorMessage } from "./messages/agent-error.ts";
+import { AgentMessage } from "./messages/agent.ts";
+import type { TaskMessage, TaskMessageData } from "./messages/task.ts";
+import { ToolMessage } from "./messages/tool.ts";
+import { UserMessage } from "./messages/user.ts";
 import { Task, type TaskStatus } from "./task.ts";
 
 type AgentTaskEvents = {
@@ -152,7 +156,7 @@ export class AgentTask extends Task<Agent, AgentTaskEvents> {
     }
 
     const url = `/agents/${this.subject.id}/tasks/${this.id}/view` as const;
-    const res = await this.client.fetch<{ results: MessageData[] }>(url, {
+    const res = await this.client.fetch<{ results: TaskMessageData[] }>(url, {
       method: "POST",
       body: JSON.stringify({
         cursor: {
@@ -162,6 +166,23 @@ export class AgentTask extends Task<Agent, AgentTaskEvents> {
     });
 
     // message should be in ascending order
-    return res.results.reverse().map((data) => new TaskMessage(data));
+    return res.results.reverse().map((data) => {
+      switch (data.content.type) {
+        case "agent-error":
+          return new AgentErrorMessage(data as TaskMessageData<"agent-error">);
+
+        case "agent-message":
+          return new AgentMessage(data as TaskMessageData<"agent-message">);
+
+        case "tool-run":
+          return new ToolMessage(data as TaskMessageData<"tool-run">);
+
+        case "user-message":
+          return new UserMessage(data as TaskMessageData<"user-message">);
+
+        default:
+          throw new Error("unknown message response");
+      }
+    });
   }
 }

@@ -6,7 +6,11 @@ import {
   TaskStatusEvent,
   TaskUpdateEvent,
 } from "./events.ts";
-import type { TaskMessage } from "./message.ts";
+import { AgentErrorMessage } from "./messages/agent-error.ts";
+import { AgentMessage } from "./messages/agent.ts";
+import type { TaskMessage } from "./messages/task.ts";
+import { ToolMessage } from "./messages/tool.ts";
+import { UserMessage } from "./messages/user.ts";
 import { runInterval } from "./utils.ts";
 
 export type TaskStatus =
@@ -98,16 +102,20 @@ export abstract class Task<S, E extends Record<string, unknown>>
           for (const message of messages) {
             switch (message.type) {
               case "agent-error":
-                this.dispatchEvent(new TaskErrorEvent(message));
+                this.dispatchEvent(
+                  new TaskErrorEvent(message as AgentErrorMessage),
+                );
                 break;
 
               case "tool-run":
-                this.dispatchEvent(new TaskUpdateEvent(message));
+                this.dispatchEvent(new TaskUpdateEvent(message as ToolMessage));
                 break;
 
               case "agent-message":
               case "user-message":
-                this.dispatchEvent(new TaskMessageEvent(message));
+                this.dispatchEvent(
+                  new TaskMessageEvent(message as AgentMessage | UserMessage),
+                );
             }
           }
 

@@ -1,4 +1,7 @@
-import type { TaskMessage } from "./message.ts";
+import type { AgentErrorMessage } from "./messages/agent-error.ts";
+import type { AgentMessage } from "./messages/agent.ts";
+import type { ToolMessage } from "./messages/tool.ts";
+import type { UserMessage } from "./messages/user.ts";
 import type { TaskStatus } from "./task.ts";
 
 export class TaskStartEvent
@@ -18,10 +21,11 @@ export class TaskStatusEvent extends CustomEvent<{ status: TaskStatus }> {
   }
 }
 
-export class TaskMessageEvent extends CustomEvent<{ message: TaskMessage }> {
+export class TaskMessageEvent
+  extends CustomEvent<{ message: AgentMessage | UserMessage }> {
   public override readonly type = "message";
 
-  public constructor(message: TaskMessage) {
+  public constructor(message: AgentMessage | UserMessage) {
     super("message", { detail: { message } });
   }
 
@@ -30,26 +34,19 @@ export class TaskMessageEvent extends CustomEvent<{ message: TaskMessage }> {
   }
 }
 
-export class TaskUpdateEvent extends CustomEvent<{ message: TaskMessage }> {
+export class TaskUpdateEvent extends CustomEvent<{ message: ToolMessage }> {
   public override readonly type = "update";
 
-  public constructor(message: TaskMessage) {
+  public constructor(message: ToolMessage) {
     super("update", { detail: { message } });
   }
 }
 
-export class TaskActionEvent extends CustomEvent<{ message: TaskMessage }> {
-  public override readonly type = "action";
-
-  public constructor(message: TaskMessage) {
-    super("action", { detail: { message } });
-  }
-}
-
-export class TaskErrorEvent extends CustomEvent<{ message: TaskMessage }> {
+export class TaskErrorEvent
+  extends CustomEvent<{ message: AgentErrorMessage }> {
   public override readonly type = "error";
 
-  public constructor(message: TaskMessage) {
+  public constructor(message: AgentErrorMessage) {
     super("error", { detail: { message } });
   }
 }
