@@ -13,7 +13,6 @@ await build({
     license: denoConfig.license,
   },
   test: false,
-  scriptModule: false,
   skipSourceOutput: true,
   compilerOptions: {
     target: "ES2022",
