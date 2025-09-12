@@ -100,15 +100,14 @@ export class AgentTask extends Task<Agent, AgentTaskEvents> {
    * @param {string} message
    */
   public sendMessage(message: string) {
-    this.subject.trigger(
-      message,
-      this.id || undefined,
-    ).then(({ id, state }) => {
-      // started
-      if (!this.id) {
-        this.setId(id, stateToStatus(state));
-      }
-    });
+    this.subject.trigger(message, this.id || undefined).then(
+      ({ taskId, state }) => {
+        // new task was created
+        if (!this.id) {
+          this.setId(taskId, stateToStatus(state));
+        }
+      },
+    );
   }
 
   /**

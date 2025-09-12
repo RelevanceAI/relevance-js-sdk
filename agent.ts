@@ -17,11 +17,11 @@ export class Agent {
   private readonly client: Client;
 
   public static async fetch(
-    agentId: string,
+    id: string,
     cli: Client = Client.default(),
   ): Promise<Agent> {
     const config = await cli.fetch<{ agent: AgentConfig }>(
-      `/agents/${agentId}/get`,
+      `/agents/${id}/get`,
     );
     return new Agent(config.agent, cli);
   }
@@ -54,7 +54,7 @@ export class Agent {
   public async trigger(
     message: string,
     taskId?: string,
-  ): Promise<{ id: string; state: AgentTaskState }> {
+  ): Promise<{ taskId: string; state: AgentTaskState }> {
     // embed keys require a task prefixing for new tasks
     if (!taskId && this.client.isEmbedKey()) {
       taskId = [this.client.key.taskPrefix, await randomUUID()].join(
@@ -79,7 +79,7 @@ export class Agent {
     });
 
     return {
-      id: res.conversation_id,
+      taskId: res.conversation_id,
       state: res.state,
     };
   }
