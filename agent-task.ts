@@ -1,9 +1,12 @@
 import type { Agent } from "./agent.ts";
-import { AgentErrorMessage } from "./message/agent-error.ts";
-import { AgentMessage } from "./message/agent.ts";
+import {
+  AgentErrorMessage,
+  type AgentErrorMessageContent,
+} from "./message/agent-error.ts";
+import { AgentMessage, type AgentMessageContent } from "./message/agent.ts";
 import type { AnyTaskMessage, TaskMessageData } from "./message/task.ts";
-import { ToolMessage } from "./message/tool.ts";
-import { UserMessage } from "./message/user.ts";
+import { ToolMessage, type ToolMessageContent } from "./message/tool.ts";
+import { UserMessage, type UserMessageContent } from "./message/user.ts";
 import { Task, type TaskStatus } from "./task.ts";
 
 type AgentTaskEvents = {
@@ -169,16 +172,24 @@ export class AgentTask extends Task<Agent, AgentTaskEvents> {
     return res.results.reverse().map((data) => {
       switch (data.content.type) {
         case "agent-error":
-          return new AgentErrorMessage(data as TaskMessageData<"agent-error">);
+          return new AgentErrorMessage(
+            data as TaskMessageData<AgentErrorMessageContent>,
+          );
 
         case "agent-message":
-          return new AgentMessage(data as TaskMessageData<"agent-message">);
+          return new AgentMessage(
+            data as TaskMessageData<AgentMessageContent>,
+          );
 
         case "tool-run":
-          return new ToolMessage(data as TaskMessageData<"tool-run">);
+          return new ToolMessage(
+            data as TaskMessageData<ToolMessageContent>,
+          );
 
         case "user-message":
-          return new UserMessage(data as TaskMessageData<"user-message">);
+          return new UserMessage(
+            data as TaskMessageData<UserMessageContent>,
+          );
 
         default:
           throw new Error("unknown message response");

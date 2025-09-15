@@ -20,7 +20,10 @@ export type TaskStatus =
   | "complete"
   | "error";
 
-export abstract class Task<S, M extends EventMap> extends Emitter<M> {
+export abstract class Task<
+  S = unknown,
+  M extends EventMap = Record<string, never>,
+> extends Emitter<M> {
   public readonly subject: S;
   protected readonly client: Client;
 

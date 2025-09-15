@@ -16,7 +16,7 @@ let defaultClient: Client | undefined;
  * Creates and returns the _default_ client instance.
  *
  * @throws {Error} if a default client already exists.
- * @see {Client.default}
+ * @see {@link Client.default}
  */
 export function createClient(
   keyOrOptions: Key | CreateClientOptions,
@@ -40,7 +40,7 @@ export class Client {
    * Returns the _default_ client instance.
    *
    * @throws {Error} if there is no default client.
-   * @see {createClient}
+   * @see {@link createClient}
    */
   public static default(): Client {
     if (!defaultClient) {
