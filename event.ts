@@ -1,7 +1,7 @@
-import type { AgentErrorMessage } from "./messages/agent-error.ts";
-import type { AgentMessage } from "./messages/agent.ts";
-import type { ToolMessage } from "./messages/tool.ts";
-import type { UserMessage } from "./messages/user.ts";
+import type { AgentErrorMessage } from "./message/agent-error.ts";
+import type { AgentMessage } from "./message/agent.ts";
+import type { ToolMessage } from "./message/tool.ts";
+import type { UserMessage } from "./message/user.ts";
 import type { TaskStatus } from "./task.ts";
 
 export class TaskStartEvent

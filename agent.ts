@@ -1,5 +1,6 @@
 import type { AgentTaskState } from "./agent-task.ts";
 import { Client } from "./client.ts";
+import { Emitter } from "./emitter.ts";
 import { randomUUID } from "./utils.ts";
 
 interface AgentConfig {
@@ -12,7 +13,9 @@ interface AgentConfig {
 
 const taskPrefixDelimiter = "_-_";
 
-export class Agent {
+type AgentEventMap = {};
+
+export class Agent extends Emitter<AgentEventMap> {
   readonly #config: AgentConfig;
   private readonly client: Client;
 
@@ -27,6 +30,8 @@ export class Agent {
   }
 
   private constructor(config: AgentConfig, client: Client) {
+    super();
+
     this.#config = config;
     this.client = client;
   }
@@ -51,7 +56,7 @@ export class Agent {
     return this.#config.public;
   }
 
-  public async trigger(
+  public async sendMessage(
     message: string,
     taskId?: string,
   ): Promise<{ taskId: string; state: AgentTaskState }> {

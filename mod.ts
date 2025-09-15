@@ -5,8 +5,8 @@ export { type Region, REGION_AU, REGION_EU, REGION_US } from "./region.ts";
 export type { AgentTask } from "./agent-task.ts";
 export type { Task, TaskStatus } from "./task.ts";
 
-export type { AgentErrorMessage } from "./messages/agent-error.ts";
-export type { AgentMessage } from "./messages/agent.ts";
-export type { ToolMessage } from "./messages/tool.ts";
-export type { UserMessage } from "./messages/user.ts";
-export type { AnyTaskMessage } from "./messages/task.ts";
+export type { AgentErrorMessage } from "./message/agent-error.ts";
+export type { AgentMessage } from "./message/agent.ts";
+export type { ToolMessage } from "./message/tool.ts";
+export type { UserMessage } from "./message/user.ts";
+export type { AnyTaskMessage } from "./message/task.ts";

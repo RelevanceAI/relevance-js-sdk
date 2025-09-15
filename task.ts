@@ -1,13 +1,14 @@
 import { Client } from "./client.ts";
+import { Emitter, type EventMap } from "./emitter.ts";
 import {
   TaskErrorEvent,
   TaskMessageEvent,
   TaskStartEvent,
   TaskStatusEvent,
   TaskUpdateEvent,
-} from "./events.ts";
-import type { AnyTaskMessage } from "./messages/task.ts";
-import type { ToolMessage } from "./messages/tool.ts";
+} from "./event.ts";
+import type { AnyTaskMessage } from "./message/task.ts";
+import type { ToolMessage } from "./message/tool.ts";
 import { runInterval } from "./utils.ts";
 
 export type TaskStatus =
@@ -19,8 +20,7 @@ export type TaskStatus =
   | "complete"
   | "error";
 
-export abstract class Task<S, E extends Record<string, unknown>>
-  extends EventTarget {
+export abstract class Task<S, M extends EventMap> extends Emitter<M> {
   public readonly subject: S;
   protected readonly client: Client;
 
@@ -171,10 +171,10 @@ export abstract class Task<S, E extends Record<string, unknown>>
     this.listenController = undefined;
   }
 
-  public override addEventListener<K extends keyof E>(
+  public override addEventListener<K extends keyof M>(
     type: Extract<K, string>,
-    listener: ((event: CustomEvent<E[K]>) => void) | {
-      handleEvent: (event: CustomEvent<E[K]>) => void;
+    listener: ((event: CustomEvent<M[K]>) => void) | {
+      handleEvent: (event: CustomEvent<M[K]>) => void;
     } | null,
     options?: boolean | AddEventListenerOptions,
   ): void {
@@ -194,15 +194,5 @@ export abstract class Task<S, E extends Record<string, unknown>>
     const addOptions = Object.assign({}, options, { signal, capture });
 
     super.addEventListener(type, listener as EventListener, addOptions);
-  }
-
-  public override removeEventListener<K extends keyof E>(
-    type: Extract<K, string>,
-    listener: ((event: CustomEvent<E[K]>) => void) | {
-      handleEvent: (event: CustomEvent<E[K]>) => void;
-    } | null,
-    options?: boolean | AddEventListenerOptions,
-  ): void {
-    super.removeEventListener(type, listener as EventListener, options);
   }
 }

@@ -1,9 +1,9 @@
 import type { Agent } from "./agent.ts";
-import { AgentErrorMessage } from "./messages/agent-error.ts";
-import { AgentMessage } from "./messages/agent.ts";
-import type { AnyTaskMessage, TaskMessageData } from "./messages/task.ts";
-import { ToolMessage } from "./messages/tool.ts";
-import { UserMessage } from "./messages/user.ts";
+import { AgentErrorMessage } from "./message/agent-error.ts";
+import { AgentMessage } from "./message/agent.ts";
+import type { AnyTaskMessage, TaskMessageData } from "./message/task.ts";
+import { ToolMessage } from "./message/tool.ts";
+import { UserMessage } from "./message/user.ts";
 import { Task, type TaskStatus } from "./task.ts";
 
 type AgentTaskEvents = {
@@ -104,7 +104,7 @@ export class AgentTask extends Task<Agent, AgentTaskEvents> {
    * @param {string} message
    */
   public sendMessage(message: string) {
-    this.subject.trigger(message, this.id || undefined).then(
+    this.subject.sendMessage(message, this.id || undefined).then(
       ({ taskId, state }) => {
         // new task was created
         if (!this.id) {
