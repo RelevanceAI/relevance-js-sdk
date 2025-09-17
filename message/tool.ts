@@ -29,7 +29,12 @@ export class ToolMessage extends TaskMessage<ToolMessageContent> {
    *
    * @property {"cancelled" | "error" | "finished" | "pending" | "running"}
    */
-  public get status() {
+  public get status():
+    | "cancelled"
+    | "error"
+    | "finished"
+    | "pending"
+    | "running" {
     return this.message.content.tool_run_state;
   }
 
@@ -129,7 +134,7 @@ export class ToolMessage extends TaskMessage<ToolMessageContent> {
    *
    * @returns {boolean}
    */
-  public areParamsValid() {
+  public areParamsValid(): boolean {
     return this.message.content.params.valid;
   }
 
