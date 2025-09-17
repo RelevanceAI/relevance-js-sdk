@@ -52,4 +52,13 @@ export abstract class TaskMessage<C extends MessageContent = MessageContent> {
   public get createdAt(): Date {
     return new Date(this.message.insert_date_);
   }
+
+  /**
+   * Returns if the message was sent from the agent.
+   *
+   * @returns {boolean}
+   */
+  public isAgent(): boolean {
+    return this.type === "agent-message";
+  }
 }

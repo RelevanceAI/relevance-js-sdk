@@ -2,9 +2,7 @@ export { Agent } from "./agent.ts";
 export { Client, createClient } from "./client.ts";
 export { Key } from "./key.ts";
 export { type Region, REGION_AU, REGION_EU, REGION_US } from "./region.ts";
-export type { AgentTask } from "./agent-task.ts";
-export type { Task, TaskStatus } from "./task.ts";
-
+export { Task, type TaskStatus } from "./task.ts";
 export type { AgentErrorMessage } from "./message/agent-error.ts";
 export type { AgentMessage } from "./message/agent.ts";
 export type { ToolMessage } from "./message/tool.ts";

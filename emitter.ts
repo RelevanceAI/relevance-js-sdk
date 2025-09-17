@@ -7,7 +7,8 @@ export type EventMap = Record<string, unknown>;
  *
  * @internal
  */
-export abstract class Emitter<M extends EventMap> extends EventTarget {
+export abstract class Emitter<M extends EventMap = Record<string, never>>
+  extends EventTarget {
   public override addEventListener<K extends keyof M>(
     type: Extract<K, string>,
     listener: ((event: CustomEvent<M[K]>) => void) | {

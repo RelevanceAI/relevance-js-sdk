@@ -1,6 +1,4 @@
-import { Agent } from "./agent.ts";
 import { type Region, regionBaseURL } from "./region.ts";
-import { AgentTask } from "./agent-task.ts";
 import { cleanPath } from "./utils.ts";
 import { Key } from "./key.ts";
 
@@ -69,29 +67,16 @@ export class Client {
     return this.key.isEmbed();
   }
 
-  public async createTask(
-    { agent }: { agent: string | Agent },
-  ): Promise<AgentTask> {
-    if (agent) {
-      return new AgentTask(
-        typeof agent === "string" ? await Agent.fetch(agent) : agent,
-        undefined,
-        this,
-      );
-    }
-
-    throw new Error("task not implemented");
-  }
-
   public async fetch<T>(
     input:
-      | `/agents/trigger`
+      | "/agents/trigger"
       | `/agents/${string}/get`
       | `/agents/${string}/tasks/${string}/metadata`
-      | `/agents/${string}/tasks/${string}/view`,
+      | `/agents/${string}/tasks/${string}/view`
+      | "/agents/conversations/list",
     init?: RequestInit,
   ): Promise<T> {
-    const url = new URL(cleanPath(input), this.baseURL);
+    const url = this.url(input);
 
     const headers = new Headers(this.key.fetchHeaders());
     const response = await fetch(url, Object.assign({ headers }, init));
@@ -103,5 +88,12 @@ export class Client {
     }
 
     return response.json() as T;
+  }
+
+  public url(path: string): URL {
+    if (/^https?:\/\//.test(path)) {
+      return new URL(path);
+    }
+    return new URL(cleanPath(path), this.baseURL);
   }
 }

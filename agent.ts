@@ -1,6 +1,6 @@
-import type { AgentTaskState } from "./agent-task.ts";
 import { Client } from "./client.ts";
-import { Emitter } from "./emitter.ts";
+import type { Region } from "./region.ts";
+import { resetSubscribeBackoff, Task, type TaskState } from "./task.ts";
 import { randomUUID } from "./utils.ts";
 
 interface AgentConfig {
@@ -9,31 +9,36 @@ interface AgentConfig {
   name?: string;
   description?: string;
   emoji?: string;
+  insert_date_: string;
+  update_date_: string;
 }
 
 const taskPrefixDelimiter = "_-_";
 
-type AgentEventMap = {};
-
-export class Agent extends Emitter<AgentEventMap> {
-  readonly #config: AgentConfig;
+export class Agent {
+  #config: AgentConfig;
   private readonly client: Client;
 
-  public static async fetch(
+  public static async get(
     id: string,
-    cli: Client = Client.default(),
+    client: Client = Client.default(),
   ): Promise<Agent> {
-    const config = await cli.fetch<{ agent: AgentConfig }>(
-      `/agents/${id}/get`,
-    );
-    return new Agent(config.agent, cli);
+    const config = await Agent.#fetchConfig(id, client);
+    return new Agent(config, client);
   }
 
-  private constructor(config: AgentConfig, client: Client) {
-    super();
+  static #fetchConfig(
+    agentId: string,
+    client: Client = Client.default(),
+  ): Promise<AgentConfig> {
+    return client.fetch<{ agent: AgentConfig }>(`/agents/${agentId}/get`).then((
+      { agent },
+    ) => agent);
+  }
 
-    this.#config = config;
+  public constructor(config: AgentConfig, client: Client) {
     this.client = client;
+    this.#config = config;
   }
 
   public get id(): string {
@@ -52,24 +57,40 @@ export class Agent extends Emitter<AgentEventMap> {
     return this.#config.emoji;
   }
 
-  public isPublic(): boolean {
-    return this.#config.public;
+  public get createdAt(): Date {
+    return new Date(this.#config.insert_date_);
   }
 
-  public async sendMessage(
-    message: string,
-    taskId?: string,
-  ): Promise<{ taskId: string; state: AgentTaskState }> {
+  public get updatedAt(): Date {
+    return new Date(this.#config.update_date_);
+  }
+
+  public get region(): Region {
+    return this.client.region;
+  }
+
+  public get project(): string {
+    return this.client.project;
+  }
+
+  public getTask(taskId: string): Promise<Task> {
+    return Task.get(taskId, this, this.client);
+  }
+
+  public async sendMessage(message: string, task?: Task): Promise<Task> {
+    let taskId: string | undefined;
     // embed keys require a task prefixing for new tasks
-    if (!taskId && this.client.isEmbedKey()) {
+    if (!task && this.client.isEmbedKey()) {
       taskId = [this.client.key.taskPrefix, await randomUUID()].join(
         taskPrefixDelimiter,
       );
+    } else if (task) {
+      taskId = task.id;
     }
 
     const res = await this.client.fetch<{
       conversation_id: string;
-      state: AgentTaskState;
+      state: TaskState;
     }>("/agents/trigger", {
       method: "POST",
       body: JSON.stringify({
@@ -83,9 +104,10 @@ export class Agent extends Emitter<AgentEventMap> {
       }),
     });
 
-    return {
-      taskId: res.conversation_id,
-      state: res.state,
-    };
+    if (task) {
+      task[resetSubscribeBackoff]();
+    }
+
+    return task ?? this.getTask(res.conversation_id);
   }
 }

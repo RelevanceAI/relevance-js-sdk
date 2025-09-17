@@ -4,29 +4,10 @@ export function abortPromise(signal: AbortSignal, reject?: boolean) {
   );
 }
 
-export function delay(timeout: number) {
-  return new Promise<void>((done) => setTimeout(done, timeout));
-}
-
-export async function runInterval(
-  runner: () => Promise<void> | void,
-  interval: number,
-  {
-    signal,
-  }: { signal?: AbortSignal; immediate?: boolean } = {},
-) {
-  while (true) {
-    if (signal?.aborted) {
-      break;
-    }
-
-    await runner();
-
-    await Promise.race([
-      delay(interval),
-      signal ? abortPromise(signal) : new Promise<never>(() => {}),
-    ]);
-  }
+export function delay(timeout: number | (() => number)) {
+  return new Promise<void>((done) =>
+    setTimeout(done, typeof timeout === "number" ? timeout : timeout())
+  );
 }
 
 export function cleanPath(path: string, version = "latest"): string {

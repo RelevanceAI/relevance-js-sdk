@@ -1,320 +1,549 @@
 # Relevance AI JavaScript SDK
 
-Build full-stack AI applications using our JavaScript SDK. This multi-environment
-SDK enables you to integrate, extend, or build end-to-end solutions on top of
-our powerful AI Workforce platform.
+A comprehensive JavaScript/TypeScript SDK for building AI-powered applications
+with Relevance AI's workforce platform. Build, deploy, and scale AI agents
+across any JavaScript runtime.
 
-> **Note:** The SDK is in active development and not all features are available
-> yet. Please refer to our roadmap for updates.
+## Description
 
-## Quickstart
+The Relevance AI JavaScript SDK provides a unified interface for integrating
+AI agents into your applications. Whether you're building server-side
+applications, browser-based interfaces, or edge computing solutions, this SDK
+delivers consistent, type-safe access to Relevance AI's powerful agent
+ecosystem.
 
-```js
-import { createClient, AU_REGION } from "@relevanceai/sdk";
+### Key Features
 
-// Create a client with your credentials
+- **Universal Compatibility**: Works seamlessly across Node.js, Deno, Bun,
+  Cloudflare Workers, and browsers
+- **Event-Driven Architecture**: Real-time updates via native EventTarget API
+- **Type Safety**: Full TypeScript support with comprehensive type definitions
+- **Multi-Client Support**: Manage multiple projects and authentication scopes
+  simultaneously
+- **Zero Dependencies**: Built on web standards for minimal footprint
+
+## Quick Start
+
+Get up and running with AI agents in under 5 minutes:
+
+```typescript
+import { Agent, createClient, EU_REGION } from "@relevanceai/sdk";
+
+// Initialize client with your credentials
 const client = createClient({
-  apiKey: "sk-abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKL",
-  region: AU_REGION,
-  project: "12345678-90ab-cdef-1234-567890abcdef",
+  apiKey: process.env.RELEVANCE_API_KEY,
+  region: EU_REGION,
+  project: process.env.PROJECT_ID,
 });
 
-// Create a task for an agent
-const task = client.createTask({
-  agent: "fedcba09-8765-4321-fedc-ba0987654321",
-});
+// Load an agent and start a conversation
+const agent = await Agent.get("agent-id");
+const task = await agent.sendMessage("Hello, how can you help me today?");
 
-// Send a message to the agent
-task.sendMessage(
-  "What is the weather like in Sydney, Australia this weekend?"
-);
-
-// Listen for responses
-task.addEventListener("message", ({ detail }) => {
-  const { message } = detail;
-  console.log(message.text);
-
-  task.sendMessage("Thanks!");
-  
-  // Important: Stop listening when done to prevent memory leaks
-  task.stopListening();
+// Listen for agent responses
+task.addEventListener("message", ({ detail: { message } }) => {
+  if (message.isAgent()) {
+    console.log("Agent:", message.text);
+  }
 });
 ```
 
-## Getting Started
+## Installation
 
-The JavaScript SDK is a stateless, event-driven toolkit that provides the
-flexibility to build any application you need. It sits on top of our API and
-offers a streamlined developer experience, making it easier for your apps to
-integrate with agents, tools, and workforces.
+Choose the installation method for your runtime:
 
-This multi-environment library allows you to build wherever modern JavaScript
-runs:
-
-- Node.js
-- Deno
-- Bun
-- Cloudflare Workers
-- Browser
-
-### Installation
-
-Install the SDK for your environment:
+### Node.js / Bun
 
 ```bash
-# Node.js / Cloudflare Workers / Browser (with bundler)
 npm install @relevanceai/sdk@latest
-
-# Deno
-deno add jsr:@relevanceai/sdk
-
-# Bun
+# or
+yarn add @relevanceai/sdk@latest
+# or
+pnpm add @relevanceai/sdk@latest
+# or
 bun add @relevanceai/sdk@latest
 ```
 
-#### Browser (CDN)
+### Deno
 
-If you are developing a frontend application and not using a bundler like
-[Vite](https://vite.dev) or [Webpack](https://webpack.js.org), you can use the
-CDN version directly:
+```bash
+deno add jsr:@relevanceai/sdk
+```
+
+Or import directly:
+
+```typescript
+import { createClient } from "jsr:@relevanceai/sdk";
+```
+
+### Cloudflare Workers
+
+```bash
+npm install @relevanceai/sdk@latest
+```
+
+### Browser (with bundler)
+
+```bash
+npm install @relevanceai/sdk@latest
+```
+
+For bundlers that warn about `node:crypto`, create a shim:
+
+```javascript
+// shims/crypto.js
+export default window.crypto;
+```
+
+Configure your bundler to use the shim:
+
+- [Vite configuration](https://vite.dev/config/shared-options.html#resolve-alias)
+- [Webpack configuration](https://webpack.js.org/configuration/resolve/#resolvealias)
+- [Rollup configuration](https://www.npmjs.com/package/@rollup/plugin-alias)
+
+### Browser (CDN)
 
 ```html
 <script type="importmap">
-{
-  "imports": {
-    "@relevanceai/sdk": "https://esm.run/@relevanceai/sdk"
+  {
+    "imports": {
+      "@relevanceai/sdk": "https://esm.run/@relevanceai/sdk"
+    }
   }
-}
 </script>
 <script type="module">
-import { createClient } from "@relevanceai/sdk";
-// ...
+  import { createClient } from "@relevanceai/sdk";
+  // Your code here
 </script>
 ```
 
 ## Usage
 
-### Keys
+### Authentication
 
-To communicate with Relevance AI, you will need a key. Keys authenticate your
-requests and grant access to your project.
+The SDK supports two authentication methods for different use cases:
 
-There are two types of keys: _API_ and _Embed_.
+#### API Keys (Server-side)
 
-#### API Key
+API keys grant full access to your project. Use these for server applications
+and secure environments:
 
-API keys grant access to the entire project, including agents, tools, and
-workforces. This key is best used for server-side applications or protected web
-apps where third parties do not have access.
+```typescript
+import { createClient, AU_REGION } from "@relevanceai/sdk";
 
-Using the default client `createClient({ apiKey, region, project })` will create
-an API Key for convenience. Alternatively, you can create a `Key` instance and
-pass it to the client.
-
-```js
-import { createClient, Key, AU_REGION } from "@relevanceai/sdk";
-
-const apiKey = "sk-...";
-const region = AU_REGION;
-const project = "1234...";
-
-const key = new Key({ apiKey, region, project });
-const client = createClient(key);
+const client = createClient({
+  apiKey: "sk-...",
+  region: AU_REGION,
+  project: "project-uuid",
+});
 ```
 
-#### Embed Key
+You can also create a Key instance explicitly:
 
-If you are developing a web app that allows third-party access, such as for your
-customers, it's best to share resources from the Relevance AI platform. This
-makes them available for public use and requires an embed key scoped only to
-that resource.
+```typescript
+import { Client, Key, AU_REGION } from "@relevanceai/sdk";
 
-To get an embed key, specify which public resource you wish to scope it to. For
-example, to create an embed key for a publicly available agent in your project:
+const key = new Key({
+  key: "sk-...",
+  region: AU_REGION,
+  project: "project-uuid",
+});
 
-```js
-import { createClient, Key, AU_REGION } from "@relevanceai/sdk";
+const client = new Client(key);
+```
 
-const region = AU_REGION;
-const project = "1234...";
-const agent = "abcd..."; // a *public* agent
+#### Embed Keys (Client-side)
 
-const embedKey = await Key.generateEmbedKey({ region, project, agent });
+For public-facing applications, use embed keys which are scoped to a specific
+public agent:
+
+```typescript
+import { Key, createClient, US_REGION } from "@relevanceai/sdk";
+
+const embedKey = await Key.generateEmbedKey({
+  region: US_REGION,
+  project: "project-uuid",
+  agentId: "public-agent-id", // Must be a public agent
+});
+
 const client = createClient(embedKey);
 ```
 
-### Clients
+### Fetching Agents
 
-A client is the main entry point for the SDK. It configures communication with
-Relevance AI and manages authentication.
+Load agents before creating tasks:
 
-You can create multiple clients, which is useful for multi-project setups.
+```typescript
+// Using default client
+const agent = await Agent.get("agent-id");
 
-```js
-import { Client, Key, AU_REGION } from "@relevanceai/sdk";
+// Using specific client
+const customClient = createClient({
+  /* config */
+});
+const agent = await Agent.get("agent-id", customClient);
 
-const apiKey = "sk-...";
-const region = AU_REGION;
-const projectOne = "1234...";
-const projectTwo = "abcd...";
-
-const oneKey = new Key({ apiKey, region, project: projectOne });
-const twoKey = new Key({ apiKey, region, project: projectTwo });
-
-const oneClient = new Client(oneKey);
-const twoClient = new Client(twoKey);
+// Access agent properties
+console.log(agent.name);
+console.log(agent.avatar);
+console.log(agent.description);
 ```
 
-#### Default client
+### Sending Messages
 
-Typically, you will only need a single client. In this case, use the default
-client factory as shown in the quickstart:
+#### Create a New Task
 
-```js
-import { createClient, Client } from "@relevanceai/sdk";
+Start a new conversation with an agent:
 
-const client = createClient({ apiKey, region, project });
-
-// elsewhere in your app
-Client.default();
+```typescript
+const agent = await Agent.get("agent-id");
+const task = await agent.sendMessage("What's the weather like today?");
 ```
 
-Attempting to create more than one default client will throw an error. Referencing
-the default client before creating one will also throw an error.
+#### Send to Existing Task
 
-### Tasks
+Continue an existing conversation:
 
-Whenever you run anything in Relevance AI, these are known as tasks. Tasks have
-a subject: an agent, tool, or workforce. You can send messages to these subjects,
-receive replies, and follow updates and errors.
+```typescript
+// Get an existing task
+const task = await agent.getTask("task-id");
 
-> **Important:** Always call `task.stopListening()` when you're done with a task
-> to prevent memory leaks and clean up resources properly.
-
-#### Creating Tasks
-
-The easiest way to create a new task is to use the client's convenient method
-`createTask` and provide the subject ID.
-
-```js
-const agentId = "1234...";
-const task = client.createTask({ agent: agentId });
+// Send a follow-up message
+await agent.sendMessage("What about tomorrow?", task);
 ```
 
-#### Sending a Message
+Note: `sendMessage` returns once the message is sent and doesn't wait for a
+response. Use event listeners to handle responses.
 
-Once you have a task instance, you can send messages to the subject using the
-`sendMessage()` method.
+### Event Handling
 
-```js
-task.sendMessage("How many letter r's are there in the word 'strawberry'?");
-```
+Tasks use an event-driven architecture for real-time updates:
 
-Note that this call is not `async`. It sends the message and does not `await`
-a reply. This is intentional, as tasks are event-driven.
+#### Available Events
 
-### Events
+- **`start`**: Task initialization
+- **`status`**: Status changes (queued, running, complete, error)
+- **`message`**: New messages from agent or user
+- **`update`**: Tool execution updates
+- **`error`**: Error notifications
 
-Tasks are event-driven and an application must listen to predefined events to
-manage the status and messages of a task.
+#### Listening for Events
 
-Use `.addEventListener()` to listen for task events.
-
-```js
-task.sendMessage("What came first; the chicken or the egg?");
-
+```typescript
+// Listen for messages
 task.addEventListener("message", ({ detail }) => {
   const { message } = detail;
-  console.log("> %s", message.text);
+
+  if (message.isAgent()) {
+    console.log("Agent:", message.text);
+  }
 });
-```
 
-Tasks dispatch `CustomEvent`. Event properties will be set in the `detail`
-field of the event. You can see the types of events for more information about
-the properties associated with different events.
+// Listen for status changes
+task.addEventListener("status", ({ detail }) => {
+  console.log("Status changed to:", detail.status);
+});
 
-Remember to call `task.stopListening()` once you no longer need to listen to
-the task.
+// Listen for tool updates
+task.addEventListener("update", ({ detail }) => {
+  console.log("Tool update:", detail.message);
+});
 
----
-
-The following events are available for agent subjects.
-
-#### `start`
-
-When a _new_ task starts.
-
-**Details**
-
-```ts
-interface StartEventDetails {
-  id: string;
-  status: TaskStatus;
-}
-```
-
-#### `status`
-
-Whenever the task's _status_ changes.
-
-> **Note:** this event does **not** fire for starting status. Use the `start`
-> event if you need the initial status.
-
-**Details**
-
-```ts
-interface StatusEventDetails {
-  status: TaskStatus;
-}
-```
-
-##### `update`
-
-A task has updated. This update will always be a tool for now but may expand in
-the future.
-
-**Details**
-
-```ts
-interface UpdateEventDetails {
-  update: TaskMessage<"tool">;
-}
-```
-
-#### `message`
-
-A task has received a message.
-
-> **Note:** you will receive messages from _both_ subjects and users.
-
-**Details**
-
-```ts
-interface MessageEventDetails {
-  message: TaskMessage<"agent" | "user">;
-}
-```
-
-#### `error`
-
-Whenever the task has failed.
-
-**Details**
-
-```ts
-interface ErrorEventDetails {
-  error: TaskMessage<"error">;
-}
-```
-
-**Example**
-
-```js
+// Listen for errors
 task.addEventListener("error", ({ detail }) => {
-  const { error } = detail;
-  console.error("Task failed:", error.text);
-  
-  // clean up
-  task.stopListening();
+  console.error("Task error:", detail.message);
 });
+
+// Clean up when done
+task.unsubscribe();
 ```
+
+#### Managing Subscriptions
+
+The SDK automatically starts listening when you add event listeners. Remember
+to clean up:
+
+```typescript
+// Start listening (called automatically with addEventListener)
+task.subscribe();
+
+// Stop listening and clean up
+task.unsubscribe();
+```
+
+### Advanced Usage
+
+#### Default Client Pattern
+
+Use a singleton client throughout your application:
+
+```typescript
+// Initialize once at startup
+createClient({ apiKey, region, project });
+
+// Access anywhere in your app
+import { Client } from "@relevanceai/sdk";
+const client = Client.default();
+```
+
+#### Multiple Clients
+
+Manage multiple projects or authentication scopes:
+
+```typescript
+import { Client, Key, EU_REGION } from "@relevanceai/sdk";
+
+const projectOneKey = new Key({
+  key: "sk-project1",
+  region: EU_REGION,
+  project: "project-1-id",
+});
+
+const projectTwoKey = new Key({
+  key: "sk-project2",
+  region: EU_REGION,
+  project: "project-2-id",
+});
+
+const clientOne = new Client(projectOneKey);
+const clientTwo = new Client(projectTwoKey);
+
+// Use different clients for different agents
+const agentOne = await Agent.get("agent-1", clientOne);
+const agentTwo = await Agent.get("agent-2", clientTwo);
+```
+
+## Examples
+
+For complete working examples, check out the `internal/examples` directory:
+
+- **Deno Examples** (`internal/examples/deno/`):
+
+  - Client setup and configuration
+  - Creating and managing tasks
+  - Fetching agent information
+  - Retrieving existing tasks
+
+- **Browser Example** (`internal/examples/browser/`):
+  - Full chat application with Preact
+  - Real-time message handling
+  - UI components for agent interactions
+
+## API Reference
+
+### Client
+
+```typescript
+class Client {
+  constructor(key: Key);
+  static default(): Client;
+
+  readonly key: Key;
+  readonly region: Region;
+  readonly project: string;
+
+  isEmbedKey(): boolean;
+  fetch<T>(endpoint: string, init?: RequestInit): Promise<T>;
+  url(path: string): URL;
+}
+
+function createClient(keyOrOptions: Key | CreateClientOptions): Client;
+
+interface CreateClientOptions {
+  apiKey: string;
+  region: Region;
+  project: string;
+}
+```
+
+### Key
+
+```typescript
+class Key {
+  static async generateEmbedKey(options: GenerateEmbedKeyOptions): Promise<Key>;
+
+  constructor(options: CreateKeyOptions);
+
+  readonly region: Region;
+  readonly project: string;
+  readonly agentId?: string;
+  readonly taskPrefix?: string;
+
+  isEmbed(): boolean;
+  fetchHeaders(): HeadersInit;
+  toJSON(): CreateKeyOptions;
+}
+
+interface CreateKeyOptions {
+  key: string;
+  region: Region;
+  project: string;
+  agentId?: string;
+  taskPrefix?: string;
+}
+
+interface GenerateEmbedKeyOptions {
+  region: Region;
+  project: string;
+  agentId: string;
+}
+```
+
+### Agent
+
+```typescript
+class Agent {
+  static async get(id: string, client?: Client): Promise<Agent>;
+
+  readonly id: string;
+  readonly name?: string;
+  readonly description?: string;
+  readonly avatar?: string;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+  readonly region: Region;
+  readonly project: string;
+
+  getTask(taskId: string): Promise<Task>;
+  sendMessage(message: string, task?: Task): Promise<Task>;
+}
+```
+
+### Task
+
+```typescript
+class Task extends EventTarget {
+  static async get(
+    id: string,
+    agentOrAgentId: Agent | string,
+    client?: Client
+  ): Promise<Task>;
+
+  readonly id: string;
+  readonly title: string;
+  readonly status: TaskStatus;
+  readonly agent: Agent;
+
+  isRunning(): boolean;
+  getMessages(options?: { from?: Date }): Promise<AnyTaskMessage[]>;
+  subscribe(): void;
+  unsubscribe(): void;
+
+  addEventListener(type: string, listener: EventListener): void;
+  removeEventListener(type: string, listener: EventListener): void;
+}
+
+type TaskStatus =
+  | "not-started"
+  | "idle"
+  | "queued"
+  | "running"
+  | "action"
+  | "complete"
+  | "error";
+```
+
+### Messages
+
+```typescript
+abstract class TaskMessage {
+  readonly id: string;
+  readonly type: MessageType;
+  readonly createdAt: Date;
+
+  isAgent(): boolean;
+}
+
+class AgentMessage extends TaskMessage {
+  readonly text: string;
+}
+
+class UserMessage extends TaskMessage {
+  readonly text: string;
+}
+
+class ToolMessage extends TaskMessage {
+  readonly status: "pending" | "running" | "completed" | "failed";
+}
+
+class AgentErrorMessage extends TaskMessage {
+  readonly error: string;
+}
+```
+
+### Types
+
+```typescript
+type Region = "us" | "eu" | "au";
+
+const US_REGION: Region = "us";
+const EU_REGION: Region = "eu";
+const AU_REGION: Region = "au";
+```
+
+## Contributing
+
+We welcome contributions to improve the SDK. Please follow these guidelines:
+
+### Development Setup
+
+1. Clone the repository
+2. Install Deno (primary development environment)
+
+```bash
+# Build npm package
+deno run dnt
+```
+
+### Code Style
+
+- Use TypeScript for all code
+- Follow existing patterns and conventions
+- Maintain 80-character line width where practical
+- Write clear, concise commit messages
+
+### Submitting Changes
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request with clear description
+
+## Roadmap
+
+### Current
+
+- [x] Core client functionality
+- [x] Agent and task creation
+- [x] Event-driven messaging
+- [x] Multi-environment support
+
+### Upcoming Features
+
+- [ ] Streaming responses
+- [ ] File upload support
+- [ ] Enhanced error recovery
+- [ ] Agent and task management
+- [ ] Workforce support
+- [ ] Tool support
+
+### Future Considerations (2.0)
+
+- [ ] WebSocket support for real-time updates
+- [ ] Offline queue management
+- [ ] Tool building architecture
+- [ ] Voice modality
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/RelevanceAI/relevance-js-sdk/issues)
+- **Community**: [Discord Server](https://discord.gg/relevanceai)
+
+## License
+
+MIT License. See [LICENSE](./LICENSE) for details.
+
+## Security
+
+For security vulnerabilities, please email security@relevanceai.com directly
+rather than using public issue trackers.

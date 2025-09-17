@@ -1,0 +1,28 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@preact/signals": "^2.3.1",
+    "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-scroll-area": "^1.2.10",
+    "@relevanceai/sdk": "file:../../../../npm",
+    "@tailwindcss/vite": "^4.1.13",
+    "lucide-react": "^0.544.0",
+    "preact": "^10.26.9",
+    "react-timeago": "^8.3.0",
+    "swr": "^2.3.6",
+    "tailwindcss": "^4.1.13"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.4",
+    "@preact/preset-vite": "^2.10.2",
+    "@types/node": "^24.5.1",
+    "typescript": "^5.9.2",
+    "vite": "^7.0.4"
+  }
+}
