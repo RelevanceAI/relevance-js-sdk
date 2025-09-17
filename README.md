@@ -514,7 +514,7 @@ deno run dnt
 ### Current
 
 - [x] Core client functionality
-- [x] Agent and task creation
+- [x] Task creation
 - [x] Event-driven messaging
 - [x] Multi-environment support
 
