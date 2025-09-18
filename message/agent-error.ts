@@ -1,7 +1,8 @@
-import { TaskMessage } from "./task.ts";
+import { GenericMessage } from "./task.ts";
 
 export interface AgentErrorMessageContent {
   type: "agent-error";
 }
 
-export class AgentErrorMessage extends TaskMessage<AgentErrorMessageContent> {}
+export class AgentErrorMessage
+  extends GenericMessage<AgentErrorMessageContent> {}
