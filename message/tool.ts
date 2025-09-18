@@ -81,7 +81,7 @@ export class ToolMessage extends GenericMessage<ToolMessageContent> {
    * @property {object|null}
    */
   public get output(): Record<string, unknown> | null {
-    return this.status === "finished" ? this.message.content.output : null;
+    return this.status === "completed" ? this.message.content.output : null;
   }
 
   /**
@@ -110,7 +110,7 @@ export class ToolMessage extends GenericMessage<ToolMessageContent> {
    * The agent's ID, if a sub-agent.
    *
    * @property {string}
-   * @see {@link ToolMessage.isSubAgent}
+   * @see {@link ToolMessage#isSubAgent}
    */
   public get agentId(): string | null {
     return this.isSubAgent()
@@ -173,5 +173,22 @@ export class ToolMessage extends GenericMessage<ToolMessageContent> {
    */
   public hasErrors(): boolean {
     return this.message.content.errors.length > 0;
+  }
+
+  /**
+   * Checks if the tool message is currently running. Note that pending tools
+   * are also classified as running as they are just scheduled for running.
+   *
+   * @returns {boolean}
+   */
+  public isRunning(): boolean {
+    switch (this.status) {
+      case "pending":
+      case "running":
+        return true;
+
+      default:
+        return false;
+    }
   }
 }
