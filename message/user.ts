@@ -1,4 +1,4 @@
-import { TaskMessage } from "./task.ts";
+import { GenericMessage } from "./task.ts";
 
 export interface UserMessageContent {
   type: "user-message";
@@ -6,7 +6,7 @@ export interface UserMessageContent {
   is_trigger_message: boolean;
 }
 
-export class UserMessage extends TaskMessage<UserMessageContent> {
+export class UserMessage extends GenericMessage<UserMessageContent> {
   /**
    * The message as text sent.
    *
