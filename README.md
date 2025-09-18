@@ -223,30 +223,30 @@ Tasks use an event-driven architecture for real-time updates:
 
 - **`start`**: Task initialization
 - **`status`**: Status changes (queued, running, complete, error)
-- **`message`**: New messages from agent or user
-- **`update`**: Tool execution updates
+- **`message`**: Unified event for all message types (agent, user, tool)
+- **`update`**: Tool execution updates (deprecated - use message event)
 - **`error`**: Error notifications
 
 #### Listening for Events
 
 ```typescript
-// Listen for messages
+// Listen for all messages (agent, user, and tool)
 task.addEventListener("message", ({ detail }) => {
   const { message } = detail;
 
+  // Check message type using helper methods
   if (message.isAgent()) {
     console.log("Agent:", message.text);
+  } else if (message.isUser()) {
+    console.log("User:", message.text);
+  } else if (message.isTool()) {
+    console.log("Tool:", message.status);
   }
 });
 
 // Listen for status changes
 task.addEventListener("status", ({ detail }) => {
   console.log("Status changed to:", detail.status);
-});
-
-// Listen for tool updates
-task.addEventListener("update", ({ detail }) => {
-  console.log("Tool update:", detail.message);
 });
 
 // Listen for errors
@@ -446,27 +446,30 @@ type TaskStatus =
 ### Messages
 
 ```typescript
-abstract class TaskMessage {
+abstract class GenericMessage {
   readonly id: string;
   readonly type: MessageType;
   readonly createdAt: Date;
 
-  isAgent(): boolean;
+  isAgent(): boolean;      // Check if message is from agent
+  isUser(): boolean;        // Check if message is from user
+  isTool(): boolean;        // Check if message is a tool execution
+  isAgentError(): boolean;  // Check if message is an agent error
 }
 
-class AgentMessage extends TaskMessage {
+class AgentMessage extends GenericMessage {
   readonly text: string;
 }
 
-class UserMessage extends TaskMessage {
+class UserMessage extends GenericMessage {
   readonly text: string;
 }
 
-class ToolMessage extends TaskMessage {
+class ToolMessage extends GenericMessage {
   readonly status: "pending" | "running" | "completed" | "failed";
 }
 
-class AgentErrorMessage extends TaskMessage {
+class AgentErrorMessage extends GenericMessage {
   readonly error: string;
 }
 ```

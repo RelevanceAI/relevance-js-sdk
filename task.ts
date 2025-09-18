@@ -1,12 +1,7 @@
 import { Agent } from "./agent.ts";
 import { Client } from "./client.ts";
 import { Emitter } from "./emitter.ts";
-import {
-  TaskErrorEvent,
-  TaskMessageEvent,
-  TaskStatusEvent,
-  TaskUpdateEvent,
-} from "./event.ts";
+import { TaskErrorEvent, TaskMessageEvent, TaskStatusEvent } from "./event.ts";
 import {
   AgentErrorMessage,
   type AgentErrorMessageContent,
@@ -319,7 +314,7 @@ export class Task extends Emitter<TaskEventMap> {
                     pendingTools.delete(message.id);
                   }
 
-                  this.dispatchEvent(new TaskUpdateEvent(message));
+                  this.dispatchEvent(new TaskMessageEvent(message));
                   break;
                 }
 

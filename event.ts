@@ -22,23 +22,11 @@ export class TaskStatusEvent extends CustomEvent<{ status: TaskStatus }> {
 }
 
 export class TaskMessageEvent
-  extends CustomEvent<{ message: AgentMessage | UserMessage }> {
+  extends CustomEvent<{ message: AgentMessage | UserMessage | ToolMessage }> {
   public override readonly type = "message";
 
-  public constructor(message: AgentMessage | UserMessage) {
+  public constructor(message: AgentMessage | UserMessage | ToolMessage) {
     super("message", { detail: { message } });
-  }
-
-  public isUserMessage() {
-    return this.detail.message.type === "user-message";
-  }
-}
-
-export class TaskUpdateEvent extends CustomEvent<{ message: ToolMessage }> {
-  public override readonly type = "update";
-
-  public constructor(message: ToolMessage) {
-    super("update", { detail: { message } });
   }
 }
 
