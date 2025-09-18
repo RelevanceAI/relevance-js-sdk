@@ -224,7 +224,6 @@ Tasks use an event-driven architecture for real-time updates:
 - **`start`**: Task initialization
 - **`status`**: Status changes (queued, running, complete, error)
 - **`message`**: Unified event for all message types (agent, user, tool)
-- **`update`**: Tool execution updates (deprecated - use message event)
 - **`error`**: Error notifications
 
 #### Listening for Events
@@ -451,10 +450,10 @@ abstract class GenericMessage {
   readonly type: MessageType;
   readonly createdAt: Date;
 
-  isAgent(): boolean;      // Check if message is from agent
-  isUser(): boolean;        // Check if message is from user
-  isTool(): boolean;        // Check if message is a tool execution
-  isAgentError(): boolean;  // Check if message is an agent error
+  isAgent(): boolean; // Check if message is from agent
+  isUser(): boolean; // Check if message is from user
+  isTool(): boolean; // Check if message is a tool execution
+  isAgentError(): boolean; // Check if message is an agent error
 }
 
 class AgentMessage extends GenericMessage {
@@ -466,7 +465,13 @@ class UserMessage extends GenericMessage {
 }
 
 class ToolMessage extends GenericMessage {
-  readonly status: "pending" | "running" | "completed" | "failed";
+  readonly status:
+    | "unknown"
+    | "cancelled"
+    | "pending"
+    | "running"
+    | "completed"
+    | "failed";
 }
 
 class AgentErrorMessage extends GenericMessage {

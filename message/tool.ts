@@ -1,16 +1,24 @@
 import type { Region } from "../region.ts";
 import { GenericMessage } from "./task.ts";
 
-export type ToolStatus =
+type ToolState =
   | "cancelled"
   | "error"
   | "finished"
   | "pending"
   | "running";
 
+export type ToolStatus =
+  | "unknown"
+  | "cancelled"
+  | "error"
+  | "completed"
+  | "pending"
+  | "running";
+
 export interface ToolMessageContent {
   type: "tool-run";
-  tool_run_state: ToolStatus;
+  tool_run_state: ToolState;
   output: Record<string, unknown> & {
     _agent_conversation_details?: {
       agent_id: string;
@@ -37,7 +45,25 @@ export class ToolMessage extends GenericMessage<ToolMessageContent> {
    * @property {ToolStatus}
    */
   public get status(): ToolStatus {
-    return this.message.content.tool_run_state;
+    const status = this.message.content.tool_run_state;
+
+    switch (status) {
+      case "cancelled":
+      case "pending":
+      case "running":
+      case "error":
+        return status;
+
+      // agents and tools have different end statuses, align them
+      case "finished":
+        return "completed";
+
+      default:
+        return "unknown";
+    }
+
+    // deno linter
+    return "unknown";
   }
 
   /**
