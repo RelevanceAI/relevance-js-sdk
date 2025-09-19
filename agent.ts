@@ -1,6 +1,13 @@
 import { Client } from "./client.ts";
+import type { TaskStatus } from "@relevanceai/sdk";
 import type { Region } from "./region.ts";
-import { resetSubscribeBackoff, Task, type TaskState } from "./task.ts";
+import {
+  resetSubscribeBackoff,
+  statusToStates,
+  Task,
+  type TaskMetadata,
+  type TaskState,
+} from "./task.ts";
 import { randomUUID } from "./utils.ts";
 
 interface AgentConfig {
@@ -11,6 +18,34 @@ interface AgentConfig {
   emoji?: string;
   insert_date_: string;
   update_date_: string;
+}
+
+type SortDirection = "asc" | "desc";
+
+type GetTaskOptionSort =
+  | { createdAt: SortDirection }
+  | { updatedAt: SortDirection };
+
+type GetTaskOptions = {
+  pageSize?: number;
+  page?: number;
+  sort?: GetTaskOptionSort;
+  search?: string;
+  filter?: {
+    status?: TaskStatus[];
+  };
+};
+
+function sortOptionsToParam(
+  sort: GetTaskOptionSort,
+): { insert_date: SortDirection } | { update_date: SortDirection } {
+  if ("createdAt" in sort) {
+    return { insert_date: sort.createdAt };
+  } else if ("updatedAt" in sort) {
+    return { update_date: sort.updatedAt };
+  }
+
+  throw new Error("invalid sort option");
 }
 
 const taskPrefixDelimiter = "_-_";
@@ -75,6 +110,58 @@ export class Agent {
 
   public getTask(taskId: string): Promise<Task> {
     return Task.get(taskId, this, this.client);
+  }
+
+  public async getTasks(
+    {
+      sort = { createdAt: "asc" },
+      pageSize = 100,
+      page = 1,
+      search,
+      filter,
+    }: GetTaskOptions = {},
+  ): Promise<Task[]> {
+    const filtersParam = [{
+      condition: "==",
+      condition_value: [this.id],
+      field: "conversation.agent_id",
+      filter_type: "exact_match",
+    }];
+
+    if (filter) {
+      for (const [field, value] of Object.entries(filter)) {
+        switch (field) {
+          case "status":
+            filtersParam.push({
+              condition: "==",
+              condition_value: value.flatMap((s) => statusToStates(s)),
+              field: "conversation.state",
+              filter_type: "exact_match",
+            });
+        }
+      }
+    }
+
+    const sortParam = sortOptionsToParam(sort);
+
+    const query = new URLSearchParams([
+      ["filters", JSON.stringify(filtersParam)],
+      ["sort", JSON.stringify([sortParam])],
+      ["page_size", pageSize.toString()],
+      ["page", page.toString()],
+    ]);
+
+    if (search?.trim()) {
+      query.set("query", search.trim());
+    }
+
+    const { results } = await this.client.fetch<
+      { results: { metadata: TaskMetadata }[] }
+    >(
+      `/agents/conversations/list?${query.toString()}` as "/agents/conversations/list",
+    );
+
+    return results.map((r) => new Task(r.metadata, this, this.client));
   }
 
   public async sendMessage(message: string, task?: Task): Promise<Task> {
