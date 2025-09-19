@@ -9,7 +9,6 @@ type ToolState =
   | "running";
 
 export type ToolStatus =
-  | "unknown"
   | "cancelled"
   | "error"
   | "completed"
@@ -44,6 +43,7 @@ export class ToolMessage extends GenericMessage<ToolMessageContent> {
    *
    * @property {ToolStatus}
    */
+  // deno-lint-ignore getter-return
   public get status(): ToolStatus {
     const status = this.message.content.tool_run_state;
 
@@ -57,13 +57,7 @@ export class ToolMessage extends GenericMessage<ToolMessageContent> {
       // agents and tools have different end statuses, align them
       case "finished":
         return "completed";
-
-      default:
-        return "unknown";
     }
-
-    // deno linter
-    return "unknown";
   }
 
   /**
