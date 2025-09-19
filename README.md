@@ -477,7 +477,7 @@ type TaskStatus =
   | "queued"
   | "running"
   | "action"
-  | "complete"
+  | "completed"
   | "error";
 ```
 
@@ -504,13 +504,7 @@ class UserMessage extends GenericMessage {
 }
 
 class ToolMessage extends GenericMessage {
-  readonly status:
-    | "unknown"
-    | "cancelled"
-    | "pending"
-    | "running"
-    | "completed"
-    | "failed";
+  readonly status: "cancelled" | "pending" | "running" | "completed" | "failed";
 }
 
 class AgentErrorMessage extends GenericMessage {
