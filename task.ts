@@ -35,7 +35,7 @@ export type TaskStatus =
   | "queued"
   | "running"
   | "action"
-  | "complete"
+  | "completed"
   | "cancelled"
   | "error";
 
@@ -96,7 +96,7 @@ export function stateToStatus(state: TaskState): TaskStatus {
       return "cancelled";
 
     case "completed":
-      return "complete";
+      return "completed";
 
     case "unrecoverable":
     case "errored-pending-approval":
@@ -143,7 +143,7 @@ export function statusToStates(status: TaskStatus): TaskState[] {
     case "action":
       return ["pending-approval", "escalated"];
 
-    case "complete":
+    case "completed":
       return ["completed"];
 
     case "cancelled":
