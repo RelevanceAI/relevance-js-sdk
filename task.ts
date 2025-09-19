@@ -1,12 +1,7 @@
 import { Agent } from "./agent.ts";
 import { Client } from "./client.ts";
 import { Emitter } from "./emitter.ts";
-import {
-  TaskErrorEvent,
-  TaskMessageEvent,
-  TaskStatusEvent,
-  TaskUpdateEvent,
-} from "./event.ts";
+import { TaskErrorEvent, TaskMessageEvent, TaskStatusEvent } from "./event.ts";
 import {
   AgentErrorMessage,
   type AgentErrorMessageContent,
@@ -36,13 +31,15 @@ export type TaskState =
 export type TaskStatus =
   | "not-started"
   | "idle"
+  | "paused"
   | "queued"
   | "running"
   | "action"
-  | "complete"
+  | "completed"
+  | "cancelled"
   | "error";
 
-type TaskMetadata = {
+export type TaskMetadata = {
   knowledge_set: string;
   insert_date: string;
   update_date: string;
@@ -63,14 +60,19 @@ type TaskEventMap = {
 /**
  * Converts an AgentTaskState to a simplified TaskStatus.
  *
- * @internal
+ * @dev
+ *   We want to simplify because our states are simplified in the UI and also
+ *   some states have combined reasoning that the consumer does not need to care
+ *   about. Ie. "queued-for-approval" "queued-for-rerun" should just be "queued".
  *
  * @param {AgentTaskState} state The agent task state to convert.
  * @returns {TaskStatus} The simplified task status.
  */
-function stateToStatus(state: TaskState): TaskStatus {
+export function stateToStatus(state: TaskState): TaskStatus {
   switch (state) {
     case "paused":
+      return "paused";
+
     case "idle":
       return "idle";
 
@@ -91,8 +93,10 @@ function stateToStatus(state: TaskState): TaskStatus {
       return "error";
 
     case "cancelled":
+      return "cancelled";
+
     case "completed":
-      return "complete";
+      return "completed";
 
     case "unrecoverable":
     case "errored-pending-approval":
@@ -102,6 +106,51 @@ function stateToStatus(state: TaskState): TaskStatus {
       throw new Error(
         `unhandled task state: ${state}`,
       );
+  }
+}
+
+/**
+ * Reverses {@link stateToStatus} returning the group of task states a _simplified_
+ * status may relate to.
+ *
+ * @see {stateToStatus}
+ * @param {TaskStatus} status
+ * @returns {TaskState[]}
+ */
+export function statusToStates(status: TaskStatus): TaskState[] {
+  switch (status) {
+    case "not-started":
+      // a special sdk-only status
+      return [];
+
+    case "idle":
+      return ["idle"];
+
+    case "paused":
+      return ["paused"];
+
+    case "queued":
+      return [
+        "starting-up",
+        "waiting-for-capacity",
+        "queued-for-approval",
+        "queued-for-rerun",
+      ];
+
+    case "running":
+      return ["running"];
+
+    case "action":
+      return ["pending-approval", "escalated"];
+
+    case "completed":
+      return ["completed"];
+
+    case "cancelled":
+      return ["cancelled"];
+
+    case "error":
+      return ["errored-pending-approval", "timed-out", "unrecoverable"];
   }
 }
 
@@ -142,7 +191,7 @@ export class Task extends Emitter<TaskEventMap> {
   public readonly agent: Agent;
   protected readonly client: Client;
 
-  protected constructor(
+  public constructor(
     metadata: TaskMetadata,
     agent: Agent,
     client: Client = Client.default(),
@@ -319,7 +368,7 @@ export class Task extends Emitter<TaskEventMap> {
                     pendingTools.delete(message.id);
                   }
 
-                  this.dispatchEvent(new TaskUpdateEvent(message));
+                  this.dispatchEvent(new TaskMessageEvent(message));
                   break;
                 }
 

@@ -1,9 +1,23 @@
 import type { Region } from "../region.ts";
-import { TaskMessage } from "./task.ts";
+import { GenericMessage } from "./task.ts";
+
+type ToolState =
+  | "cancelled"
+  | "error"
+  | "finished"
+  | "pending"
+  | "running";
+
+export type ToolStatus =
+  | "cancelled"
+  | "error"
+  | "completed"
+  | "pending"
+  | "running";
 
 export interface ToolMessageContent {
   type: "tool-run";
-  tool_run_state: "cancelled" | "error" | "finished" | "pending" | "running";
+  tool_run_state: ToolState;
   output: Record<string, unknown> & {
     _agent_conversation_details?: {
       agent_id: string;
@@ -23,19 +37,27 @@ export interface ToolMessageContent {
   };
 }
 
-export class ToolMessage extends TaskMessage<ToolMessageContent> {
+export class ToolMessage extends GenericMessage<ToolMessageContent> {
   /**
    * The tool status for _this_ message.
    *
-   * @property {"cancelled" | "error" | "finished" | "pending" | "running"}
+   * @property {ToolStatus}
    */
-  public get status():
-    | "cancelled"
-    | "error"
-    | "finished"
-    | "pending"
-    | "running" {
-    return this.message.content.tool_run_state;
+  // deno-lint-ignore getter-return
+  public get status(): ToolStatus {
+    const status = this.message.content.tool_run_state;
+
+    switch (status) {
+      case "cancelled":
+      case "pending":
+      case "running":
+      case "error":
+        return status;
+
+      // agents and tools have different end statuses, align them
+      case "finished":
+        return "completed";
+    }
   }
 
   /**
@@ -53,7 +75,7 @@ export class ToolMessage extends TaskMessage<ToolMessageContent> {
    * @property {object|null}
    */
   public get output(): Record<string, unknown> | null {
-    return this.status === "finished" ? this.message.content.output : null;
+    return this.status === "completed" ? this.message.content.output : null;
   }
 
   /**
@@ -82,7 +104,7 @@ export class ToolMessage extends TaskMessage<ToolMessageContent> {
    * The agent's ID, if a sub-agent.
    *
    * @property {string}
-   * @see {@link ToolMessage.isSubAgent}
+   * @see {@link ToolMessage#isSubAgent}
    */
   public get agentId(): string | null {
     return this.isSubAgent()
@@ -145,5 +167,22 @@ export class ToolMessage extends TaskMessage<ToolMessageContent> {
    */
   public hasErrors(): boolean {
     return this.message.content.errors.length > 0;
+  }
+
+  /**
+   * Checks if the tool message is currently running. Note that pending tools
+   * are also classified as running as they are just scheduled for running.
+   *
+   * @returns {boolean}
+   */
+  public isRunning(): boolean {
+    switch (this.status) {
+      case "pending":
+      case "running":
+        return true;
+
+      default:
+        return false;
+    }
   }
 }

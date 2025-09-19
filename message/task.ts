@@ -9,6 +9,8 @@ export type AnyTaskMessage =
   | ToolMessage
   | UserMessage;
 
+export type TaskMessageType = AnyTaskMessage["type"];
+
 interface MessageContent {
   type: AnyTaskMessage["type"];
 }
@@ -19,7 +21,9 @@ export interface TaskMessageData<C extends MessageContent = MessageContent> {
   content: C;
 }
 
-export abstract class TaskMessage<C extends MessageContent = MessageContent> {
+export abstract class GenericMessage<
+  C extends MessageContent = MessageContent,
+> {
   protected readonly message: TaskMessageData<C>;
 
   public constructor(message: TaskMessageData<C>) {
@@ -29,7 +33,7 @@ export abstract class TaskMessage<C extends MessageContent = MessageContent> {
   /**
    * The task's message type.
    *
-   * @property {"agent-error" | "agent-message" | "tool-run" | "user-message"}
+   * @property {TaskMessageType}
    */
   public get type(): C["type"] {
     return this.message.content.type;
@@ -58,7 +62,34 @@ export abstract class TaskMessage<C extends MessageContent = MessageContent> {
    *
    * @returns {boolean}
    */
-  public isAgent(): boolean {
+  public isAgent(): this is AgentMessage {
     return this.type === "agent-message";
+  }
+
+  /**
+   * Returns if the message is from a tool.
+   *
+   * @returns {boolean}
+   */
+  public isTool(): this is ToolMessage {
+    return this.type === "tool-run";
+  }
+
+  /**
+   * Returns if the message was sent from a user.
+   *
+   * @returns {boolean}
+   */
+  public isUser(): this is UserMessage {
+    return this.type === "user-message";
+  }
+
+  /**
+   * Returns if the message was an error sent by the agent.
+   *
+   * @returns {boolean}
+   */
+  public isAgentError(): this is AgentErrorMessage {
+    return this.type === "agent-error";
   }
 }

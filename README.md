@@ -215,6 +215,33 @@ await agent.sendMessage("What about tomorrow?", task);
 Note: `sendMessage` returns once the message is sent and doesn't wait for a
 response. Use event listeners to handle responses.
 
+#### Retrieving tasks
+
+Fetch and filter tasks for an agent:
+
+```typescript
+// specific task
+const task = await agent.getTask("<task-id>");
+
+// pagination
+const tasks = await agent.getTasks({
+  pageSize: 10,
+  page: 1,
+  sort: { updatedAt: "desc" },
+});
+
+// filtering
+const activeTasks = await agent.getTasks({
+  filter: { status: ["queued", "running", "idle"] },
+});
+
+// searching
+const searchResults = await agent.getTasks({
+  search: "weather",
+  sort: { createdAt: "asc" },
+});
+```
+
 ### Event Handling
 
 Tasks use an event-driven architecture for real-time updates:
@@ -223,30 +250,29 @@ Tasks use an event-driven architecture for real-time updates:
 
 - **`start`**: Task initialization
 - **`status`**: Status changes (queued, running, complete, error)
-- **`message`**: New messages from agent or user
-- **`update`**: Tool execution updates
+- **`message`**: Unified event for all message types (agent, user, tool)
 - **`error`**: Error notifications
 
 #### Listening for Events
 
 ```typescript
-// Listen for messages
+// Listen for all messages (agent, user, and tool)
 task.addEventListener("message", ({ detail }) => {
   const { message } = detail;
 
+  // Check message type using helper methods
   if (message.isAgent()) {
     console.log("Agent:", message.text);
+  } else if (message.isUser()) {
+    console.log("User:", message.text);
+  } else if (message.isTool()) {
+    console.log("Tool:", message.status);
   }
 });
 
 // Listen for status changes
 task.addEventListener("status", ({ detail }) => {
   console.log("Status changed to:", detail.status);
-});
-
-// Listen for tool updates
-task.addEventListener("update", ({ detail }) => {
-  console.log("Tool update:", detail.message);
 });
 
 // Listen for errors
@@ -405,7 +431,19 @@ class Agent {
   readonly project: string;
 
   getTask(taskId: string): Promise<Task>;
+  getTasks(options?: GetTaskOptions): Promise<Task[]>;
   sendMessage(message: string, task?: Task): Promise<Task>;
+}
+
+interface GetTaskOptions {
+  pageSize?: number; // default: 100
+  page?: number; // default: 1
+  // default: { createdAt: "asc" }
+  sort?: { createdAt: "asc" | "desc" } | { updatedAt: "asc" | "desc" };
+  search?: string;
+  filter?: {
+    status?: TaskStatus[];
+  };
 }
 ```
 
@@ -439,34 +477,37 @@ type TaskStatus =
   | "queued"
   | "running"
   | "action"
-  | "complete"
+  | "completed"
   | "error";
 ```
 
 ### Messages
 
 ```typescript
-abstract class TaskMessage {
+abstract class GenericMessage {
   readonly id: string;
   readonly type: MessageType;
   readonly createdAt: Date;
 
-  isAgent(): boolean;
+  isAgent(): boolean; // Check if message is from agent
+  isUser(): boolean; // Check if message is from user
+  isTool(): boolean; // Check if message is a tool execution
+  isAgentError(): boolean; // Check if message is an agent error
 }
 
-class AgentMessage extends TaskMessage {
+class AgentMessage extends GenericMessage {
   readonly text: string;
 }
 
-class UserMessage extends TaskMessage {
+class UserMessage extends GenericMessage {
   readonly text: string;
 }
 
-class ToolMessage extends TaskMessage {
-  readonly status: "pending" | "running" | "completed" | "failed";
+class ToolMessage extends GenericMessage {
+  readonly status: "cancelled" | "pending" | "running" | "completed" | "failed";
 }
 
-class AgentErrorMessage extends TaskMessage {
+class AgentErrorMessage extends GenericMessage {
   readonly error: string;
 }
 ```

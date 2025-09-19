@@ -1,5 +1,7 @@
 .idea/
-.vscode/
+
+.vscode/*
+!.vscode/extensions.json
 npm/
 
 .env
