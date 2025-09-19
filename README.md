@@ -215,6 +215,33 @@ await agent.sendMessage("What about tomorrow?", task);
 Note: `sendMessage` returns once the message is sent and doesn't wait for a
 response. Use event listeners to handle responses.
 
+#### Retrieving tasks
+
+Fetch and filter tasks for an agent:
+
+```typescript
+// specific task
+const task = await agent.getTask("<task-id>");
+
+// pagination
+const tasks = await agent.getTasks({
+  pageSize: 10,
+  page: 1,
+  sort: { updatedAt: "desc" },
+});
+
+// filtering
+const activeTasks = await agent.getTasks({
+  filter: { status: ["queued", "running", "idle"] },
+});
+
+// searching
+const searchResults = await agent.getTasks({
+  search: "weather",
+  sort: { createdAt: "asc" },
+});
+```
+
 ### Event Handling
 
 Tasks use an event-driven architecture for real-time updates:
@@ -404,7 +431,19 @@ class Agent {
   readonly project: string;
 
   getTask(taskId: string): Promise<Task>;
+  getTasks(options?: GetTaskOptions): Promise<Task[]>;
   sendMessage(message: string, task?: Task): Promise<Task>;
+}
+
+interface GetTaskOptions {
+  pageSize?: number; // default: 100
+  page?: number; // default: 1
+  // default: { createdAt: "asc" }
+  sort?: { createdAt: "asc" | "desc" } | { updatedAt: "asc" | "desc" };
+  search?: string;
+  filter?: {
+    status?: TaskStatus[];
+  };
 }
 ```
 
