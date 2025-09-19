@@ -24,6 +24,7 @@ async function main() {
     sort: {
       updatedAt: "desc",
     },
+    search: "wait",
   });
 
   for (const t of tasks) {
