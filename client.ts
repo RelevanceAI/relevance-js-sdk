@@ -80,7 +80,7 @@ export class Client {
       | `/agents/${string}/tasks/${string}/view`
       | "/agents/conversations/list"
       | "/services/get_temporary_file_upload_url"
-      | "/agents/models/list",
+      | `/workforce/items/${string}`,
     init?: RequestInit,
   ): Promise<T> {
     const url = this.url(input);

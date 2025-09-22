@@ -4,7 +4,7 @@ import type {Region} from "./region.ts";
 import {resetSubscribeBackoff, statusToStates, Task, type TaskMetadata, type TaskState,} from "./task.ts";
 import {randomUUID} from "./utils.ts";
 
-interface AgentConfig {
+export interface AgentConfig {
   agent_id: string;
   public: boolean;
   name?: string;
