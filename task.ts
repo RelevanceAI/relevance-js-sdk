@@ -89,15 +89,13 @@ export function stateToStatus(state: TaskState): TaskStatus {
     case "escalated":
       return "action";
 
-    case "timed-out":
-      return "error";
-
     case "cancelled":
       return "cancelled";
 
     case "completed":
       return "completed";
 
+    case "timed-out":
     case "unrecoverable":
     case "errored-pending-approval":
       return "error";
