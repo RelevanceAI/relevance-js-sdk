@@ -212,6 +212,32 @@ const task = await agent.getTask("task-id");
 await agent.sendMessage("What about tomorrow?", task);
 ```
 
+#### Send Messages with Attachments
+
+You can include file attachments when sending messages to agents using web standard File objects or URL-based attachments:
+
+```typescript
+import { Agent } from "jsr:@relevanceai/sdk";
+
+const agent = await Agent.get("agent-id");
+
+// Read files using Deno APIs
+const pdfData = await Deno.readFile("./document.pdf");
+const imageData = await Deno.readFile("./photo.png");
+
+// Create file objects
+const pdfFile = new File([pdfData], "document.pdf", {
+  type: "application/pdf",
+});
+const imageFile = new File([imageData], "photo.png", { type: "image/png" });
+
+// Send message with attachments
+const task = await agent.sendMessage("Analyze these documents", [
+  pdfFile,
+  imageFile,
+]);
+```
+
 Note: `sendMessage` returns once the message is sent and doesn't wait for a
 response. Use event listeners to handle responses.
 
@@ -349,6 +375,7 @@ For complete working examples, check out the `internal/examples` directory:
   - Creating and managing tasks
   - Fetching agent information
   - Retrieving existing tasks
+  - Image OCR with file attachments
 
 - **Browser Example** (`internal/examples/browser/`):
   - Full chat application with Preact
@@ -371,6 +398,7 @@ class Client {
   isEmbedKey(): boolean;
   fetch<T>(endpoint: string, init?: RequestInit): Promise<T>;
   url(path: string): URL;
+  uploadTempFile(file: File): Promise<Attachment>;
 }
 
 function createClient(keyOrOptions: Key | CreateClientOptions): Client;
@@ -379,6 +407,11 @@ interface CreateClientOptions {
   apiKey: string;
   region: Region;
   project: string;
+}
+
+interface Attachment {
+  fileName: string;
+  fileUrl: string;
 }
 ```
 
@@ -432,8 +465,17 @@ class Agent {
 
   getTask(taskId: string): Promise<Task>;
   getTasks(options?: GetTaskOptions): Promise<Task[]>;
-  sendMessage(message: string, task?: Task): Promise<Task>;
-}
+    sendMessage(message: string): Promise<Task>;
+    sendMessage(message: string, task: Task): Promise<Task>;
+    sendMessage(
+        message: string,
+        attachments: (Attachment | File)[]
+    ): Promise<Task>;
+    sendMessage(
+        message: string,
+        attachments: (Attachment | File)[],
+        task: Task
+    ): Promise<Task>;}
 
 interface GetTaskOptions {
   pageSize?: number; // default: 100
@@ -562,7 +604,7 @@ deno run dnt
 ### Upcoming Features
 
 - [ ] Streaming responses
-- [ ] File upload support
+- [x] File upload support
 - [ ] Enhanced error recovery
 - [ ] Agent and task management
 - [ ] Workforce support
