@@ -51,10 +51,9 @@ export type TaskMetadata = {
 };
 
 type TaskEventMap = {
-  start: { status: TaskStatus };
+  error: { message: AgentErrorMessage };
   status: { status: TaskStatus };
   message: { message: AgentMessage | UserMessage };
-  update: { message: ToolMessage };
 };
 
 /**
@@ -187,7 +186,7 @@ export class Task extends Emitter<TaskEventMap> {
   #metadata: TaskMetadata;
 
   public readonly agent: Agent;
-  protected readonly client: Client;
+  readonly #client: Client;
 
   public constructor(
     metadata: TaskMetadata,
@@ -195,10 +194,9 @@ export class Task extends Emitter<TaskEventMap> {
     client: Client = Client.default(),
   ) {
     super();
-
+    this.#client = client;
     this.#metadata = metadata;
     this.agent = agent;
-    this.client = client;
   }
 
   public get id(): string {
@@ -228,7 +226,7 @@ export class Task extends Emitter<TaskEventMap> {
     { from = new Date(0) }: { from?: Date } = {},
   ): Promise<AnyTaskMessage[]> {
     const url = `/agents/${this.agent.id}/tasks/${this.id}/view` as const;
-    const res = await this.client.fetch<{ results: TaskMessageData[] }>(url, {
+    const res = await this.#client.fetch<{ results: TaskMessageData[] }>(url, {
       method: "POST",
       body: JSON.stringify({
         page_size: 1_000, // @todo: pagination
@@ -271,7 +269,7 @@ export class Task extends Emitter<TaskEventMap> {
     this.#metadata = await Task.#fetchMetadata(
       this.id,
       this.agent.id,
-      this.client,
+      this.#client,
     );
   }
 
