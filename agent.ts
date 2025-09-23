@@ -1,4 +1,4 @@
-import { Client } from "./client.ts";
+import { type Attachment, Client } from "./client.ts";
 import type { TaskStatus } from "@relevanceai/sdk";
 import type { Region } from "./region.ts";
 import {
@@ -18,6 +18,7 @@ interface AgentConfig {
   emoji?: string;
   insert_date_: string;
   update_date_: string;
+  model: string;
 }
 
 type SortDirection = "asc" | "desc";
@@ -51,9 +52,6 @@ function sortOptionsToParam(
 const taskPrefixDelimiter = "_-_";
 
 export class Agent {
-  #config: AgentConfig;
-  private readonly client: Client;
-
   public static async get(
     id: string,
     client: Client = Client.default(),
@@ -71,8 +69,11 @@ export class Agent {
     ) => agent);
   }
 
+  readonly #config: AgentConfig;
+  readonly #client: Client;
+
   public constructor(config: AgentConfig, client: Client) {
-    this.client = client;
+    this.#client = client;
     this.#config = config;
   }
 
@@ -101,15 +102,15 @@ export class Agent {
   }
 
   public get region(): Region {
-    return this.client.region;
+    return this.#client.region;
   }
 
   public get project(): string {
-    return this.client.project;
+    return this.#client.project;
   }
 
   public getTask(taskId: string): Promise<Task> {
-    return Task.get(taskId, this, this.client);
+    return Task.get(taskId, this, this.#client);
   }
 
   public async getTasks(
@@ -164,18 +165,44 @@ export class Agent {
     return results.map((r) => new Task(r.metadata, this, this.client));
   }
 
-  public async sendMessage(message: string, task?: Task): Promise<Task> {
-    let taskId: string | undefined;
+    public async sendMessage(message: string): Promise<Task>;
+    public async sendMessage(message: string, task: Task): Promise<Task>;
+    public async sendMessage(
+        message: string,
+        attachments: (Attachment | File)[],
+    ): Promise<Task>;
+    public async sendMessage(
+        message: string,
+        attachments: (Attachment | File)[],
+        task: Task,
+    ): Promise<Task>;
+    public async sendMessage(
+        message: string,
+        attachOrTask?: (Attachment | File)[] | Task,
+        maybeTask?: Task,
+    ): Promise<Task> {
+        const hasAttachments = Array.isArray(attachOrTask);
+        const attachFiles = hasAttachments ? attachOrTask : [];
+        const task = hasAttachments ? maybeTask : attachOrTask;
+
+        let taskId: string | undefined;
     // embed keys require a task prefixing for new tasks
-    if (!task && this.client.isEmbedKey()) {
-      taskId = [this.client.key.taskPrefix, await randomUUID()].join(
+    if (!task && this.#client.isEmbedKey()) {
+      taskId = [this.#client.key.taskPrefix, await randomUUID()].join(
         taskPrefixDelimiter,
       );
     } else if (task) {
       taskId = task.id;
     }
 
-    const res = await this.client.fetch<{
+    const attachments: Attachment[] = [];
+    for (const item of attachFiles) {
+      attachments.push(
+        item instanceof File ? await this.#client.uploadTempFile(item) : item,
+      );
+    }
+
+    const res = await this.#client.fetch<{
       conversation_id: string;
       state: TaskState;
     }>("/agents/trigger", {
@@ -186,7 +213,10 @@ export class Agent {
         message: {
           role: "user",
           content: message,
-          attachments: [], // @todo
+          attachments: attachments.map(({ fileName, fileUrl }) => ({
+            file_name: fileName,
+            file_url: fileUrl,
+          })),
         },
       }),
     });

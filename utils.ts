@@ -24,3 +24,8 @@ export async function randomUUID() {
 
   return cryptoModule.randomUUID();
 }
+
+export function getFileExtension(filename: string): string {
+  const dot = filename.lastIndexOf(".");
+  return dot >= 0 ? filename.slice(dot + 1) : "";
+}
