@@ -28,6 +28,6 @@ async function main() {
   });
 
   for (const t of tasks) {
-    console.log("%s\n[%s]\n", t.title, t.id);
+    console.log("%s\n[%s]\n", t.name, t.id);
   }
 }
