@@ -465,17 +465,18 @@ class Agent {
 
   getTask(taskId: string): Promise<Task>;
   getTasks(options?: GetTaskOptions): Promise<Task[]>;
-    sendMessage(message: string): Promise<Task>;
-    sendMessage(message: string, task: Task): Promise<Task>;
-    sendMessage(
-        message: string,
-        attachments: (Attachment | File)[]
-    ): Promise<Task>;
-    sendMessage(
-        message: string,
-        attachments: (Attachment | File)[],
-        task: Task
-    ): Promise<Task>;}
+  sendMessage(message: string): Promise<Task>;
+  sendMessage(message: string, task: Task): Promise<Task>;
+  sendMessage(
+    message: string,
+    attachments: (Attachment | File)[]
+  ): Promise<Task>;
+  sendMessage(
+    message: string,
+    attachments: (Attachment | File)[],
+    task: Task
+  ): Promise<Task>;
+}
 
 interface GetTaskOptions {
   pageSize?: number; // default: 100
