@@ -1,15 +1,15 @@
 # Relevance AI JavaScript SDK
 
 A comprehensive JavaScript/TypeScript SDK for building AI-powered applications
-with Relevance AI's workforce platform. Build, deploy, and scale AI agents
+with Relevance AI's workforce platform. Build, deploy, and scale AI workforces
 across any JavaScript runtime.
 
 ## Description
 
 The Relevance AI JavaScript SDK provides a unified interface for integrating
-AI agents into your applications. Whether you're building server-side
-applications, browser-based interfaces, or edge computing solutions, this SDK
-delivers consistent, type-safe access to Relevance AI's powerful agent
+AI workforces and agents into your applications. Whether you're building
+server-side applications, browser-based interfaces, or edge computing solutions,
+this SDK delivers consistent, type-safe access to Relevance AI's powerful agent
 ecosystem.
 
 ### Key Features
@@ -18,13 +18,11 @@ ecosystem.
   Cloudflare Workers, and browsers
 - **Event-Driven Architecture**: Real-time updates via native EventTarget API
 - **Type Safety**: Full TypeScript support with comprehensive type definitions
-- **Multi-Client Support**: Manage multiple projects and authentication scopes
-  simultaneously
 - **Zero Dependencies**: Built on web standards for minimal footprint
 
 ## Quick Start
 
-Get up and running with AI agents in under 5 minutes:
+Get up and running in seconds:
 
 ```typescript
 import { Agent, createClient, EU_REGION } from "@relevanceai/sdk";
@@ -36,16 +34,25 @@ const client = createClient({
   project: process.env.PROJECT_ID,
 });
 
-// Load an agent and start a conversation
+// Load an agent
 const agent = await Agent.get("agent-id");
+// Start a conversation
 const task = await agent.sendMessage("Hello, how can you help me today?");
-
 // Listen for agent responses
 task.addEventListener("message", ({ detail: { message } }) => {
   if (message.isAgent()) {
     console.log("Agent:", message.text);
   }
 });
+
+// Or use a workforce of agents
+
+import { Workforce } from "@relevanceai/sdk";
+
+// Load the workforce
+const workforce = await Workforce.get("workforce-id");
+// Start delegating
+const task = await workforce.sendMessage("Analyze this complex dataset");
 ```
 
 ## Installation
@@ -123,7 +130,7 @@ Configure your bundler to use the shim:
 
 The SDK supports two authentication methods for different use cases:
 
-#### API Keys (Server-side)
+#### API Keys (server-side)
 
 API keys grant full access to your project. Use these for server applications
 and secure environments:
@@ -152,10 +159,12 @@ const key = new Key({
 const client = new Client(key);
 ```
 
-#### Embed Keys (Client-side)
+#### Embed Keys (client-side)
 
 For public-facing applications, use embed keys which are scoped to a specific
-public agent:
+public agent. Embed keys need to be generated and should be stored in your
+applications local storage or database. Each embed key corresponds to a single
+agent or workforce.
 
 ```typescript
 import { Key, createClient, US_REGION } from "@relevanceai/sdk";
@@ -169,77 +178,37 @@ const embedKey = await Key.generateEmbedKey({
 const client = createClient(embedKey);
 ```
 
-### Fetching Agents
+### Agents
 
-Load agents before creating tasks:
+#### Loading agents
 
 ```typescript
-// Using default client
+// using the default client
 const agent = await Agent.get("agent-id");
 
-// Using specific client
-const customClient = createClient({
-  /* config */
-});
-const agent = await Agent.get("agent-id", customClient);
+// or using a specific client
+const agent = await Agent.get("agent-id", client);
 
-// Access agent properties
+// accessing agent properties
 console.log(agent.name);
 console.log(agent.avatar);
 console.log(agent.description);
 ```
 
-### Sending Messages
+#### Sending messages
 
-#### Create a New Task
-
-Start a new conversation with an agent:
+Use `Agent#sendMessage()` to send messages to an agent.
 
 ```typescript
-const agent = await Agent.get("agent-id");
+// create a new task
 const task = await agent.sendMessage("What's the weather like today?");
-```
 
-#### Send to Existing Task
-
-Continue an existing conversation:
-
-```typescript
-// Get an existing task
-const task = await agent.getTask("task-id");
-
-// Send a follow-up message
+// reply to existing tasks
 await agent.sendMessage("What about tomorrow?", task);
 ```
 
-#### Send Messages with Attachments
-
-You can include file attachments when sending messages to agents using web standard File objects or URL-based attachments:
-
-```typescript
-import { Agent } from "jsr:@relevanceai/sdk";
-
-const agent = await Agent.get("agent-id");
-
-// Read files using Deno APIs
-const pdfData = await Deno.readFile("./document.pdf");
-const imageData = await Deno.readFile("./photo.png");
-
-// Create file objects
-const pdfFile = new File([pdfData], "document.pdf", {
-  type: "application/pdf",
-});
-const imageFile = new File([imageData], "photo.png", { type: "image/png" });
-
-// Send message with attachments
-const task = await agent.sendMessage("Analyze these documents", [
-  pdfFile,
-  imageFile,
-]);
-```
-
-Note: `sendMessage` returns once the message is sent and doesn't wait for a
-response. Use event listeners to handle responses.
+Note: `Agent#sendMessage()` returns once the message is sent and doesn't wait for
+a response. See Tasks for handling message events.
 
 #### Retrieving tasks
 
@@ -268,25 +237,62 @@ const searchResults = await agent.getTasks({
 });
 ```
 
-### Event Handling
+### Workforces
 
-Tasks use an event-driven architecture for real-time updates:
+#### Loading workforces
+
+```typescript
+// using the default client
+const workforce = await Workforce.get("<workforce-id>");
+
+// or with a specific client
+const workforce = await Workforce.get("<workforce-id>", client);
+
+// accessing workforce properties
+console.log(workforce.name);
+```
+
+#### Sending messages
+
+Use `Workforce#sendMessage()` to send messages to a workforce.
+
+```typescript
+// create a new task
+const task = await agent.sendMessage("What's the weather like today?");
+
+// reply to existing tasks
+await agent.sendMessage("What about tomorrow?", task);
+```
+
+Note: `Workforce#sendMessage()` returns once the message is sent and doesn't
+wait for a response. See Tasks for handling message events.
+
+#### Retrieving tasks
+
+Load existing workforce tasks.
+
+```typescript
+const task = await workforce.getTask("<task-id>");
+```
+
+### Tasks
+
+Agents and workforces, subjects, all return an instance of a `Task` when sending
+messages. Tasks dispatch events as they would occur on the the subjects timeline
+in the Relevance AI workforce platform.
 
 #### Available Events
 
-- **`start`**: Task initialization
-- **`status`**: Status changes (queued, running, complete, error)
-- **`message`**: Unified event for all message types (agent, user, tool)
+- **`updated`**: Whenever a subject has been updated.
+- **`message`**: Unified event for all message types
 - **`error`**: Error notifications
 
 #### Listening for Events
 
 ```typescript
 // Listen for all messages (agent, user, and tool)
-task.addEventListener("message", ({ detail }) => {
-  const { message } = detail;
-
-  // Check message type using helper methods
+task.addEventListener("message", ({ detail: { message } }) => {
+  // use message helpers to determine the message
   if (message.isAgent()) {
     console.log("Agent:", message.text);
   } else if (message.isUser()) {
@@ -296,30 +302,19 @@ task.addEventListener("message", ({ detail }) => {
   }
 });
 
-// Listen for status changes
-task.addEventListener("status", ({ detail }) => {
-  console.log("Status changed to:", detail.status);
+// catching errors
+task.addEventListener("error", ({ detail: { message } }) => {
+  console.error("Task error:", message.lastError);
 });
-
-// Listen for errors
-task.addEventListener("error", ({ detail }) => {
-  console.error("Task error:", detail.message);
-});
-
-// Clean up when done
-task.unsubscribe();
 ```
 
-#### Managing Subscriptions
+#### Unsubscribing
 
-The SDK automatically starts listening when you add event listeners. Remember
-to clean up:
+It's important that you unsubscribe from tasks once they have moved out of
+scope in your application. This will prevent memory leaks by removing dead
+subscriptions.
 
 ```typescript
-// Start listening (called automatically with addEventListener)
-task.subscribe();
-
-// Stop listening and clean up
 task.unsubscribe();
 ```
 
@@ -371,11 +366,11 @@ For complete working examples, check out the `internal/examples` directory:
 
 - **Deno Examples** (`internal/examples/deno/`):
 
-  - Client setup and configuration
-  - Creating and managing tasks
-  - Fetching agent information
-  - Retrieving existing tasks
-  - Image OCR with file attachments
+  - (Agent) Creating tasks
+  - (Agent) Getting a task
+  - (Agent) Getting all tasks
+  - (Agent) Getting an agent
+  - (Workforce) Creating a task
 
 - **Browser Example** (`internal/examples/browser/`):
   - Full chat application with Preact
@@ -398,7 +393,6 @@ class Client {
   isEmbedKey(): boolean;
   fetch<T>(endpoint: string, init?: RequestInit): Promise<T>;
   url(path: string): URL;
-  uploadTempFile(file: File): Promise<Attachment>;
 }
 
 function createClient(keyOrOptions: Key | CreateClientOptions): Client;
@@ -407,11 +401,6 @@ interface CreateClientOptions {
   apiKey: string;
   region: Region;
   project: string;
-}
-
-interface Attachment {
-  fileName: string;
-  fileUrl: string;
 }
 ```
 
@@ -448,6 +437,22 @@ interface GenerateEmbedKeyOptions {
 }
 ```
 
+### Workforce
+
+```typescript
+class Workforce {
+  static async get(id: string, client?: Client): Promise<Workforce>;
+
+  readonly id: string;
+  readonly name: string;
+  readonly region: Region;
+  readonly project: string;
+
+  getTask(taskId: string): Promise<Task>;
+  sendMessage(message: string, task?: Task): Promise<Task>;
+}
+```
+
 ### Agent
 
 ```typescript
@@ -465,17 +470,7 @@ class Agent {
 
   getTask(taskId: string): Promise<Task>;
   getTasks(options?: GetTaskOptions): Promise<Task[]>;
-  sendMessage(message: string): Promise<Task>;
-  sendMessage(message: string, task: Task): Promise<Task>;
-  sendMessage(
-    message: string,
-    attachments: (Attachment | File)[]
-  ): Promise<Task>;
-  sendMessage(
-    message: string,
-    attachments: (Attachment | File)[],
-    task: Task
-  ): Promise<Task>;
+  sendMessage(message: string, task?: Task): Promise<Task>;
 }
 
 interface GetTaskOptions {
@@ -493,17 +488,11 @@ interface GetTaskOptions {
 ### Task
 
 ```typescript
-class Task extends EventTarget {
-  static async get(
-    id: string,
-    agentOrAgentId: Agent | string,
-    client?: Client
-  ): Promise<Task>;
-
+class Task<T extends Agent | Workforce = Agent> extends EventTarget {
   readonly id: string;
   readonly title: string;
   readonly status: TaskStatus;
-  readonly agent: Agent;
+  readonly subject: Agent | Workforce;
 
   isRunning(): boolean;
   getMessages(options?: { from?: Date }): Promise<AnyTaskMessage[]>;
@@ -550,19 +539,25 @@ class ToolMessage extends GenericMessage {
   readonly status: "cancelled" | "pending" | "running" | "completed" | "failed";
 }
 
-class AgentErrorMessage extends GenericMessage {
-  readonly error: string;
+class AgentErrorMessage extends GenericMessage {}
+
+class WorkforceAgentMessage extends GenericMessage {
+  readonly content: {
+    type: "workforce-agent-run";
+    task_details: TaskDetails;
+    agent_details?: AgentDetails;
+  };
+  isWorkforceAgent(): boolean;
 }
-```
 
-### Types
-
-```typescript
-type Region = "us" | "eu" | "au";
-
-const US_REGION: Region = "us";
-const EU_REGION: Region = "eu";
-const AU_REGION: Region = "au";
+class WorkforceAgentHandoverMessage extends GenericMessage {
+  readonly content: {
+    type: "workforce-agent-handover";
+    agent_details: AgentDetails;
+    trigger: { message: string };
+  };
+  isWorkforceAgentHandover(): boolean;
+}
 ```
 
 ## Contributing
@@ -601,14 +596,14 @@ deno run dnt
 - [x] Task creation
 - [x] Event-driven messaging
 - [x] Multi-environment support
+- [x] Workforce support
 
 ### Upcoming Features
 
 - [ ] Streaming responses
-- [x] File upload support
+- [ ] File upload support
 - [ ] Enhanced error recovery
 - [ ] Agent and task management
-- [ ] Workforce support
 - [ ] Tool support
 
 ### Future Considerations (2.0)

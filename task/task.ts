@@ -10,6 +10,7 @@ import {
 } from "../event.ts";
 import type { Workforce } from "../workforce.ts";
 import type { Agent } from "../agent.ts";
+import type { AgentErrorMessage } from "../message/agent-error.ts";
 
 export type TaskStatus =
   | "not-started"
@@ -35,7 +36,7 @@ export interface TaskMetadata {
 type TaskEventMap = {
   updated: undefined;
   message: { message: AnyTaskMessage };
-  error: unknown;
+  error: { message: AgentErrorMessage };
 };
 
 export interface TaskStrategy<S> {
