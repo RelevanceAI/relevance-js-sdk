@@ -2,12 +2,16 @@ import type { AgentMessage } from "./agent.ts";
 import type { AgentErrorMessage } from "./agent-error.ts";
 import type { ToolMessage } from "./tool.ts";
 import type { UserMessage } from "./user.ts";
+import type { WorkforceAgentMessage } from "./workforce-agent.ts";
+import type { WorkforceAgentHandoverMessage } from "./workforce-agent-handover.ts";
 
 export type AnyTaskMessage =
   | AgentMessage
   | AgentErrorMessage
   | ToolMessage
-  | UserMessage;
+  | UserMessage
+  | WorkforceAgentMessage
+  | WorkforceAgentHandoverMessage;
 
 export type TaskMessageType = AnyTaskMessage["type"];
 

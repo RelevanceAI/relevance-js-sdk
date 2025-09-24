@@ -10,5 +10,5 @@
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@^0.42.3"
   },
-  "exclude": [".github", "internal", "npm", "CLAUDE.md"]
+  "exclude": [".github", "/examples/browser", "npm", "CLAUDE.md"]
 }
