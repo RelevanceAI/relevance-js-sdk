@@ -1,7 +1,5 @@
 import { type Attachment, Client } from "./client.ts";
-import type { TaskStatus } from "@relevanceai/sdk";
 import type { Region } from "./region.ts";
-import { Task } from "./task.ts";
 import { randomUUID } from "./utils.ts";
 import {
   AgentStrategy,
