@@ -205,6 +205,13 @@ const task = await agent.sendMessage("What's the weather like today?");
 
 // reply to existing tasks
 await agent.sendMessage("What about tomorrow?", task);
+
+// sending attachments
+const contents = await Deno.readFile("./contract.pdf");
+const contract = new File([contents], "contract.pdf", {
+  type: "application/pdf",
+});
+await agent.sendMessage("Summarize this contract", [contract]);
 ```
 
 Note: `Agent#sendMessage()` returns once the message is sent and doesn't wait for
@@ -437,22 +444,6 @@ interface GenerateEmbedKeyOptions {
 }
 ```
 
-### Workforce
-
-```typescript
-class Workforce {
-  static async get(id: string, client?: Client): Promise<Workforce>;
-
-  readonly id: string;
-  readonly name: string;
-  readonly region: Region;
-  readonly project: string;
-
-  getTask(taskId: string): Promise<Task>;
-  sendMessage(message: string, task?: Task): Promise<Task>;
-}
-```
-
 ### Agent
 
 ```typescript
@@ -469,8 +460,26 @@ class Agent {
   readonly project: string;
 
   getTask(taskId: string): Promise<Task>;
-  getTasks(options?: GetTaskOptions): Promise<Task[]>;
-  sendMessage(message: string, task?: Task): Promise<Task>;
+
+  getTasks(): Promise<Task[]>;
+  getTasks(options: GetTaskOptions): Promise<Task[]>;
+
+  sendMessage(message: string): Promise<Task>;
+  sendMessage(message: string, task: Task): Promise<Task>;
+  sendMessage(
+    message: string,
+    attachments: (File | Attachment)[]
+  ): Promise<Task>;
+  sendMessage(
+    message: string,
+    attachments: (File | Attachment)[],
+    task: Task
+  ): Promise<Task>;
+}
+
+interface Attachment {
+  fileName: string;
+  fileUrl: string;
 }
 
 interface GetTaskOptions {
@@ -485,6 +494,24 @@ interface GetTaskOptions {
 }
 ```
 
+### Workforce
+
+```typescript
+class Workforce {
+  static async get(id: string, client?: Client): Promise<Workforce>;
+
+  readonly id: string;
+  readonly name: string;
+  readonly region: Region;
+  readonly project: string;
+
+  getTask(taskId: string): Promise<Task>;
+
+  sendMessage(message: string): Promise<Task>;
+  sendMessage(message: string, task: Task): Promise<Task>;
+}
+```
+
 ### Task
 
 ```typescript
@@ -495,7 +522,10 @@ class Task<T extends Agent | Workforce = Agent> extends EventTarget {
   readonly subject: Agent | Workforce;
 
   isRunning(): boolean;
-  getMessages(options?: { from?: Date }): Promise<AnyTaskMessage[]>;
+
+  getMessages(): Promise<AnyTaskMessage[]>;
+  getMessages(options: { from: Date }): Promise<AnyTaskMessage[]>;
+
   subscribe(): void;
   unsubscribe(): void;
 
@@ -541,23 +571,9 @@ class ToolMessage extends GenericMessage {
 
 class AgentErrorMessage extends GenericMessage {}
 
-class WorkforceAgentMessage extends GenericMessage {
-  readonly content: {
-    type: "workforce-agent-run";
-    task_details: TaskDetails;
-    agent_details?: AgentDetails;
-  };
-  isWorkforceAgent(): boolean;
-}
+class WorkforceAgentMessage extends GenericMessage {}
 
-class WorkforceAgentHandoverMessage extends GenericMessage {
-  readonly content: {
-    type: "workforce-agent-handover";
-    agent_details: AgentDetails;
-    trigger: { message: string };
-  };
-  isWorkforceAgentHandover(): boolean;
-}
+class WorkforceAgentHandoverMessage extends GenericMessage {}
 ```
 
 ## Contributing
