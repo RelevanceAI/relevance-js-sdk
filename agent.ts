@@ -156,36 +156,36 @@ export class Agent {
       query.set("query", search.trim());
     }
 
-    const { results } = await this.client.fetch<
+    const { results } = await this.#client.fetch<
       { results: { metadata: TaskMetadata }[] }
     >(
       `/agents/conversations/list?${query.toString()}` as "/agents/conversations/list",
     );
 
-    return results.map((r) => new Task(r.metadata, this, this.client));
+    return results.map((r) => new Task(r.metadata, this, this.#client));
   }
 
-    public async sendMessage(message: string): Promise<Task>;
-    public async sendMessage(message: string, task: Task): Promise<Task>;
-    public async sendMessage(
-        message: string,
-        attachments: (Attachment | File)[],
-    ): Promise<Task>;
-    public async sendMessage(
-        message: string,
-        attachments: (Attachment | File)[],
-        task: Task,
-    ): Promise<Task>;
-    public async sendMessage(
-        message: string,
-        attachOrTask?: (Attachment | File)[] | Task,
-        maybeTask?: Task,
-    ): Promise<Task> {
-        const hasAttachments = Array.isArray(attachOrTask);
-        const attachFiles = hasAttachments ? attachOrTask : [];
-        const task = hasAttachments ? maybeTask : attachOrTask;
+  public async sendMessage(message: string): Promise<Task>;
+  public async sendMessage(message: string, task: Task): Promise<Task>;
+  public async sendMessage(
+    message: string,
+    attachments: (Attachment | File)[],
+  ): Promise<Task>;
+  public async sendMessage(
+    message: string,
+    attachments: (Attachment | File)[],
+    task: Task,
+  ): Promise<Task>;
+  public async sendMessage(
+    message: string,
+    attachOrTask?: (Attachment | File)[] | Task,
+    maybeTask?: Task,
+  ): Promise<Task> {
+    const hasAttachments = Array.isArray(attachOrTask);
+    const attachFiles = hasAttachments ? attachOrTask : [];
+    const task = hasAttachments ? maybeTask : attachOrTask;
 
-        let taskId: string | undefined;
+    let taskId: string | undefined;
     // embed keys require a task prefixing for new tasks
     if (!task && this.#client.isEmbedKey()) {
       taskId = [this.#client.key.taskPrefix, await randomUUID()].join(
