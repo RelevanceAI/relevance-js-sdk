@@ -1,16 +1,13 @@
-import { Agent } from "./agent.ts";
-import { Client } from "./client.ts";
-import { Emitter } from "./emitter.ts";
-import { TaskErrorEvent, TaskMessageEvent, TaskStatusEvent } from "./event.ts";
-import {
-  AgentErrorMessage,
-  type AgentErrorMessageContent,
-} from "./message/agent-error.ts";
-import { AgentMessage, type AgentMessageContent } from "./message/agent.ts";
-import type { AnyTaskMessage, TaskMessageData } from "./message/task.ts";
-import { ToolMessage, type ToolMessageContent } from "./message/tool.ts";
-import { UserMessage, type UserMessageContent } from "./message/user.ts";
-import { abortPromise, delay } from "./utils.ts";
+import {Agent} from "./agent.ts";
+import {Client} from "./client.ts";
+import {Emitter} from "./emitter.ts";
+import {TaskErrorEvent, TaskMessageEvent, TaskStatusEvent} from "./event.ts";
+import {AgentErrorMessage, type AgentErrorMessageContent,} from "./message/agent-error.ts";
+import {AgentMessage, type AgentMessageContent} from "./message/agent.ts";
+import type {AnyTaskMessage, TaskMessageData} from "./message/task.ts";
+import {ToolMessage, type ToolMessageContent} from "./message/tool.ts";
+import {UserMessage, type UserMessageContent} from "./message/user.ts";
+import {abortPromise, delay} from "./utils.ts";
 
 export type TaskState =
   | "idle"
@@ -186,7 +183,7 @@ export class Task extends Emitter<TaskEventMap> {
   #metadata: TaskMetadata;
 
   public readonly agent: Agent;
-  readonly #client: Client;
+  private readonly client: Client;
 
   public constructor(
     metadata: TaskMetadata,
@@ -194,7 +191,7 @@ export class Task extends Emitter<TaskEventMap> {
     client: Client = Client.default(),
   ) {
     super();
-    this.#client = client;
+    this.client = client;
     this.#metadata = metadata;
     this.agent = agent;
   }
@@ -226,7 +223,7 @@ export class Task extends Emitter<TaskEventMap> {
     { from = new Date(0) }: { from?: Date } = {},
   ): Promise<AnyTaskMessage[]> {
     const url = `/agents/${this.agent.id}/tasks/${this.id}/view` as const;
-    const res = await this.#client.fetch<{ results: TaskMessageData[] }>(url, {
+    const res = await this.client.fetch<{ results: TaskMessageData[] }>(url, {
       method: "POST",
       body: JSON.stringify({
         page_size: 1_000, // @todo: pagination
@@ -269,7 +266,7 @@ export class Task extends Emitter<TaskEventMap> {
     this.#metadata = await Task.#fetchMetadata(
       this.id,
       this.agent.id,
-      this.#client,
+      this.client,
     );
   }
 
