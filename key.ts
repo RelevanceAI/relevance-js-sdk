@@ -1,4 +1,4 @@
-import type { Region } from "@relevanceai/sdk";
+import type { Region } from "./region.ts";
 import { regionBaseURL } from "./region.ts";
 import { cleanPath } from "./utils.ts";
 

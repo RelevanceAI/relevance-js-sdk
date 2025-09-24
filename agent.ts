@@ -1,8 +1,13 @@
-import {type Attachment, Client} from "./client.ts";
-import type {TaskStatus} from "@relevanceai/sdk";
-import type {Region} from "./region.ts";
-import {resetSubscribeBackoff, statusToStates, Task, type TaskMetadata, type TaskState,} from "./task.ts";
-import {randomUUID} from "./utils.ts";
+import { type Attachment, Client } from "./client.ts";
+import type { TaskStatus } from "@relevanceai/sdk";
+import type { Region } from "./region.ts";
+import { Task } from "./task.ts";
+import { randomUUID } from "./utils.ts";
+import {
+  AgentStrategy,
+  type AgentTaskMetadata,
+} from "./task/agent-strategy.ts";
+import { resetBackoffDuration, Task, type TaskStatus } from "./task/task.ts";
 
 export interface AgentConfig {
   agent_id: string;
@@ -13,6 +18,119 @@ export interface AgentConfig {
   insert_date_: string;
   update_date_: string;
   model: string;
+}
+
+export type AgentTaskState =
+  | "idle"
+  | "starting-up"
+  | "running"
+  | "pending-approval"
+  | "waiting-for-capacity"
+  | "cancelled"
+  | "timed-out"
+  | "escalated"
+  | "unrecoverable"
+  | "paused"
+  | "completed"
+  | "errored-pending-approval"
+  | "queued-for-approval"
+  | "queued-for-rerun";
+
+/**
+ * Converts an AgentTaskState to a simplified TaskStatus.
+ *
+ * @dev
+ *   We want to simplify because our states are simplified in the UI and also
+ *   some states have combined reasoning that the consumer does not need to care
+ *   about. i.e. "queued-for-approval" "queued-for-rerun" should just be "queued".
+ *
+ * @param {AgentTaskState} state The agent task state to convert.
+ * @returns {TaskStatus} The simplified task status.
+ */
+export function stateToStatus(state: AgentTaskState): TaskStatus {
+  switch (state) {
+    case "paused":
+      return "paused";
+
+    case "idle":
+      return "idle";
+
+    case "starting-up":
+    case "waiting-for-capacity":
+    case "queued-for-approval":
+    case "queued-for-rerun":
+      return "queued";
+
+    case "running":
+      return "running";
+
+    case "pending-approval":
+    case "escalated":
+      return "action";
+
+    case "timed-out":
+      return "error";
+
+    case "cancelled":
+      return "cancelled";
+
+    case "completed":
+      return "completed";
+
+    case "unrecoverable":
+    case "errored-pending-approval":
+      return "error";
+
+    default:
+      throw new Error(
+        `unhandled task state: ${state}`,
+      );
+  }
+}
+
+/**
+ * Reverses {@link stateToStatus} returning the group of task states a _simplified_
+ * status may relate to.
+ *
+ * @see {stateToStatus}
+ * @param {TaskStatus} status
+ * @returns {AgentTaskState[]}
+ */
+function statusToStates(status: TaskStatus): AgentTaskState[] {
+  switch (status) {
+    case "not-started":
+      // a special sdk-only status
+      return [];
+
+    case "idle":
+      return ["idle"];
+
+    case "paused":
+      return ["paused"];
+
+    case "queued":
+      return [
+        "starting-up",
+        "waiting-for-capacity",
+        "queued-for-approval",
+        "queued-for-rerun",
+      ];
+
+    case "running":
+      return ["running"];
+
+    case "action":
+      return ["pending-approval", "escalated"];
+
+    case "completed":
+      return ["completed"];
+
+    case "cancelled":
+      return ["cancelled"];
+
+    case "error":
+      return ["errored-pending-approval", "timed-out", "unrecoverable"];
+  }
 }
 
 type SortDirection = "asc" | "desc";
@@ -75,6 +193,14 @@ export class Agent {
     return this.#config.agent_id;
   }
 
+  public get region(): Region {
+    return this.client.region;
+  }
+
+  public get project(): string {
+    return this.client.project;
+  }
+
   public get name(): string | undefined {
     return this.#config.name;
   }
@@ -95,16 +221,8 @@ export class Agent {
     return new Date(this.#config.update_date_);
   }
 
-  public get region(): Region {
-    return this.client.region;
-  }
-
-  public get project(): string {
-    return this.client.project;
-  }
-
-  public getTask(taskId: string): Promise<Task> {
-    return Task.get(taskId, this, this.client);
+  public getTask(taskId: string): Promise<Task<Agent>> {
+    return AgentStrategy.get(taskId, this, this.client);
   }
 
   public async getTasks(
@@ -115,7 +233,7 @@ export class Agent {
       search,
       filter,
     }: GetTaskOptions = {},
-  ): Promise<Task[]> {
+  ): Promise<Task<Agent>[]> {
     const filtersParam = [{
       condition: "==",
       condition_value: [this.id],
@@ -151,30 +269,47 @@ export class Agent {
     }
 
     const { results } = await this.client.fetch<
-      { results: { metadata: TaskMetadata }[] }
+      { results: { metadata: AgentTaskMetadata }[] }
     >(
       `/agents/conversations/list?${query.toString()}` as "/agents/conversations/list",
     );
 
-    return results.map((r) => new Task(r.metadata, this, this.client));
+    return results.map(({ metadata }) =>
+      new Task(
+        {
+          id: metadata.knowledge_set,
+          region: this.client.region,
+          project: this.client.project,
+          name: metadata.conversation.title,
+          status: stateToStatus(metadata.conversation.state),
+          createdAt: new Date(metadata.insert_date),
+          updatedAt: new Date(metadata.update_date),
+        },
+        new AgentStrategy(
+          metadata.knowledge_set,
+          this,
+          this.client,
+        ),
+      )
+    );
   }
 
-  public async sendMessage(message: string): Promise<Task>;
-  public async sendMessage(message: string, task: Task): Promise<Task>;
+  public async sendMessage(message: string): Promise<Task<Agent>>;
+  public async sendMessage(message: string, task: Task): Promise<Task<Agent>>;
   public async sendMessage(
     message: string,
     attachments: (Attachment | File)[],
-  ): Promise<Task>;
+  ): Promise<Task<Agent>>;
   public async sendMessage(
     message: string,
     attachments: (Attachment | File)[],
     task: Task,
-  ): Promise<Task>;
+  ): Promise<Task<Agent>>;
   public async sendMessage(
     message: string,
     attachOrTask?: (Attachment | File)[] | Task,
     maybeTask?: Task,
-  ): Promise<Task> {
+  ): Promise<Task<Agent>> {
     const hasAttachments = Array.isArray(attachOrTask);
     const attachFiles = hasAttachments ? attachOrTask : [];
     const task = hasAttachments ? maybeTask : attachOrTask;
@@ -198,7 +333,7 @@ export class Agent {
 
     const res = await this.client.fetch<{
       conversation_id: string;
-      state: TaskState;
+      state: AgentTaskState;
     }>("/agents/trigger", {
       method: "POST",
       body: JSON.stringify({
@@ -216,7 +351,7 @@ export class Agent {
     });
 
     if (task) {
-      task[resetSubscribeBackoff]();
+      task[resetBackoffDuration]();
     }
 
     return task ?? this.getTask(res.conversation_id);

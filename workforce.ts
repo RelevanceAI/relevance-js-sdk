@@ -1,4 +1,7 @@
-import { Client, type Region } from "@relevanceai/sdk";
+import { Client } from "./client.ts";
+import type { Region } from "./region.ts";
+import { resetBackoffDuration, type Task } from "./task/task.ts";
+import { WorkforceStrategy } from "./task/workforce-strategy.ts";
 
 type WorkforceConfig = {
   id: string;
@@ -19,7 +22,8 @@ export class Workforce {
     return new Workforce(config, client);
   }
 
-  protected client: Client;
+  private readonly client: Client;
+
   #config: WorkforceConfig;
 
   public constructor(config: WorkforceConfig, client: Client) {
@@ -41,5 +45,37 @@ export class Workforce {
 
   public get name(): string {
     return this.#config.workforce_metadata.name;
+  }
+
+  public async getTask(id: string): Promise<Task<Workforce>> {
+    return await WorkforceStrategy.get(id, this, this.client);
+  }
+
+  public async sendMessage(
+    message: string,
+    task?: Task<Workforce>,
+  ): Promise<Task<Workforce>> {
+    const { workforce_task_id: taskId } = await this.client.fetch<{
+      workforce_task_id: string;
+    }>("/workforce/trigger", {
+      method: "POST",
+      body: JSON.stringify({
+        workforce_id: this.id,
+        workforce_task_id: task?.id,
+        trigger: {
+          message: {
+            role: "user",
+            content: message,
+            attachments: [],
+          },
+        },
+      }),
+    });
+
+    if (task) {
+      task[resetBackoffDuration]();
+    }
+
+    return task ?? this.getTask(taskId);
   }
 }
