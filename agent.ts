@@ -293,7 +293,10 @@ export class Agent {
   }
 
   public async sendMessage(message: string): Promise<Task<Agent>>;
-  public async sendMessage(message: string, task: Task): Promise<Task<Agent>>;
+  public async sendMessage(
+    message: string,
+    task: Task<Agent>,
+  ): Promise<Task<Agent>>;
   public async sendMessage(
     message: string,
     attachments: (Attachment | File)[],
@@ -301,12 +304,12 @@ export class Agent {
   public async sendMessage(
     message: string,
     attachments: (Attachment | File)[],
-    task: Task,
+    task: Task<Agent>,
   ): Promise<Task<Agent>>;
   public async sendMessage(
     message: string,
-    attachOrTask?: (Attachment | File)[] | Task,
-    maybeTask?: Task,
+    attachOrTask?: (Attachment | File)[] | Task<Agent>,
+    maybeTask?: Task<Agent>,
   ): Promise<Task<Agent>> {
     const hasAttachments = Array.isArray(attachOrTask);
     const attachFiles = hasAttachments ? attachOrTask : [];
