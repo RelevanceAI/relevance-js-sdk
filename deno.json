@@ -1,6 +1,6 @@
 {
   "name": "@relevanceai/sdk",
-  "version": "3.0.0-alpha.4",
+  "version": "3.0.0-alpha.5",
   "exports": "./mod.ts",
   "license": "MIT",
   "tasks": {
@@ -10,5 +10,10 @@
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@^0.42.3"
   },
-  "exclude": [".github", "/examples/browser", "npm", "CLAUDE.md"]
+  "exclude": [
+    ".github",
+    "/examples/browser",
+    "npm",
+    "CLAUDE.md"
+  ]
 }
