@@ -1,7 +1,7 @@
 import type { AgentErrorMessage } from "./message/agent-error.ts";
 import type { AnyTaskMessage } from "./message/task.ts";
 
-export class TaskUpdatedEvent extends CustomEvent<void> {
+export class TaskUpdateEvent extends CustomEvent<void> {
   public override readonly type = "update";
 
   public constructor() {

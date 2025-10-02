@@ -6,7 +6,7 @@ import { abortPromise, delay } from "../utils.ts";
 import {
   TaskErrorEvent,
   TaskMessageEvent,
-  TaskUpdatedEvent,
+  TaskUpdateEvent,
 } from "../event.ts";
 import type { Workforce } from "../workforce.ts";
 import type { Agent } from "../agent.ts";
@@ -146,7 +146,7 @@ export class Task<
           let hasChanges = false;
 
           if (metadata.updatedAt > this.updatedAt) {
-            this.dispatchEvent(new TaskUpdatedEvent());
+            this.dispatchEvent(new TaskUpdateEvent());
             hasChanges = true;
           }
 
