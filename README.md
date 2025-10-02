@@ -290,7 +290,7 @@ in the Relevance AI workforce platform.
 
 #### Available Events
 
-- **`updated`**: Whenever a subject has been updated.
+- **`update`**: Whenever a subject has been update.
 - **`message`**: Unified event for all message types
 - **`error`**: Error notifications
 
