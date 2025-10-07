@@ -1,6 +1,7 @@
+import type { JSONSchema4 } from "json-schema";
 import type { Region } from "../region.ts";
-import { GenericMessage, TaskMessageData } from "./task.ts";
-import { Tool, ToolConfig } from "../tool.ts";
+import { GenericMessage, type TaskMessageData } from "./task.ts";
+import { Tool } from "../tool.ts";
 
 type ToolState =
   | "cancelled"
@@ -30,14 +31,16 @@ export interface ToolMessageContent {
     valid: boolean;
   };
   errors: { body: string; raw: string; step_name: string }[];
-  tool_config:
-    | {
-      id: string;
-      type: "agent";
-      region: Region;
-      project: string;
-    }
-    | { type: "tool" } & ToolConfig;
+  tool_config: {
+    type: "agent" | "tool";
+    title: string;
+    description: string;
+    region: Region;
+    project: string;
+    id: string;
+    emoji?: string;
+    params_schema: JSONSchema4;
+  };
 }
 
 export class ToolMessage extends GenericMessage<ToolMessageContent> {
@@ -45,8 +48,9 @@ export class ToolMessage extends GenericMessage<ToolMessageContent> {
 
   public constructor(message: TaskMessageData<ToolMessageContent>) {
     super(message);
-    if (!this.isSubAgent()) {
-      this.tool = new Tool(message.content.tool_config);
+    if (message.content.tool_config.type === "tool") {
+      const { id, ...config } = message.content.tool_config;
+      this.tool = new Tool({ studio_id: id, ...config });
     }
     // @todo: subagent
   }

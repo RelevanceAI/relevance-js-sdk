@@ -9,12 +9,8 @@
   },
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@^0.42.3",
-    "@types/json-schema": "npm:@types/json-schema@^7.0.15"
+    "@types/json-schema": "npm:@types/json-schema@^7.0.15",
+    "json-schema": "npm:json-schema@^0.4.0"
   },
-  "exclude": [
-    ".github",
-    "/examples/browser",
-    "npm",
-    "CLAUDE.md"
-  ]
+  "exclude": [".github", "/examples/browser", "npm", "CLAUDE.md"]
 }

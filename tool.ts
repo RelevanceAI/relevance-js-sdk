@@ -1,5 +1,5 @@
-import { Region } from "./region.ts";
-import type { JSONSchema4 } from "@types/json-schema";
+import type { Region } from "./region.ts";
+import type { JSONSchema4 } from "json-schema";
 
 export type ToolConfig = {
   region: Region;

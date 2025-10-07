@@ -184,7 +184,7 @@ export class Agent {
     client: Client = Client.default(),
   ): Promise<Agent[]> {
     const { results } = await client.fetch<{ results: AgentConfig[] }>(
-      `/agents/list`,
+      "/agents/list",
       {
         method: "POST",
         body: JSON.stringify({
