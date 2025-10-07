@@ -11,6 +11,9 @@ await build({
     name: denoConfig.name,
     version: denoConfig.version,
     license: denoConfig.license,
+    devDependencies: {
+      "@types/json-schema": "^7.0.15",
+    },
   },
   test: false,
   skipSourceOutput: true,

@@ -83,7 +83,8 @@ export class Client {
       | `/workforce/items/${string}`
       | `/workforce/tasks/${string}/metadata`
       | `/workforce/items/${string}/tasks/${string}/messages`
-      | "/workforce/trigger",
+      | "/workforce/trigger"
+      | "/agents/list",
     init?: RequestInit,
   ): Promise<T> {
     const url = this.url(input);

@@ -9,7 +9,8 @@
     "jsr:@std/path@^1.0.7": "1.0.8",
     "jsr:@ts-morph/bootstrap@0.27": "0.27.0",
     "jsr:@ts-morph/common@0.27": "0.27.0",
-    "npm:@types/json-schema@^7.0.15": "7.0.15"
+    "npm:@types/json-schema@^7.0.15": "7.0.15",
+    "npm:json-schema@0.4": "0.4.0"
   },
   "jsr": {
     "@david/code-block-writer@13.0.3": {
@@ -54,6 +55,9 @@
   "npm": {
     "@types/json-schema@7.0.15": {
       "integrity": "sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA=="
+    },
+    "json-schema@0.4.0": {
+      "integrity": "sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA=="
     }
   },
   "remote": {
@@ -91,7 +95,8 @@
   "workspace": {
     "dependencies": [
       "jsr:@deno/dnt@~0.42.3",
-      "npm:@types/json-schema@^7.0.15"
+      "npm:@types/json-schema@^7.0.15",
+      "npm:json-schema@0.4"
     ]
   }
 }
