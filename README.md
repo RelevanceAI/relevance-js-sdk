@@ -183,6 +183,15 @@ const client = createClient(embedKey);
 #### Loading agents
 
 ```typescript
+// fetch all agents (with pagination)
+const agents = await Agent.getAll({ pageSize: 20, page: 1 });
+
+// fetch all agents with custom page size
+const agents = await Agent.getAll({ pageSize: 50, page: 3 });
+
+// fetch all agents using default options (pageSize: 20, page: 1)
+const agents = await Agent.getAll();
+
 // using the default client
 const agent = await Agent.get("agent-id");
 
@@ -337,6 +346,7 @@ createClient({ apiKey, region, project });
 
 // Access anywhere in your app
 import { Client } from "@relevanceai/sdk";
+
 const client = Client.default();
 ```
 
@@ -375,6 +385,7 @@ For complete working examples, check out the `internal/examples` directory:
 
   - (Agent) Creating tasks
   - (Agent) Getting a task
+  - (Agent) Getting all agents
   - (Agent) Getting all tasks
   - (Agent) Getting an agent
   - (Workforce) Creating a task
@@ -391,6 +402,7 @@ For complete working examples, check out the `internal/examples` directory:
 ```typescript
 class Client {
   constructor(key: Key);
+
   static default(): Client;
 
   readonly key: Key;
@@ -398,7 +410,9 @@ class Client {
   readonly project: string;
 
   isEmbedKey(): boolean;
+
   fetch<T>(endpoint: string, init?: RequestInit): Promise<T>;
+
   url(path: string): URL;
 }
 
@@ -425,7 +439,9 @@ class Key {
   readonly taskPrefix?: string;
 
   isEmbed(): boolean;
+
   fetchHeaders(): HeadersInit;
+
   toJSON(): CreateKeyOptions;
 }
 
@@ -449,6 +465,11 @@ interface GenerateEmbedKeyOptions {
 ```typescript
 class Agent {
   static async get(id: string, client?: Client): Promise<Agent>;
+
+  static async getAll(
+    options?: GetAllOptions,
+    client?: Client
+  ): Promise<Agent[]>;
 
   readonly id: string;
   readonly name?: string;
@@ -492,6 +513,11 @@ interface GetTaskOptions {
     status?: TaskStatus[];
   };
 }
+
+interface GetAllOptions {
+  pageSize?: number; // default: 20
+  page?: number; // default: 1
+}
 ```
 
 ### Workforce
@@ -527,9 +553,11 @@ class Task<T extends Agent | Workforce = Agent> extends EventTarget {
   getMessages(options: { from: Date }): Promise<AnyTaskMessage[]>;
 
   subscribe(): void;
+
   unsubscribe(): void;
 
   addEventListener(type: string, listener: EventListener): void;
+
   removeEventListener(type: string, listener: EventListener): void;
 }
 
@@ -567,6 +595,11 @@ class UserMessage extends GenericMessage {
 
 class ToolMessage extends GenericMessage {
   readonly status: "cancelled" | "pending" | "running" | "completed" | "failed";
+  readonly tool?: Tool; // Available when message is from a tool (not subagent)
+  readonly toolOrAgentId: string; // ID of the tool or subagent
+
+  isSubAgent(): boolean; // Check if this is a subagent execution
+  subAgentTaskId: string | null; // Task ID if this is a subagent, null otherwise
 }
 
 class AgentErrorMessage extends GenericMessage {}
@@ -574,6 +607,20 @@ class AgentErrorMessage extends GenericMessage {}
 class WorkforceAgentMessage extends GenericMessage {}
 
 class WorkforceAgentHandoverMessage extends GenericMessage {}
+```
+
+### Tool
+
+```typescript
+class Tool {
+  readonly id: string;
+  readonly name: string;
+  readonly avatar?: string;
+  readonly description?: string;
+  readonly region: Region;
+  readonly project: string;
+  readonly parametersSchema: JSONSchema4;
+}
 ```
 
 ## Contributing

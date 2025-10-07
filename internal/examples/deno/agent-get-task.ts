@@ -15,7 +15,9 @@ async function main() {
   const agent = await Agent.get(agentId);
 
   // fetch the task
-  const task = await agent.getTask("e3034114-bb5e-444f-8f0e-d1dc2ae40ded");
+  const task = await agent.getTask(
+    "d6185a36-7f6c-43b4-87cf-a4b50dd7e608_-_d0fbb83a-add4-40ed-8480-6479778eb592",
+  );
 
   // task info.
   console.log("id:       %s", task.id);
@@ -44,6 +46,9 @@ async function main() {
           message.text,
         );
         break;
+
+      default:
+        console.dir(message, { depth: null, compact: true, colors: true });
     }
   });
 }
