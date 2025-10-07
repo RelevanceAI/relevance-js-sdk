@@ -10,6 +10,7 @@ import { resetBackoffDuration, Task, type TaskStatus } from "./task/task.ts";
 export interface AgentConfig {
   agent_id: string;
   public: boolean;
+  project: string;
   name?: string;
   description?: string;
   emoji?: string;
@@ -147,7 +148,7 @@ type GetTaskOptions = {
   };
 };
 
-function sortOptionsToParam(
+function taskSortOptionsToParam(
   sort: GetTaskOptionSort,
 ): { insert_date: SortDirection } | { update_date: SortDirection } {
   if ("createdAt" in sort) {
@@ -159,6 +160,11 @@ function sortOptionsToParam(
   throw new Error("invalid sort option");
 }
 
+type GetAllOptions = {
+  pageSize?: number;
+  page?: number;
+};
+
 const taskPrefixDelimiter = "_-_";
 
 export class Agent {
@@ -168,6 +174,27 @@ export class Agent {
   ): Promise<Agent> {
     const config = await Agent.#fetchConfig(id, client);
     return new Agent(config, client);
+  }
+
+  public static async getAll(
+    {
+      page = 1,
+      pageSize = 20,
+    }: GetAllOptions = {},
+    client: Client = Client.default(),
+  ): Promise<Agent[]> {
+    const { results } = await client.fetch<{ results: AgentConfig[] }>(
+      `/agents/list`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          page_size: pageSize,
+          page,
+        }),
+      },
+    );
+
+    return results.map((config) => new Agent(config, client));
   }
 
   static #fetchConfig(
@@ -196,7 +223,7 @@ export class Agent {
   }
 
   public get project(): string {
-    return this.client.project;
+    return this.#config.project;
   }
 
   public get name(): string | undefined {
@@ -253,7 +280,7 @@ export class Agent {
       }
     }
 
-    const sortParam = sortOptionsToParam(sort);
+    const sortParam = taskSortOptionsToParam(sort);
 
     const query = new URLSearchParams([
       ["filters", JSON.stringify(filtersParam)],
@@ -355,6 +382,6 @@ export class Agent {
       task[resetBackoffDuration]();
     }
 
-    return task ?? this.getTask(res.conversation_id);
+    return task ?? await this.getTask(res.conversation_id);
   }
 }

@@ -1,5 +1,6 @@
 import type { Region } from "../region.ts";
-import { GenericMessage } from "./task.ts";
+import { GenericMessage, TaskMessageData } from "./task.ts";
+import { Tool, ToolConfig } from "../tool.ts";
 
 type ToolState =
   | "cancelled"
@@ -29,15 +30,27 @@ export interface ToolMessageContent {
     valid: boolean;
   };
   errors: { body: string; raw: string; step_name: string }[];
-  tool_config: {
-    id: string;
-    type: "tool" | "agent";
-    region: Region;
-    project: string;
-  };
+  tool_config:
+    | {
+      id: string;
+      type: "agent";
+      region: Region;
+      project: string;
+    }
+    | { type: "tool" } & ToolConfig;
 }
 
 export class ToolMessage extends GenericMessage<ToolMessageContent> {
+  public readonly tool?: Tool;
+
+  public constructor(message: TaskMessageData<ToolMessageContent>) {
+    super(message);
+    if (!this.isSubAgent()) {
+      this.tool = new Tool(message.content.tool_config);
+    }
+    // @todo: subagent
+  }
+
   /**
    * The tool status for _this_ message.
    *
@@ -92,11 +105,11 @@ export class ToolMessage extends GenericMessage<ToolMessageContent> {
   }
 
   /**
-   * The tool's ID.
+   * The tool or agent ID.
    *
    * @property {string}
    */
-  public get toolId(): string {
+  public get toolOrAgentId(): string {
     return this.message.content.tool_config.id;
   }
 
@@ -131,8 +144,8 @@ export class ToolMessage extends GenericMessage<ToolMessageContent> {
   }
 
   /**
-   * The task ID the sub-agent ran. Will be `null` if the tool message is not
-   * a sub-agent.
+   * The task ID the subagent ran. Will be `null` if the tool message is not
+   * a subagent.
    *
    * @property {string}
    * @see {@link ToolMessage.isSubAgent}

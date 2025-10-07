@@ -8,7 +8,8 @@
     "dnt": "deno run -A internal/tasks/dnt.ts"
   },
   "imports": {
-    "@deno/dnt": "jsr:@deno/dnt@^0.42.3"
+    "@deno/dnt": "jsr:@deno/dnt@^0.42.3",
+    "@types/json-schema": "npm:@types/json-schema@^7.0.15"
   },
   "exclude": [
     ".github",
