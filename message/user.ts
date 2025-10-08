@@ -1,6 +1,8 @@
+import type { Attachment } from "../client.ts";
 import { GenericMessage } from "./task.ts";
 
 export interface UserMessageContent {
+  attachments?: { file_url: string; file_name: string }[];
   type: "user-message";
   text: string;
   is_trigger_message: boolean;
@@ -23,5 +25,28 @@ export class UserMessage extends GenericMessage<UserMessageContent> {
    */
   public isTrigger(): boolean {
     return this.message.content.is_trigger_message;
+  }
+
+  /**
+   * The attachments sent with the message.
+   *
+   * @property {Attachment[]}
+   */
+  public get attachments(): Attachment[] {
+    return (
+      this.message.content.attachments?.map(({ file_name, file_url }) => ({
+        fileName: file_name,
+        fileUrl: file_url,
+      })) ?? []
+    );
+  }
+
+  /**
+   * Returns if the message has attachments.
+   *
+   * @returns {boolean}
+   */
+  public hasAttachments(): boolean {
+    return this.attachments.length > 0;
   }
 }
