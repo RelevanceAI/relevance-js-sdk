@@ -88,6 +88,7 @@ export class AgentStrategy implements TaskStrategy<Agent> {
         case "agent-message":
           return new AgentMessage(
             data as TaskMessageData<AgentMessageContent>,
+            this.agent,
           );
 
         case "tool-run":

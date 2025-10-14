@@ -6,6 +6,7 @@ import {
   type AgentTaskMetadata,
 } from "./task/agent-strategy.ts";
 import { resetBackoffDuration, Task, type TaskStatus } from "./task/task.ts";
+import { TASK_PREFIX_DELIM } from "./const.ts";
 
 export interface AgentConfig {
   agent_id: string;
@@ -164,8 +165,6 @@ type GetAllOptions = {
   pageSize?: number;
   page?: number;
 };
-
-const taskPrefixDelimiter = "_-_";
 
 export class Agent {
   public static async get(
@@ -346,7 +345,7 @@ export class Agent {
     // embed keys require a task prefixing for new tasks
     if (!task && this.client.isEmbedKey()) {
       taskId = [this.client.key.taskPrefix, await randomUUID()].join(
-        taskPrefixDelimiter,
+        TASK_PREFIX_DELIM,
       );
     } else if (task) {
       taskId = task.id;

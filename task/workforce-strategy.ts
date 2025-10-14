@@ -79,6 +79,7 @@ export class WorkforceStrategy implements TaskStrategy<Workforce> {
         case "agent-message":
           return new AgentMessage(
             data as TaskMessageData<AgentMessageContent>,
+            // @todo: pass agent
           );
 
         case "tool-run":
