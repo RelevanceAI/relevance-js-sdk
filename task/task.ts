@@ -3,11 +3,7 @@ import type { AnyTaskMessage } from "../message/task.ts";
 import type { Region } from "../region.ts";
 import type { ToolMessage } from "../message/tool.ts";
 import { abortPromise, delay } from "../utils.ts";
-import {
-  TaskErrorEvent,
-  TaskMessageEvent,
-  TaskUpdateEvent,
-} from "../event.ts";
+import { TaskErrorEvent, TaskMessageEvent, TaskUpdateEvent } from "../event.ts";
 import type { Workforce } from "../workforce.ts";
 import type { Agent } from "../agent.ts";
 import type { AgentErrorMessage } from "../message/agent-error.ts";
@@ -127,7 +123,7 @@ export class Task<
 
     this.backoffDuration = backoffStartingDuration;
 
-    const cursor = new Date(0);
+    const cursor = new Date();
     const emitted = new Set<string>();
     const pending = new Map<string, ToolMessage>();
 
