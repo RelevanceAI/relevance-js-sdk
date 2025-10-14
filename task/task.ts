@@ -234,6 +234,7 @@ export class Task<
 
   public [resetBackoffDuration]() {
     this.backoffDuration = backoffStartingDuration;
+    this.backoff?.abort();
   }
 
   public override addEventListener<K extends keyof E>(
