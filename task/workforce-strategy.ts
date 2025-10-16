@@ -53,9 +53,7 @@ export class WorkforceStrategy implements TaskStrategy<Workforce> {
     return this.workforce;
   }
 
-  async getMessages(
-    { after: _after }: { after?: Date },
-  ): Promise<AnyTaskMessage[]> {
+  async getMessages(): Promise<AnyTaskMessage[]> {
     const { results } = await this.client.fetch<{
       results: TaskMessageData[];
     }>(

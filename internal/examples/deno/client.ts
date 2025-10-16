@@ -17,15 +17,28 @@ createClient({
 
 export function createEmbedClient(): Client {
   const agentId = Deno.env.get("RELEVANCE_AI_AGENT") ?? "";
+  const workforceId = Deno.env.get("RELEVANCE_AI_WORKFORCE") ?? "";
   const taskPrefix = Deno.env.get("RELEVANCE_AI_TASK_PREFIX") ?? "";
 
-  return new Client(
-    new Key({
+  if (!agentId && !workforceId) {
+    throw new Error("agent or workforce id env not set");
+  }
+
+  const key = workforceId
+    ? new Key({
+      key: apiKey,
+      region,
+      project,
+      workforceId,
+      taskPrefix,
+    })
+    : new Key({
       key: apiKey,
       region,
       project,
       agentId,
       taskPrefix,
-    }),
-  );
+    });
+
+  return new Client(key);
 }

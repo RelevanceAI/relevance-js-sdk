@@ -7,10 +7,11 @@ type CreateKeyOptions = {
   region: Region;
   project: string;
   agentId?: string;
+  workforceId?: string;
   taskPrefix?: string;
 };
 
-type GenerateEmbedKeyOptions = Omit<CreateKeyOptions, "key" | "taskPrefix">;
+type GenerateEmbedKeyOptions = { region: Region; project: string };
 
 /**
  * Key is used to authenticate requests for the {@link Client}. A Key can be
@@ -35,11 +36,25 @@ export class Key {
    *
    * @returns {Promise<Key>}
    */
-  static async generateEmbedKey({
-    region,
-    project,
-    agentId,
-  }: GenerateEmbedKeyOptions): Promise<Key> {
+  static async generateEmbedKey(
+    options:
+      & GenerateEmbedKeyOptions
+      & ({ workforceId: string } | { agentId: string }),
+  ): Promise<Key> {
+    if ("workforceId" in options) {
+      return await Key.generateWorkforceEmbedKey(options);
+    }
+
+    if ("agentId" in options) {
+      return await Key.generateAgentEmbedKey(options);
+    }
+
+    throw new Error("invalid embed key options");
+  }
+
+  private static async generateAgentEmbedKey(
+    { region, project, agentId }: GenerateEmbedKeyOptions & { agentId: string },
+  ) {
     const embedKeyURL = new URL(
       cleanPath("/agents/get_embed_key"),
       regionBaseURL(region),
@@ -51,7 +66,7 @@ export class Key {
     });
 
     if (!response.ok) {
-      throw new Error("failed to fetch embed key", { cause: response });
+      throw new Error("failed to fetch agent embed key", { cause: response });
     }
 
     const { embed_key: embedKey, conversation_prefix: taskPrefix } =
@@ -65,6 +80,42 @@ export class Key {
       region,
       project,
       agentId,
+      taskPrefix,
+    });
+  }
+
+  private static async generateWorkforceEmbedKey(
+    { region, project, workforceId }: GenerateEmbedKeyOptions & {
+      workforceId: string;
+    },
+  ) {
+    const embedKeyURL = new URL(
+      cleanPath("/workforce/get_embed_key"),
+      regionBaseURL(region),
+    );
+
+    const response = await fetch(embedKeyURL, {
+      method: "POST",
+      body: JSON.stringify({ workforce_id: workforceId, project }),
+    });
+
+    if (!response.ok) {
+      throw new Error("failed to fetch workforce embed key", {
+        cause: response,
+      });
+    }
+
+    const { embed_key: embedKey, conversation_prefix: taskPrefix } =
+      await response.json() as {
+        embed_key: string;
+        conversation_prefix: string;
+      };
+
+    return new Key({
+      key: embedKey,
+      region,
+      project,
+      workforceId,
       taskPrefix,
     });
   }
@@ -93,11 +144,19 @@ export class Key {
 
   /**
    * The agent ID the embed key is scoped to. This is `undefined` for full
-   * keys.
+   * keys and workforce embed keys.
    *
    * @property {string | undefined} agentId
    */
   public readonly agentId: string | undefined;
+
+  /**
+   * The workforce ID the embed key is scoped to. This is `undefined` for full
+   * keys
+   *
+   * @property {string | undefined} workforceId
+   */
+  public readonly workforceId: string | undefined;
 
   /**
    * The task prefix used to namespace tasks created with the embed key. This
@@ -113,13 +172,15 @@ export class Key {
    * @param {CreateKeyOptions} options
    */
   public constructor(
-    { key, region, project, agentId, taskPrefix }: CreateKeyOptions,
+    { key, region, project, agentId, workforceId, taskPrefix }:
+      CreateKeyOptions,
   ) {
     this.#key = key;
     this.region = region;
     this.project = project;
     this.agentId = agentId;
     this.taskPrefix = taskPrefix;
+    this.workforceId = workforceId;
   }
 
   /**
@@ -128,7 +189,8 @@ export class Key {
    * @returns {boolean}
    */
   public isEmbed(): boolean {
-    return (this.agentId !== undefined && this.taskPrefix !== undefined);
+    return ((this.agentId !== undefined || this.workforceId !== undefined) &&
+      this.taskPrefix !== undefined);
   }
 
   /**
@@ -152,8 +214,12 @@ export class Key {
       key: this.#key,
       region: this.region,
       project: this.project,
-      agentId: this.agentId,
-      taskPrefix: this.taskPrefix,
+      ...(this.agentId
+        ? { agentId: this.agentId, taskPrefix: this.taskPrefix }
+        : {}),
+      ...(this.workforceId
+        ? { workforceId: this.workforceId, taskPrefix: this.taskPrefix }
+        : {}),
     };
   }
 }
