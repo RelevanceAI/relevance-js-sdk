@@ -1,8 +1,11 @@
 import { Client } from "./client.ts";
 import { TASK_PREFIX_DELIM } from "./const.ts";
 import type { Region } from "./region.ts";
-import { resetBackoffDuration, type Task } from "./task/task.ts";
-import { WorkforceStrategy } from "./task/workforce-strategy.ts";
+import { resetBackoffDuration, Task } from "./task/task.ts";
+import {
+  WorkforceStrategy,
+  type WorkforceTaskState,
+} from "./task/workforce-strategy.ts";
 import { randomUUID } from "./utils.ts";
 
 type WorkforceConfig = {
@@ -10,6 +13,12 @@ type WorkforceConfig = {
   workforce_metadata: {
     name: string;
   };
+};
+
+type GetTaskOptions = {
+  pageSize?: number;
+  cursor?: string;
+  search?: string;
 };
 
 export class Workforce {
@@ -51,6 +60,71 @@ export class Workforce {
 
   public async getTask(id: string): Promise<Task<Workforce>> {
     return await WorkforceStrategy.get(id, this, this.client);
+  }
+
+  public async getTasks({
+    pageSize = 100,
+    cursor,
+    search,
+  }: GetTaskOptions = {}): Promise<Task<Workforce>[]> {
+    const body: {
+      workforce_id: string;
+      query?: string;
+      page_size?: number;
+      cursor?: string;
+    } = {
+      workforce_id: this.id,
+      page_size: pageSize,
+    };
+
+    if (search?.trim()) {
+      body.query = search.trim();
+    }
+
+    if (cursor?.trim()) {
+      body.cursor = cursor.trim();
+    }
+
+    const { results } = await this.client.fetch<{
+      results: Array<{
+        created_by_user_id: string;
+        insert_date: string;
+        project: string;
+        requested_state: "continue" | "stop";
+        state: WorkforceTaskState;
+        title: string;
+        update_date: string;
+        user_id: string;
+        workforce_id: string;
+        workforce_task_id: string;
+      }>;
+      next_cursor?: string;
+    }>(
+      "/workforce/tasks/list",
+      {
+        method: "POST",
+        body: JSON.stringify(body),
+      },
+    );
+
+    return results.map((t) =>
+      new Task(
+        {
+          id: t.workforce_task_id,
+          region: this.client.region,
+          project: this.client.project,
+          name: t.title,
+          status: WorkforceStrategy.convertStatus(t.state),
+          createdAt: new Date(t.insert_date),
+          updatedAt: new Date(t.update_date),
+        },
+        new WorkforceStrategy(
+          t.workforce_task_id,
+          this,
+          this.client,
+        ),
+      )
+    );
   }
 
   public async sendMessage(
