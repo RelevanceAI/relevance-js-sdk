@@ -2,27 +2,27 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
   pull_request:
-    branches: [ main ]
-  
+    branches: [main]
+
   workflow_call:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      
+
       - name: Setup Deno
         uses: ./.github/actions/setup-deno
-      
+
       - name: Run dnt build task
         run: deno run dnt
-      
+
       - name: Upload npm package artifact
         uses: actions/upload-artifact@v4
         with:
