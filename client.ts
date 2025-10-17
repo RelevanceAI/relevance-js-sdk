@@ -84,6 +84,7 @@ export class Client {
       | `/workforce/tasks/${string}/metadata`
       | `/workforce/items/${string}/tasks/${string}/messages`
       | "/workforce/trigger"
+      | "/workforce/tasks/list"
       | "/agents/list",
     init?: RequestInit,
   ): Promise<T> {

@@ -23,6 +23,45 @@ import {
   type WorkforceAgentHandoverMessageContent,
 } from "../message/workforce-agent-handover.ts";
 
+export type WorkforceTaskState =
+  | "running"
+  | "completed"
+  | "execution-limit-reached"
+  | "pending-approval"
+  | "errored-pending-approval"
+  | "escalated";
+
+/**
+ * Converts a WorkforceTaskState to a simplified TaskStatus.
+ *
+ * @param {WorkforceTaskState} state The workforce task state to convert.
+ * @returns {TaskStatus} The simplified task status.
+ */
+export function stateToStatus(state: WorkforceTaskState): TaskStatus {
+  switch (state) {
+    case "running":
+      return "running";
+
+    case "completed":
+      return "completed";
+
+    case "execution-limit-reached":
+      return "error";
+
+    case "pending-approval":
+    case "escalated":
+      return "action";
+
+    case "errored-pending-approval":
+      return "error";
+
+    default:
+      throw new Error(
+        `unhandled workforce task state: ${state}`,
+      );
+  }
+}
+
 export class WorkforceStrategy implements TaskStrategy<Workforce> {
   public static async get(
     id: string,
@@ -35,15 +74,15 @@ export class WorkforceStrategy implements TaskStrategy<Workforce> {
     return new Task(metadata, subject);
   }
 
-  public static convertStatus(): TaskStatus {
-    return "not-implemented" as TaskStatus;
+  public static convertStatus(state: WorkforceTaskState): TaskStatus {
+    return stateToStatus(state);
   }
 
   private readonly id: string;
   private readonly workforce: Workforce;
   private readonly client: Client;
 
-  private constructor(id: string, workforce: Workforce, client: Client) {
+  public constructor(id: string, workforce: Workforce, client: Client) {
     this.id = id;
     this.workforce = workforce;
     this.client = client;
@@ -112,7 +151,7 @@ export class WorkforceStrategy implements TaskStrategy<Workforce> {
         insert_date: string;
         title: string;
         update_date: string;
-        requested_state: string;
+        requested_state: WorkforceTaskState;
       };
     }>(
       `/workforce/tasks/${this.id}/metadata`,
@@ -123,7 +162,7 @@ export class WorkforceStrategy implements TaskStrategy<Workforce> {
       region: this.client.region,
       project: this.client.project,
       name: metadata.title,
-      status: WorkforceStrategy.convertStatus(), // @todo: not implemented
+      status: WorkforceStrategy.convertStatus(metadata.requested_state),
       createdAt: new Date(metadata.insert_date),
       updatedAt: new Date(metadata.update_date),
     };
