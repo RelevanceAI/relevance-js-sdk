@@ -23,6 +23,8 @@ import {
   type WorkforceAgentHandoverMessageContent,
 } from "../message/workforce-agent-handover.ts";
 
+export type WorkforceTaskRequestedState = "stop" | "continue";
+
 export type WorkforceTaskState =
   | "running"
   | "completed"
@@ -151,7 +153,8 @@ export class WorkforceStrategy implements TaskStrategy<Workforce> {
         insert_date: string;
         title: string;
         update_date: string;
-        requested_state: WorkforceTaskState;
+        state: WorkforceTaskState;
+        requested_state: WorkforceTaskRequestedState;
       };
     }>(
       `/workforce/tasks/${this.id}/metadata`,
@@ -162,7 +165,7 @@ export class WorkforceStrategy implements TaskStrategy<Workforce> {
       region: this.client.region,
       project: this.client.project,
       name: metadata.title,
-      status: WorkforceStrategy.convertStatus(metadata.requested_state),
+      status: WorkforceStrategy.convertStatus(metadata.state),
       createdAt: new Date(metadata.insert_date),
       updatedAt: new Date(metadata.update_date),
     };
