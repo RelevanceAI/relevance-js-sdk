@@ -2,7 +2,7 @@ import type { UserMessage } from "@relevanceai/sdk";
 import { SendHorizonal } from "lucide-react";
 import type { SubmitEventHandler } from "preact";
 import { useCallback, useRef } from "preact/hooks";
-import { agent, isAgentTyping, messages, task } from "@/signals";
+import { agent, isAgentTyping, messages, task, workforce } from "@/signals";
 
 export function Footer() {
   const input = useRef<HTMLInputElement>();
@@ -33,7 +33,13 @@ export function Footer() {
         } as UserMessage,
       ];
 
-      const t = await agent.value.sendMessage(message, task.value);
+      if (!workforce.value && !agent.value) {
+        return;
+      }
+
+      const t = workforce.value
+        ? await workforce.value.sendMessage(message, task.value)
+        : await agent.value!.sendMessage(message, task.value);
       if (task.value !== t) {
         task.value = t;
       }

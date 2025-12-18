@@ -9,10 +9,10 @@ import { EmptyState } from "@/components/empty-state";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { UserMessage } from "@/components/user-message";
-import { agent, isAgentTyping, messages } from "@/signals";
+import { agent, isAgentTyping, messages, workforce } from "@/signals";
 
 export function App() {
-  return agent.value ? (
+  return (agent.value || workforce.value) ? (
     <div class="flex flex-col min-h-dvh dark:bg-zinc-950">
       <Header />
       <main class="flex-1 p-4 bg-zinc-50 dark:bg-zinc-950 transition-colors">

@@ -1,5 +1,5 @@
 import { Client, Key } from "@relevanceai/sdk";
-import { AGENT_ID, PROJECT, REGION } from "@/constant";
+import { AGENT_ID, PROJECT, REGION, WORKFORCE_ID } from "@/constant";
 import { client } from "@/signals";
 
 Promise.resolve(tryStoredEmbedKey())
@@ -12,12 +12,15 @@ async function generateEmbedKey() {
   const key = await Key.generateEmbedKey({
     region: REGION,
     project: PROJECT,
-    agentId: AGENT_ID,
+    ...(WORKFORCE_ID
+      ? { workforceId: WORKFORCE_ID }
+      : { agentId: AGENT_ID }),
   });
 
   const { key: embedKey, taskPrefix } = key.toJSON();
+  const storageKey = WORKFORCE_ID ? `r-wf-${WORKFORCE_ID}` : `r-${AGENT_ID}`;
   localStorage.setItem(
-    `r-${AGENT_ID}`,
+    storageKey,
     JSON.stringify({
       embedKey: embedKey,
       conversationPrefix: taskPrefix,
@@ -29,14 +32,17 @@ async function generateEmbedKey() {
 
 function tryStoredEmbedKey() {
   try {
-    const stored = JSON.parse(localStorage.getItem(`r-${AGENT_ID}`));
+    const storageKey = WORKFORCE_ID ? `r-wf-${WORKFORCE_ID}` : `r-${AGENT_ID}`;
+    const stored = JSON.parse(localStorage.getItem(storageKey) ?? "null");
 
-    if (stored.embedKey && stored.conversationPrefix) {
+    if (stored?.embedKey && stored?.conversationPrefix) {
       return new Key({
         key: stored.embedKey,
         region: REGION,
         project: PROJECT,
-        agentId: AGENT_ID,
+        ...(WORKFORCE_ID
+          ? { workforceId: WORKFORCE_ID }
+          : { agentId: AGENT_ID }),
         taskPrefix: stored.conversationPrefix,
       });
     }

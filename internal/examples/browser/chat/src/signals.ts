@@ -5,11 +5,13 @@ import {
   type Client,
   type Task,
   type UserMessage,
+  Workforce,
 } from "@relevanceai/sdk";
-import { AGENT_ID } from "@/constant";
+import { AGENT_ID, WORKFORCE_ID } from "@/constant";
 
 export const client = signal<Client>();
 export const agent = signal<Agent>();
+export const workforce = signal<Workforce>();
 export const task = signal<Task>();
 export const messages = signal<(AgentMessage | UserMessage)[]>([]);
 export const isAgentTyping = signal(false);
@@ -20,7 +22,7 @@ export const isDarkMode = signal(
       : window.matchMedia("(prefers-color-scheme: dark)").matches),
 );
 
-export const agentName = computed(() => agent.value?.name);
+export const agentName = computed(() => agent.value?.name ?? workforce.value?.name);
 export const agentInitials = computed(() =>
   agentName.value
     ?.split(/\W+/)
@@ -43,9 +45,15 @@ effect(() => {
 
 effect(() => {
   if (client.value) {
-    Agent.get(AGENT_ID, client.value).then((a) => {
-      agent.value = a;
-    });
+    if (WORKFORCE_ID) {
+      Workforce.get(WORKFORCE_ID, client.value).then((w) => {
+        workforce.value = w;
+      });
+    } else if (AGENT_ID) {
+      Agent.get(AGENT_ID, client.value).then((a) => {
+        agent.value = a;
+      });
+    }
   }
 });
 
