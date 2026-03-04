@@ -7,3 +7,7 @@ export const REGION_AU = "f1db6c";
 export function regionBaseURL(region: Region) {
   return `https://api-${region}.stack.tryrelevance.com`;
 }
+
+export function regionStreamingURL(region: Region, token: string) {
+  return `https://${region}.streaming.tryrelevance.com/v1/stream?authorization=Bearer+${token}`;
+}

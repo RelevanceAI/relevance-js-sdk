@@ -21,6 +21,11 @@ export type AgentTaskMetadata = {
   };
 };
 
+type MetadataResponse = {
+  metadata: AgentTaskMetadata;
+  streaming_token?: { token: string; expiry_time_ms: number };
+};
+
 export class AgentStrategy implements TaskStrategy<Agent> {
   public static async get(
     id: string,
@@ -46,27 +51,31 @@ export class AgentStrategy implements TaskStrategy<Agent> {
   }
 
   public async getMetadata(): Promise<TaskMetadata> {
-    const { metadata } = await this.client.fetch<
-      { metadata: AgentTaskMetadata }
-    >(
-      `/agents/${this.agent.id}/tasks/${this.id}/metadata`,
-    );
+    const url = `/agents/${this.agent.id}/tasks/${this.id}/metadata?include_streaming_token=true`;
+
+    const res = await this.client.fetch<MetadataResponse>(url);
 
     return {
       id: this.id,
       region: this.client.region,
       project: this.client.project,
-      name: metadata.conversation.title,
-      status: stateToStatus(metadata.conversation.state),
-      createdAt: new Date(metadata.insert_date),
-      updatedAt: new Date(metadata.update_date),
+      name: res.metadata.conversation.title,
+      status: stateToStatus(res.metadata.conversation.state),
+      createdAt: new Date(res.metadata.insert_date),
+      updatedAt: new Date(res.metadata.update_date),
+      streamingToken: res.streaming_token
+        ? {
+          token: res.streaming_token.token,
+          expiresAt: res.streaming_token.expiry_time_ms,
+        }
+        : undefined,
     };
   }
 
   public async getMessages(
     { after = new Date(0) }: { after?: Date } = {},
   ): Promise<AnyTaskMessage[]> {
-    const url = `/agents/${this.agent.id}/tasks/${this.id}/view` as const;
+    const url = `/agents/${this.agent.id}/tasks/${this.id}/view`;
     const res = await this.client.fetch<{ results: TaskMessageData[] }>(url, {
       method: "POST",
       body: JSON.stringify({

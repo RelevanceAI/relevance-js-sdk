@@ -148,7 +148,10 @@ export class WorkforceStrategy implements TaskStrategy<Workforce> {
   }
 
   async getMetadata(): Promise<TaskMetadata> {
-    const { metadata } = await this.client.fetch<{
+    const url =
+      `/workforce/tasks/${this.id}/metadata?include_streaming_token=true` as `/workforce/tasks/${string}/metadata`;
+
+    const res = await this.client.fetch<{
       metadata: {
         insert_date: string;
         title: string;
@@ -156,18 +159,23 @@ export class WorkforceStrategy implements TaskStrategy<Workforce> {
         state: WorkforceTaskState;
         requested_state: WorkforceTaskRequestedState;
       };
-    }>(
-      `/workforce/tasks/${this.id}/metadata`,
-    );
+      streaming_token?: { token: string; expiry_time_ms: number };
+    }>(url);
 
     return {
       id: this.id,
       region: this.client.region,
       project: this.client.project,
-      name: metadata.title,
-      status: WorkforceStrategy.convertStatus(metadata.state),
-      createdAt: new Date(metadata.insert_date),
-      updatedAt: new Date(metadata.update_date),
+      name: res.metadata.title,
+      status: WorkforceStrategy.convertStatus(res.metadata.state),
+      createdAt: new Date(res.metadata.insert_date),
+      updatedAt: new Date(res.metadata.update_date),
+      streamingToken: res.streaming_token
+        ? {
+          token: res.streaming_token.token,
+          expiresAt: res.streaming_token.expiry_time_ms,
+        }
+        : undefined,
     };
   }
 }

@@ -4,10 +4,14 @@ import type { ToolMessage } from "./tool.ts";
 import type { UserMessage } from "./user.ts";
 import type { WorkforceAgentMessage } from "./workforce-agent.ts";
 import type { WorkforceAgentHandoverMessage } from "./workforce-agent-handover.ts";
+import type { ThinkingMessage } from "./stream.ts";
+import type { TypingMessage } from "./stream.ts";
 
 export type AnyTaskMessage =
   | AgentMessage
   | AgentErrorMessage
+  | ThinkingMessage
+  | TypingMessage
   | ToolMessage
   | UserMessage
   | WorkforceAgentMessage
@@ -15,7 +19,7 @@ export type AnyTaskMessage =
 
 export type TaskMessageType = AnyTaskMessage["type"];
 
-interface MessageContent {
+export interface MessageContent {
   type: AnyTaskMessage["type"];
 }
 
@@ -80,20 +84,20 @@ export abstract class GenericMessage<
   }
 
   /**
-   * Returns if the message was sent from a user.
+   * Returns if the message is agent thinking.
    *
    * @returns {boolean}
    */
-  public isUser(): this is UserMessage {
-    return this.type === "user-message";
+  public isThinking(): this is ThinkingMessage {
+    return this.type === "agent-thinking";
   }
 
   /**
-   * Returns if the message was an error sent by the agent.
+   * Returns if the message is agent typing.
    *
    * @returns {boolean}
    */
-  public isAgentError(): this is AgentErrorMessage {
-    return this.type === "agent-error";
+  public isTyping(): this is TypingMessage {
+    return this.type === "agent-typing";
   }
 }

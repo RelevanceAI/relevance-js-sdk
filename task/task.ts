@@ -7,6 +7,8 @@ import { TaskErrorEvent, TaskMessageEvent, TaskUpdateEvent } from "../event.ts";
 import type { Workforce } from "../workforce.ts";
 import type { Agent } from "../agent.ts";
 import type { AgentErrorMessage } from "../message/agent-error.ts";
+import { ThinkingMessage, TypingMessage } from "../message/stream.ts";
+import { type StreamingToken, TaskStream } from "./stream.ts";
 
 export type TaskStatus =
   | "not-started"
@@ -19,6 +21,8 @@ export type TaskStatus =
   | "cancelled"
   | "error";
 
+export type { StreamingToken };
+
 export interface TaskMetadata {
   id: string;
   region: Region;
@@ -27,6 +31,7 @@ export interface TaskMetadata {
   name: string;
   createdAt: Date;
   updatedAt: Date;
+  streamingToken?: StreamingToken;
 }
 
 type TaskEventMap = {
@@ -57,6 +62,7 @@ export class Task<
 
   private readonly strategy: TaskStrategy<S>;
   #metadata: TaskMetadata;
+  #stream: TaskStream | null = null;
 
   public constructor(metadata: TaskMetadata, strategy: TaskStrategy<S>) {
     super();
@@ -111,6 +117,45 @@ export class Task<
     }
   }
 
+  #connectStream() {
+    const stream = new TaskStream(this.strategy, {
+      region: this.#metadata.region,
+      streamingToken: this.#metadata.streamingToken!,
+    });
+
+    stream.addEventListener("thinking", (event) => {
+      this.dispatchEvent(
+        new TaskMessageEvent(
+          new ThinkingMessage({
+            item_id: event.detail.documentId,
+            insert_date_: new Date().toISOString(),
+            content: {
+              type: "agent-thinking",
+              text: event.detail.content,
+            },
+          }),
+        ),
+      );
+    });
+
+    stream.addEventListener("typing", (event) => {
+      this.dispatchEvent(
+        new TaskMessageEvent(
+          new TypingMessage({
+            item_id: event.detail.documentId,
+            insert_date_: new Date().toISOString(),
+            content: {
+              type: "agent-typing",
+              text: event.detail.content,
+            },
+          }),
+        ),
+      );
+    });
+
+    this.#stream = stream;
+  }
+
   #subscribe() {
     if (this.subscribed) {
       return;
@@ -126,6 +171,10 @@ export class Task<
     const cursor = new Date();
     const emitted = new Set<string>();
     const pending = new Map<string, ToolMessage>();
+
+    if (this.#metadata.streamingToken) {
+      this.#connectStream();
+    }
 
     void (async () => {
       while (isSubscribed()) {
@@ -147,6 +196,10 @@ export class Task<
           }
 
           this.#metadata = metadata;
+
+          if (!this.#stream && metadata.streamingToken) {
+            this.#connectStream();
+          }
 
           if (messages.length) {
             for (const message of messages) {
@@ -224,6 +277,9 @@ export class Task<
   }
 
   public unsubscribe() {
+    this.#stream?.close();
+    this.#stream = null;
+
     this.subscribed?.abort();
     this.subscribed = null;
 
