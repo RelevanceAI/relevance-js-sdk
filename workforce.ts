@@ -151,6 +151,7 @@ export class Workforce {
           workforce_id: this.id,
           workforce_task_id: taskId,
           trigger: {
+            use_streaming: true,
             message: {
               role: "user",
               content: message,

@@ -73,19 +73,7 @@ export class Client {
   }
 
   public async fetch<T>(
-    input:
-      | "/agents/trigger"
-      | `/agents/${string}/get`
-      | `/agents/${string}/tasks/${string}/metadata`
-      | `/agents/${string}/tasks/${string}/view`
-      | "/agents/conversations/list"
-      | "/services/get_temporary_file_upload_url"
-      | `/workforce/items/${string}`
-      | `/workforce/tasks/${string}/metadata`
-      | `/workforce/items/${string}/tasks/${string}/messages`
-      | "/workforce/trigger"
-      | "/workforce/tasks/list"
-      | "/agents/list",
+    input: string,
     init?: RequestInit,
   ): Promise<T> {
     const url = this.url(input);
