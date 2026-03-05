@@ -84,6 +84,15 @@ export abstract class GenericMessage<
   }
 
   /**
+   * Returns if the message was sent from a user.
+   *
+   * @returns {boolean}
+   */
+  public isUser(): this is UserMessage {
+    return this.type === "user-message";
+  }
+
+  /**
    * Returns if the message is agent thinking.
    *
    * @returns {boolean}
