@@ -149,7 +149,7 @@ export class WorkforceStrategy implements TaskStrategy<Workforce> {
 
   async getMetadata(): Promise<TaskMetadata> {
     const url =
-      `/workforce/tasks/${this.id}/metadata?include_streaming_token=true` as `/workforce/tasks/${string}/metadata`;
+      `/workforce/tasks/${this.id}/metadata?include_streaming_token=true`;
 
     const res = await this.client.fetch<{
       metadata: {
