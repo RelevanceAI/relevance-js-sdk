@@ -170,7 +170,7 @@ export class Task<
 
     const cursor = new Date();
     const emitted = new Set<string>();
-    const pending = new Map<string, ToolMessage>();
+    const pending = new Map<string, AnyTaskMessage>();
 
     if (this.#metadata.streamingToken) {
       this.#connectStream();
@@ -215,7 +215,7 @@ export class Task<
 
                 case "tool-run": {
                   const { status } = message;
-                  if (pending.get(message.id)?.status == status) {
+                  if ((pending.get(message.id) as ToolMessage)?.status == status) {
                     // no change to the tool status
                     continue;
                   }
@@ -231,7 +231,18 @@ export class Task<
                   break;
                 }
 
-                case "agent-message":
+                case "agent-message": {
+                  if (message.isAgent() && message.isGenerating()) {
+                    pending.set(message.id, message);
+                    break;
+                  }
+                  emitted.add(message.id);
+                  pending.delete(message.id);
+                  hasChanges = true;
+                  this.dispatchEvent(new TaskMessageEvent(message));
+                  break;
+                }
+
                 case "user-message":
                   hasChanges = true;
                   emitted.add(message.id);

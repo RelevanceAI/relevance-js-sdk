@@ -4,6 +4,7 @@ import { GenericMessage, type TaskMessageData } from "./task.ts";
 export interface AgentMessageContent {
   type: "agent-message";
   text: string;
+  generating?: boolean;
   thought_about_tool_calls?: boolean;
 }
 
@@ -24,6 +25,10 @@ export class AgentMessage extends GenericMessage<AgentMessageContent> {
 
   public get agentId(): string {
     return this.agent?.id ?? "";
+  }
+
+  public isGenerating(): boolean {
+    return this.message.content.generating ?? false;
   }
 
   public isThought(): boolean {
