@@ -366,10 +366,10 @@ export class Agent {
       body: JSON.stringify({
         agent_id: this.#config.agent_id,
         conversation_id: taskId,
-        agent_override: {
-          ...this.#config,
-          use_streaming: true,
-        },
+        // @todo: embed keys cannot have streaming enabled due to override permissions
+        ...(!this.client.isEmbedKey()
+          ? { agent_override: { ...this.#config, use_streaming: true } }
+          : {}),
         message: {
           role: "user",
           content: message,
