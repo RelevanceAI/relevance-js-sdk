@@ -168,7 +168,7 @@ export class Task<
 
     this.backoffDuration = backoffStartingDuration;
 
-    const cursor = new Date();
+    const cursor = new Date(this.#metadata.createdAt);
     const emitted = new Set<string>();
     const pending = new Map<string, AnyTaskMessage>();
 
@@ -215,7 +215,9 @@ export class Task<
 
                 case "tool-run": {
                   const { status } = message;
-                  if ((pending.get(message.id) as ToolMessage)?.status == status) {
+                  if (
+                    (pending.get(message.id) as ToolMessage)?.status == status
+                  ) {
                     // no change to the tool status
                     continue;
                   }
